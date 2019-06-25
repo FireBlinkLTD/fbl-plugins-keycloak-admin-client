@@ -1,0 +1,10 @@
+bail: true
+timeout: 30000
+require: 
+  - source-map-support/register
+  - ts-node/register
+reporter: mochawesome  
+spec:
+  - test/*.ts
+  - test/**/*.ts
+  - test/unit/**/*.ts
