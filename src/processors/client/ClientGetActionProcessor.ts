@@ -1,7 +1,7 @@
 import * as Joi from 'joi';
 
 import { BaseKeycloakAdminClientActionProcessor } from '../BaseKeycloakAdminClientActionProcessor';
-import { KEYCLOAK_CREDENTIALS_SCHEMA } from '../../scremas';
+import { KEYCLOAK_CREDENTIALS_SCHEMA } from '../../schemas';
 import { FBL_ASSIGN_TO_SCHEMA, FBL_PUSH_TO_SCHEMA, ContextUtil } from 'fbl';
 
 export class ClientGetActionProcessor extends BaseKeycloakAdminClientActionProcessor {
@@ -34,13 +34,17 @@ export class ClientGetActionProcessor extends BaseKeycloakAdminClientActionProce
      */
     async execute(): Promise<void> {
         const adminClient = await this.getKeycloakAdminClient(this.options.credentials);
-        const clients = await adminClient.clients.find({
-            clientId: this.options.clientId,
-            realm: this.options.realmName,
+        const clients = await this.wrapKeycloakAdminRequest(async () => {
+            return await adminClient.clients.find({
+                clientId: this.options.clientId,
+                realm: this.options.realmName,
+            });
         });
 
         if (!clients.length) {
-            throw new Error(`Unable to find client with clientId: ${this.options.clientId}.`);
+            throw new Error(
+                `Unable to find client with clientId: ${this.options.clientId} of realm "${this.options.realmName}".`,
+            );
         }
 
         ContextUtil.assignTo(this.context, this.parameters, this.snapshot, this.options.assignClientTo, clients[0]);

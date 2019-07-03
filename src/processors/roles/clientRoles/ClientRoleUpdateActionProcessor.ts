@@ -1,17 +1,23 @@
 import * as Joi from 'joi';
 
-import { BaseKeycloakAdminClientActionProcessor } from '../BaseKeycloakAdminClientActionProcessor';
-import { KEYCLOAK_CREDENTIALS_SCHEMA } from '../../schemas';
+import { BaseKeycloakAdminClientActionProcessor } from '../../BaseKeycloakAdminClientActionProcessor';
+import { KEYCLOAK_CREDENTIALS_SCHEMA } from '../../../schemas';
 
-export class ClientUpdateActionProcessor extends BaseKeycloakAdminClientActionProcessor {
+export class ClientRoleUpdateActionProcessor extends BaseKeycloakAdminClientActionProcessor {
     private static validationSchema = Joi.object({
         credentials: KEYCLOAK_CREDENTIALS_SCHEMA,
         realmName: Joi.string()
-            .required()
-            .min(1),
-        client: Joi.object()
+            .min(1)
+            .required(),
+        clientId: Joi.string()
+            .min(1)
+            .required(),
+        roleName: Joi.string()
+            .min(1)
+            .required(),
+        role: Joi.object()
             .keys({
-                clientId: Joi.string()
+                name: Joi.string()
                     .required()
                     .min(1),
             })
@@ -31,7 +37,7 @@ export class ClientUpdateActionProcessor extends BaseKeycloakAdminClientActionPr
      * @inheritdoc
      */
     getValidationSchema(): Joi.SchemaLike | null {
-        return ClientUpdateActionProcessor.validationSchema;
+        return ClientRoleUpdateActionProcessor.validationSchema;
     }
 
     /**
@@ -42,24 +48,25 @@ export class ClientUpdateActionProcessor extends BaseKeycloakAdminClientActionPr
 
         const clients = await this.wrapKeycloakAdminRequest(async () => {
             return await adminClient.clients.find({
-                clientId: this.options.client.clientId,
+                clientId: this.options.clientId,
                 realm: this.options.realmName,
             });
         });
 
         if (!clients.length) {
             throw new Error(
-                `Unable to update client with clientId: ${this.options.client.clientId} of realm "${this.options.realmName}". Client not found`,
+                `Unable to update role "${this.options.roleName}" for client with clientId: ${this.options.clientId} of realm "${this.options.realmName}". Client not found`,
             );
         }
 
         await this.wrapKeycloakAdminRequest(async () => {
-            await adminClient.clients.update(
+            await adminClient.clients.updateRole(
                 {
                     id: clients[0].id,
+                    roleName: this.options.roleName,
                     realm: this.options.realmName,
                 },
-                this.options.client,
+                this.options.role,
             );
         });
     }

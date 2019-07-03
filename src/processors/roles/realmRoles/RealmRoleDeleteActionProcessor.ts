@@ -1,14 +1,17 @@
 import * as Joi from 'joi';
 
-import { BaseKeycloakAdminClientActionProcessor } from '../BaseKeycloakAdminClientActionProcessor';
-import { KEYCLOAK_CREDENTIALS_SCHEMA } from '../../schemas';
+import { BaseKeycloakAdminClientActionProcessor } from '../../BaseKeycloakAdminClientActionProcessor';
+import { KEYCLOAK_CREDENTIALS_SCHEMA } from '../../../schemas';
 
-export class RealmDeleteActionProcessor extends BaseKeycloakAdminClientActionProcessor {
+export class RealmRoleDeleteActionProcessor extends BaseKeycloakAdminClientActionProcessor {
     private static validationSchema = Joi.object({
         credentials: KEYCLOAK_CREDENTIALS_SCHEMA,
         realmName: Joi.string()
-            .required()
-            .min(1),
+            .min(1)
+            .required(),
+        roleName: Joi.string()
+            .min(1)
+            .required(),
     })
         .required()
         .options({
@@ -20,7 +23,7 @@ export class RealmDeleteActionProcessor extends BaseKeycloakAdminClientActionPro
      * @inheritdoc
      */
     getValidationSchema(): Joi.SchemaLike | null {
-        return RealmDeleteActionProcessor.validationSchema;
+        return RealmRoleDeleteActionProcessor.validationSchema;
     }
 
     /**
@@ -28,8 +31,12 @@ export class RealmDeleteActionProcessor extends BaseKeycloakAdminClientActionPro
      */
     async execute(): Promise<void> {
         const adminClient = await this.getKeycloakAdminClient(this.options.credentials);
+
         await this.wrapKeycloakAdminRequest(async () => {
-            await adminClient.realms.del({ realm: this.options.realmName });
+            await adminClient.roles.delByName({
+                name: this.options.roleName,
+                realm: this.options.realmName,
+            });
         });
     }
 }

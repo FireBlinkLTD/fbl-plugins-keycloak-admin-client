@@ -1,14 +1,17 @@
 import * as Joi from 'joi';
 
-import { BaseKeycloakAdminClientActionProcessor } from '../BaseKeycloakAdminClientActionProcessor';
-import { KEYCLOAK_CREDENTIALS_SCHEMA } from '../../schemas';
+import { BaseKeycloakAdminClientActionProcessor } from '../../BaseKeycloakAdminClientActionProcessor';
+import { KEYCLOAK_CREDENTIALS_SCHEMA } from '../../../schemas';
 
-export class RealmCreateActionProcessor extends BaseKeycloakAdminClientActionProcessor {
+export class RealmRoleCreateActionProcessor extends BaseKeycloakAdminClientActionProcessor {
     private static validationSchema = Joi.object({
         credentials: KEYCLOAK_CREDENTIALS_SCHEMA,
-        realm: Joi.object()
+        realmName: Joi.string()
+            .min(1)
+            .required(),
+        role: Joi.object()
             .keys({
-                realm: Joi.string()
+                name: Joi.string()
                     .required()
                     .min(1),
             })
@@ -28,7 +31,7 @@ export class RealmCreateActionProcessor extends BaseKeycloakAdminClientActionPro
      * @inheritdoc
      */
     getValidationSchema(): Joi.SchemaLike | null {
-        return RealmCreateActionProcessor.validationSchema;
+        return RealmRoleCreateActionProcessor.validationSchema;
     }
 
     /**
@@ -36,8 +39,10 @@ export class RealmCreateActionProcessor extends BaseKeycloakAdminClientActionPro
      */
     async execute(): Promise<void> {
         const adminClient = await this.getKeycloakAdminClient(this.options.credentials);
+        this.options.role.realm = this.options.realmName;
+
         await this.wrapKeycloakAdminRequest(async () => {
-            await adminClient.realms.create(this.options.realm);
+            await adminClient.roles.create(this.options.role);
         });
     }
 }

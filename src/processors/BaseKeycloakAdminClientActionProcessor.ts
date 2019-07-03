@@ -12,4 +12,17 @@ export abstract class BaseKeycloakAdminClientActionProcessor extends ActionProce
 
         return client;
     }
+
+    async wrapKeycloakAdminRequest(request: Function): Promise<any> {
+        try {
+            return await request();
+        } catch (e) {
+            /* istanbul ignore else */
+            if (e.response && e.response.data && e.response.data.errorMessage) {
+                e.message = `${e.message}: ${e.response.data.errorMessage}`;
+            }
+
+            throw e;
+        }
+    }
 }

@@ -21,9 +21,10 @@ chai.use(chaiAsPromised);
 const plugin = require('../../../');
 
 @suite()
-class PluginActionHandlerTestSuite {
+class RealmActionHandlersTestSuite {
     after() {
         Container.get(ActionHandlersRegistry).cleanup();
+        Container.reset();
     }
 
     @test()

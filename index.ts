@@ -4,10 +4,18 @@ import {
     ClientDeleteActionHandler,
     ClientGetActionHandler,
     ClientUpdateActionHandler,
+    ClientRoleCreateActionHandler,
+    ClientRoleDeleteActionHandler,
+    ClientRoleGetActionHandler,
+    ClientRoleUpdateActionHandler,
     RealmCreateActionHandler,
     RealmDeleteActionHandler,
     RealmGetActionHandler,
     RealmUpdateActionHandler,
+    RealmRoleCreateActionHandler,
+    RealmRoleDeleteActionHandler,
+    RealmRoleGetActionHandler,
+    RealmRoleUpdateActionHandler,
 } from './src/handlers';
 
 const packageJson = require('../package.json');
@@ -38,11 +46,23 @@ module.exports = <IPlugin>{
         new ClientGetActionHandler(),
         new ClientUpdateActionHandler(),
 
+        // client roles
+        new ClientRoleCreateActionHandler(),
+        new ClientRoleDeleteActionHandler(),
+        new ClientRoleGetActionHandler(),
+        new ClientRoleUpdateActionHandler(),
+
         // realm
         new RealmCreateActionHandler(),
         new RealmDeleteActionHandler(),
         new RealmGetActionHandler(),
         new RealmUpdateActionHandler(),
+
+        // realm roles
+        new RealmRoleCreateActionHandler(),
+        new RealmRoleDeleteActionHandler(),
+        new RealmRoleGetActionHandler(),
+        new RealmRoleUpdateActionHandler(),
     ],
 
     templateUtils: [],
