@@ -6,10 +6,10 @@ import * as assert from 'assert';
 import { Container } from 'typedi';
 
 import {
-    RealmCreateActionHandler,
-    RealmDeleteActionHandler,
-    RealmGetActionHandler,
-    RealmUpdateActionHandler,
+    RealmRoleCreateActionHandler,
+    RealmRoleDeleteActionHandler,
+    RealmRoleGetActionHandler,
+    RealmRoleUpdateActionHandler,
 } from '../../../src/handlers';
 
 import credentials from '../credentials';
@@ -21,7 +21,7 @@ chai.use(chaiAsPromised);
 const plugin = require('../../../');
 
 @suite()
-class RealmActionHandlersTestSuite {
+class RealmRolesActionHandlersTestSuite {
     after() {
         Container.get(ActionHandlersRegistry).cleanup();
         Container.reset();
@@ -29,15 +29,16 @@ class RealmActionHandlersTestSuite {
 
     @test()
     async crudOperations(): Promise<void> {
+        const roleName = `r-${Date.now()}`;
         const actionHandlerRegistry = Container.get(ActionHandlersRegistry);
         const flowService = Container.get(FlowService);
         flowService.debug = true;
 
         actionHandlerRegistry.register(new SequenceFlowActionHandler(), plugin);
-        actionHandlerRegistry.register(new RealmCreateActionHandler(), plugin);
-        actionHandlerRegistry.register(new RealmDeleteActionHandler(), plugin);
-        actionHandlerRegistry.register(new RealmGetActionHandler(), plugin);
-        actionHandlerRegistry.register(new RealmUpdateActionHandler(), plugin);
+        actionHandlerRegistry.register(new RealmRoleCreateActionHandler(), plugin);
+        actionHandlerRegistry.register(new RealmRoleDeleteActionHandler(), plugin);
+        actionHandlerRegistry.register(new RealmRoleGetActionHandler(), plugin);
+        actionHandlerRegistry.register(new RealmRoleUpdateActionHandler(), plugin);
 
         const context = ContextUtil.generateEmptyContext();
 
@@ -47,41 +48,45 @@ class RealmActionHandlersTestSuite {
             {
                 '--': [
                     {
-                        'keycloak.realm.create': {
+                        'keycloak.realm.role.create': {
                             credentials,
-                            realm: {
-                                realm: 'test',
+                            realmName: 'master',
+                            role: {
+                                name: roleName,
                             },
                         },
                     },
                     {
-                        'keycloak.realm.get': {
+                        'keycloak.realm.role.get': {
                             credentials,
-                            realmName: 'test',
-                            assignRealmTo: '$.ctx.afterCreate',
+                            realmName: 'master',
+                            roleName: roleName,
+                            assignRoleTo: '$.ctx.afterCreate',
                         },
                     },
                     {
-                        'keycloak.realm.update': {
+                        'keycloak.realm.role.update': {
                             credentials,
-                            realmName: 'test',
-                            realm: {
-                                realm: 'test',
-                                enabled: true,
+                            realmName: 'master',
+                            roleName: roleName,
+                            role: {
+                                name: `${roleName}:new`,
                             },
                         },
                     },
                     {
-                        'keycloak.realm.get': {
+                        'keycloak.realm.role.get': {
                             credentials,
-                            realmName: 'test',
-                            assignRealmTo: '$.ctx.afterUpdate',
+                            realmName: 'master',
+                            roleName: `${roleName}:new`,
+                            assignRoleTo: '$.ctx.afterUpdate',
                         },
                     },
                     {
-                        'keycloak.realm.delete': {
+                        'keycloak.realm.role.delete': {
                             credentials,
-                            realmName: 'test',
+                            realmName: 'master',
+                            roleName: `${roleName}:new`,
                         },
                     },
                 ],
@@ -93,16 +98,18 @@ class RealmActionHandlersTestSuite {
         );
 
         assert(snapshot.successful);
-        assert.notStrictEqual(context.ctx.afterCreate.enabled, context.ctx.afterUpdate.enabled);
+        assert.strictEqual(context.ctx.afterCreate.name, roleName);
+        assert.strictEqual(context.ctx.afterUpdate.name, `${roleName}:new`);
 
         snapshot = await flowService.executeAction(
             '.',
             // action id with options
             {
-                'keycloak.realm.get': {
+                'keycloak.realm.role.get': {
                     credentials,
-                    realmName: 'test',
-                    assignRealmTo: '$.ctx.afterDelete',
+                    realmName: 'master',
+                    roleName: `${roleName}:new`,
+                    assignRoleTo: '$.ctx.afterDelete',
                 },
             },
             // shared context
@@ -113,6 +120,9 @@ class RealmActionHandlersTestSuite {
 
         assert(!snapshot.successful);
         const failedStep = snapshot.getSteps().find(s => s.type === 'failure');
-        assert.strictEqual(failedStep.payload, `Error: Unable to find realm with name: test`);
+        assert.strictEqual(
+            failedStep.payload,
+            `Error: Unable to find role "${roleName}:new" of realm "master". Role not found`,
+        );
     }
 }

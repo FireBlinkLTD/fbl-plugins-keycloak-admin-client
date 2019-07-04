@@ -1,4 +1,11 @@
-import { IDelegatedParameters, ContextUtil, ActionHandlersRegistry, FlowService } from 'fbl';
+import {
+    IDelegatedParameters,
+    ContextUtil,
+    ActionHandlersRegistry,
+    FlowService,
+    IActionStep,
+    ActionSnapshot,
+} from 'fbl';
 import { SequenceFlowActionHandler } from 'fbl/dist/src/plugins/flow/SequenceFlowActionHandler';
 
 import { suite, test } from 'mocha-typescript';
@@ -32,6 +39,7 @@ class ClientActionHandlersTestSuite {
         const clientId = `t-${Date.now()}`;
         const actionHandlerRegistry = Container.get(ActionHandlersRegistry);
         const flowService = Container.get(FlowService);
+        flowService.debug = true;
 
         actionHandlerRegistry.register(new SequenceFlowActionHandler(), plugin);
         actionHandlerRegistry.register(new ClientCreateActionHandler(), plugin);
@@ -118,6 +126,11 @@ class ClientActionHandlersTestSuite {
         );
 
         assert(!snapshot.successful);
+        const failedStep = snapshot.getSteps().find(s => s.type === 'failure');
+        assert.strictEqual(
+            failedStep.payload,
+            `Error: Unable to find client with clientId: ${clientId} of realm "master".`,
+        );
     }
 
     @test()
@@ -125,6 +138,7 @@ class ClientActionHandlersTestSuite {
         const clientId = `t-${Date.now()}`;
         const actionHandlerRegistry = Container.get(ActionHandlersRegistry);
         const flowService = Container.get(FlowService);
+        flowService.debug = true;
 
         actionHandlerRegistry.register(new SequenceFlowActionHandler(), plugin);
         actionHandlerRegistry.register(new ClientCreateActionHandler(), plugin);
@@ -177,5 +191,85 @@ class ClientActionHandlersTestSuite {
 
         assert(!snapshot.successful);
         assert(context.ctx.afterCreate);
+        const failedChildSnapshot: ActionSnapshot = snapshot
+            .getSteps()
+            .find(s => s.type === 'child' && !s.payload.successful).payload;
+        const failedStep = failedChildSnapshot.getSteps().find(s => s.type === 'failure');
+        assert.strictEqual(
+            failedStep.payload,
+            `Error: Request failed with status code 409: Client ${clientId} already exists`,
+        );
+    }
+
+    @test()
+    async failToUpdateMissingClient(): Promise<void> {
+        const clientId = `t-${Date.now()}`;
+        const actionHandlerRegistry = Container.get(ActionHandlersRegistry);
+        const flowService = Container.get(FlowService);
+        flowService.debug = true;
+
+        actionHandlerRegistry.register(new ClientUpdateActionHandler(), plugin);
+
+        const context = ContextUtil.generateEmptyContext();
+
+        const snapshot = await flowService.executeAction(
+            '.',
+            // action id with options
+            {
+                'keycloak.client.update': {
+                    credentials,
+                    realmName: 'master',
+                    client: {
+                        clientId,
+                    },
+                },
+            },
+            // shared context
+            context,
+            // delegated parameters
+            <IDelegatedParameters>{},
+        );
+
+        assert(!snapshot.successful);
+        const failedStep = snapshot.getSteps().find(s => s.type === 'failure');
+        assert.strictEqual(
+            failedStep.payload,
+            `Error: Unable to update client with clientId: ${clientId} of realm "master". Client not found`,
+        );
+    }
+
+    @test()
+    async failToDeleteMissingClient(): Promise<void> {
+        const clientId = `t-${Date.now()}`;
+        const actionHandlerRegistry = Container.get(ActionHandlersRegistry);
+        const flowService = Container.get(FlowService);
+        flowService.debug = true;
+
+        actionHandlerRegistry.register(new ClientDeleteActionHandler(), plugin);
+
+        const context = ContextUtil.generateEmptyContext();
+
+        const snapshot = await flowService.executeAction(
+            '.',
+            // action id with options
+            {
+                'keycloak.client.delete': {
+                    credentials,
+                    realmName: 'master',
+                    clientId,
+                },
+            },
+            // shared context
+            context,
+            // delegated parameters
+            <IDelegatedParameters>{},
+        );
+
+        assert(!snapshot.successful);
+        const failedStep = snapshot.getSteps().find(s => s.type === 'failure');
+        assert.strictEqual(
+            failedStep.payload,
+            `Error: Unable to delete client with clientId: ${clientId} of realm "master". Client not found`,
+        );
     }
 }
