@@ -77,10 +77,9 @@ jobs:
       - checkout
 
       - run: 
-          name: yarn install && yarn build
+          name: yarn install
           command: |
-            yarn install
-            yarn build     
+            yarn install               
 
       - run: 
           name: run tests and generate coverage report

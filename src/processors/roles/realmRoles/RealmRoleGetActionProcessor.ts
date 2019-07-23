@@ -2,7 +2,7 @@ import * as Joi from 'joi';
 
 import { BaseKeycloakAdminClientActionProcessor } from '../../BaseKeycloakAdminClientActionProcessor';
 import { KEYCLOAK_CREDENTIALS_SCHEMA } from '../../../schemas';
-import { FBL_ASSIGN_TO_SCHEMA, FBL_PUSH_TO_SCHEMA, ContextUtil } from 'fbl';
+import { FBL_ASSIGN_TO_SCHEMA, FBL_PUSH_TO_SCHEMA, ContextUtil, ActionError } from 'fbl';
 
 export class RealmRoleGetActionProcessor extends BaseKeycloakAdminClientActionProcessor {
     private static validationSchema = Joi.object({
@@ -42,8 +42,9 @@ export class RealmRoleGetActionProcessor extends BaseKeycloakAdminClientActionPr
             });
 
             if (!role) {
-                throw new Error(
+                throw new ActionError(
                     `Unable to find role "${this.options.roleName}" of realm "${this.options.realmName}". Role not found`,
+                    '404',
                 );
             }
 

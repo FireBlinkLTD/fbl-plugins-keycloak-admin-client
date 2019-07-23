@@ -1,4 +1,4 @@
-import { ActionProcessor } from 'fbl';
+import { ActionProcessor, ActionError } from 'fbl';
 import KeycloakAdminClient from 'keycloak-admin';
 import { ICredentials } from '../interfaces';
 
@@ -19,7 +19,7 @@ export abstract class BaseKeycloakAdminClientActionProcessor extends ActionProce
         } catch (e) {
             /* istanbul ignore else */
             if (e.response && e.response.data && e.response.data.errorMessage) {
-                e.message = `${e.message}: ${e.response.data.errorMessage}`;
+                throw new ActionError(`${e.message}: ${e.response.data.errorMessage}`, e.response.status.toString());
             }
 
             throw e;

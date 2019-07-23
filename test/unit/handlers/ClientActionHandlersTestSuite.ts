@@ -1,11 +1,4 @@
-import {
-    IDelegatedParameters,
-    ContextUtil,
-    ActionHandlersRegistry,
-    FlowService,
-    IActionStep,
-    ActionSnapshot,
-} from 'fbl';
+import { IDelegatedParameters, ContextUtil, ActionHandlersRegistry, FlowService, ActionSnapshot } from 'fbl';
 import { SequenceFlowActionHandler } from 'fbl/dist/src/plugins/flow/SequenceFlowActionHandler';
 
 import { suite, test } from 'mocha-typescript';
@@ -127,10 +120,10 @@ class ClientActionHandlersTestSuite {
 
         assert(!snapshot.successful);
         const failedStep = snapshot.getSteps().find(s => s.type === 'failure');
-        assert.strictEqual(
-            failedStep.payload,
-            `Error: Unable to find client with clientId: ${clientId} of realm "master".`,
-        );
+        assert.deepStrictEqual(failedStep.payload, {
+            code: '404',
+            message: `Unable to find client with clientId: ${clientId} of realm "master".`,
+        });
     }
 
     @test()
@@ -195,10 +188,11 @@ class ClientActionHandlersTestSuite {
             .getSteps()
             .find(s => s.type === 'child' && !s.payload.successful).payload;
         const failedStep = failedChildSnapshot.getSteps().find(s => s.type === 'failure');
-        assert.strictEqual(
-            failedStep.payload,
-            `Error: Request failed with status code 409: Client ${clientId} already exists`,
-        );
+
+        assert.deepStrictEqual(failedStep.payload, {
+            code: '409',
+            message: `Request failed with status code 409: Client ${clientId} already exists`,
+        });
     }
 
     @test()
@@ -232,10 +226,10 @@ class ClientActionHandlersTestSuite {
 
         assert(!snapshot.successful);
         const failedStep = snapshot.getSteps().find(s => s.type === 'failure');
-        assert.strictEqual(
-            failedStep.payload,
-            `Error: Unable to update client with clientId: ${clientId} of realm "master". Client not found`,
-        );
+        assert.deepStrictEqual(failedStep.payload, {
+            code: '404',
+            message: `Unable to update client with clientId: ${clientId} of realm "master". Client not found`,
+        });
     }
 
     @test()
@@ -267,9 +261,9 @@ class ClientActionHandlersTestSuite {
 
         assert(!snapshot.successful);
         const failedStep = snapshot.getSteps().find(s => s.type === 'failure');
-        assert.strictEqual(
-            failedStep.payload,
-            `Error: Unable to delete client with clientId: ${clientId} of realm "master". Client not found`,
-        );
+        assert.deepStrictEqual(failedStep.payload, {
+            code: '404',
+            message: `Unable to delete client with clientId: ${clientId} of realm "master". Client not found`,
+        });
     }
 }

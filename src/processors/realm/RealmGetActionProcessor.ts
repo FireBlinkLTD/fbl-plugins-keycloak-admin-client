@@ -2,7 +2,7 @@ import * as Joi from 'joi';
 
 import { BaseKeycloakAdminClientActionProcessor } from '../BaseKeycloakAdminClientActionProcessor';
 import { KEYCLOAK_CREDENTIALS_SCHEMA } from '../../schemas';
-import { FBL_ASSIGN_TO_SCHEMA, FBL_PUSH_TO_SCHEMA, ContextUtil } from 'fbl';
+import { FBL_ASSIGN_TO_SCHEMA, FBL_PUSH_TO_SCHEMA, ContextUtil, ActionError } from 'fbl';
 
 export class RealmGetActionProcessor extends BaseKeycloakAdminClientActionProcessor {
     private static validationSchema = Joi.object({
@@ -36,7 +36,7 @@ export class RealmGetActionProcessor extends BaseKeycloakAdminClientActionProces
         });
 
         if (!realm) {
-            throw new Error(`Unable to find realm with name: ${this.options.realmName}`);
+            throw new ActionError(`Unable to find realm with name: ${this.options.realmName}`, '404');
         }
 
         ContextUtil.assignTo(this.context, this.parameters, this.snapshot, this.options.assignRealmTo, realm);

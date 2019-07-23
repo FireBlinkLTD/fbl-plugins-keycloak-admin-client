@@ -113,6 +113,9 @@ class RealmActionHandlersTestSuite {
 
         assert(!snapshot.successful);
         const failedStep = snapshot.getSteps().find(s => s.type === 'failure');
-        assert.strictEqual(failedStep.payload, `Error: Unable to find realm with name: test`);
+        assert.deepStrictEqual(failedStep.payload, {
+            code: '404',
+            message: `Unable to find realm with name: test`,
+        });
     }
 }

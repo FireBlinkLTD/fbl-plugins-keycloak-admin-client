@@ -2,6 +2,7 @@ import * as Joi from 'joi';
 
 import { BaseKeycloakAdminClientActionProcessor } from '../BaseKeycloakAdminClientActionProcessor';
 import { KEYCLOAK_CREDENTIALS_SCHEMA } from '../../schemas';
+import { ActionError } from 'fbl';
 
 export class ClientDeleteActionProcessor extends BaseKeycloakAdminClientActionProcessor {
     private static validationSchema = Joi.object({
@@ -40,8 +41,9 @@ export class ClientDeleteActionProcessor extends BaseKeycloakAdminClientActionPr
         });
 
         if (!clients.length) {
-            throw new Error(
+            throw new ActionError(
                 `Unable to delete client with clientId: ${this.options.clientId} of realm "${this.options.realmName}". Client not found`,
+                '404',
             );
         }
 

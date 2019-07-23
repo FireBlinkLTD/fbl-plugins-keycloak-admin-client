@@ -2,6 +2,7 @@ import * as Joi from 'joi';
 
 import { BaseKeycloakAdminClientActionProcessor } from '../../BaseKeycloakAdminClientActionProcessor';
 import { KEYCLOAK_CREDENTIALS_SCHEMA } from '../../../schemas';
+import { ActionError } from 'fbl';
 
 export class ClientRoleUpdateActionProcessor extends BaseKeycloakAdminClientActionProcessor {
     private static validationSchema = Joi.object({
@@ -54,8 +55,9 @@ export class ClientRoleUpdateActionProcessor extends BaseKeycloakAdminClientActi
         });
 
         if (!clients.length) {
-            throw new Error(
+            throw new ActionError(
                 `Unable to update role "${this.options.roleName}" for client with clientId: ${this.options.clientId} of realm "${this.options.realmName}". Client not found`,
+                '404',
             );
         }
 

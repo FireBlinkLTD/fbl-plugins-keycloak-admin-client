@@ -2,7 +2,7 @@ import * as Joi from 'joi';
 
 import { BaseKeycloakAdminClientActionProcessor } from '../BaseKeycloakAdminClientActionProcessor';
 import { KEYCLOAK_CREDENTIALS_SCHEMA } from '../../schemas';
-import { FBL_ASSIGN_TO_SCHEMA, FBL_PUSH_TO_SCHEMA, ContextUtil } from 'fbl';
+import { FBL_ASSIGN_TO_SCHEMA, FBL_PUSH_TO_SCHEMA, ContextUtil, ActionError } from 'fbl';
 
 export class ClientGetActionProcessor extends BaseKeycloakAdminClientActionProcessor {
     private static validationSchema = Joi.object({
@@ -42,8 +42,9 @@ export class ClientGetActionProcessor extends BaseKeycloakAdminClientActionProce
         });
 
         if (!clients.length) {
-            throw new Error(
+            throw new ActionError(
                 `Unable to find client with clientId: ${this.options.clientId} of realm "${this.options.realmName}".`,
+                '404',
             );
         }
 

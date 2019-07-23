@@ -8,7 +8,8 @@ export abstract class BaseActionHandler extends ActionHandler {
         return {
             id: `com.fireblink.fbl.plugins.keycloak.admin.client.${this.group}.${this.action}`,
             aliases: [
-                `fbl.plugins.keycloak.admin.client.realm.${this.group}.${this.action}`,
+                `fbl.plugins.keycloak.admin.client.${this.group}.${this.action}`,
+                `keycloak.admin.client.${this.group}.${this.action}`,
                 `keycloak.${this.group}.${this.action}`,
             ],
         };
