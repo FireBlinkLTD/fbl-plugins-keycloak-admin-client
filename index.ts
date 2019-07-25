@@ -8,6 +8,10 @@ import {
     ClientRoleDeleteActionHandler,
     ClientRoleGetActionHandler,
     ClientRoleUpdateActionHandler,
+    GroupCreateActionHandler,
+    GroupDeleteActionHandler,
+    GroupGetActionHandler,
+    GroupUpdateActionHandler,
     RealmCreateActionHandler,
     RealmDeleteActionHandler,
     RealmGetActionHandler,
@@ -51,6 +55,12 @@ module.exports = <IPlugin>{
         new ClientRoleDeleteActionHandler(),
         new ClientRoleGetActionHandler(),
         new ClientRoleUpdateActionHandler(),
+
+        // group
+        new GroupCreateActionHandler(),
+        new GroupDeleteActionHandler(),
+        new GroupGetActionHandler(),
+        new GroupUpdateActionHandler(),
 
         // realm
         new RealmCreateActionHandler(),
