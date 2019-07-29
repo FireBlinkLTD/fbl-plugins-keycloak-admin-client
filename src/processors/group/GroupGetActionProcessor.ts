@@ -51,7 +51,7 @@ export class GroupGetActionProcessor extends BaseGroupActionProcessor {
             if (roleMappings.clientMappings) {
                 exactGroup.clientRoles = {};
                 for (const clientId of Object.keys(roleMappings.clientMappings)) {
-                    exactGroup.clientRoles[clientId] = roleMappings.clientMappings[clientId].map(
+                    exactGroup.clientRoles[clientId] = roleMappings.clientMappings[clientId].mappings.map(
                         (r: RoleRepresentation) => r.name,
                     );
                 }

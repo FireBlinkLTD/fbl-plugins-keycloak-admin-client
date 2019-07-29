@@ -53,6 +53,10 @@ class GroupActionHandlersTestSuite {
                             realmName: 'master',
                             group: {
                                 name: groupName,
+                                realmRoles: ['admin'],
+                                clientRoles: {
+                                    broker: ['read-token'],
+                                },
                             },
                         },
                     },
@@ -71,9 +75,9 @@ class GroupActionHandlersTestSuite {
                             groupName,
                             group: {
                                 name: groupName,
-                                realmRoles: ['admin'],
+                                realmRoles: [],
                                 clientRoles: {
-                                    'master-realm': ['view-users'],
+                                    broker: [],
                                 },
                             },
                         },
@@ -102,11 +106,13 @@ class GroupActionHandlersTestSuite {
         );
 
         assert(snapshot.successful);
-        assert(!context.ctx.afterCreate.realmRoles);
-        assert.deepStrictEqual(context.ctx.afterUpdate.realmRoles, ['admin']);
-        assert.deepStrictEqual(context.ctx.afterUpdate.clientRoles, {
-            'master-realm': ['view-users'],
+        assert.deepStrictEqual(context.ctx.afterCreate.realmRoles, ['admin']);
+        assert.deepStrictEqual(context.ctx.afterCreate.clientRoles, {
+            broker: ['read-token'],
         });
+
+        assert(!context.ctx.afterUpdate.realmRoles);
+        assert(!context.ctx.afterUpdate.clientRoles);
 
         snapshot = await flowService.executeAction(
             '.',
