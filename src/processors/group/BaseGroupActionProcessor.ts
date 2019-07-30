@@ -51,7 +51,7 @@ export abstract class BaseGroupActionProcessor extends BaseKeycloakAdminClientAc
                 rolesToAdd = realmRoles;
             } else {
                 rolesToAdd = realmRoles.filter((r: string) => {
-                    return existingRoleMappings.realmMappings.find(role => role.name === r);
+                    return !existingRoleMappings.realmMappings.find(role => role.name === r);
                 });
 
                 rolesToRemove = existingRoleMappings.realmMappings.filter((r: RoleRepresentation) => {
@@ -59,6 +59,19 @@ export abstract class BaseGroupActionProcessor extends BaseKeycloakAdminClientAc
                 });
             }
 
+            /* istanbul ignore else */
+            if (rolesToRemove) {
+                this.snapshot.log('Removing realm role mapping for: ' + rolesToRemove.map(r => r.name).join(', '));
+                await this.wrapKeycloakAdminRequest(async () => {
+                    await adminClient.groups.delRealmRoleMappings({
+                        id: groupId,
+                        realm: realmName,
+                        roles: <RoleMappingPayload[]>rolesToRemove,
+                    });
+                });
+            }
+
+            /* istanbul ignore else */
             if (rolesToAdd.length) {
                 const roleMappingsToAdd = <RoleMappingPayload[]>(
                     await this.getRealmRoles(adminClient, rolesToAdd, realmName)
@@ -70,17 +83,6 @@ export abstract class BaseGroupActionProcessor extends BaseKeycloakAdminClientAc
                         id: groupId,
                         realm: realmName,
                         roles: roleMappingsToAdd,
-                    });
-                });
-            }
-
-            if (rolesToRemove) {
-                this.snapshot.log('Removing realm role mapping for: ' + rolesToAdd.join(', '));
-                await this.wrapKeycloakAdminRequest(async () => {
-                    await adminClient.groups.delRealmRoleMappings({
-                        id: groupId,
-                        realm: realmName,
-                        roles: <RoleMappingPayload[]>rolesToRemove,
                     });
                 });
             }
@@ -145,7 +147,7 @@ export abstract class BaseGroupActionProcessor extends BaseKeycloakAdminClientAc
                     rolesToAdd = exactClientRoles;
                 } else {
                     rolesToAdd = exactClientRoles.filter((r: string) => {
-                        return roleMappings.clientMappings[clientId].find(
+                        return !roleMappings.clientMappings[clientId].mappings.find(
                             (role: RoleRepresentation) => role.name === r,
                         );
                     });
@@ -155,6 +157,22 @@ export abstract class BaseGroupActionProcessor extends BaseKeycloakAdminClientAc
                     });
                 }
 
+                /* istanbul ignore else */
+                if (rolesToRemove) {
+                    this.snapshot.log(
+                        `Removing client "${clientId}" role mapping for: ` + rolesToRemove.map(r => r.name).join(', '),
+                    );
+                    await this.wrapKeycloakAdminRequest(async () => {
+                        await adminClient.groups.delClientRoleMappings({
+                            id: groupId,
+                            realm: realmName,
+                            clientUniqueId: client.id,
+                            roles: <RoleMappingPayload[]>rolesToRemove,
+                        });
+                    });
+                }
+
+                /* istanbul ignore else */
                 if (rolesToAdd.length) {
                     const roleMappingsToAdd = <RoleMappingPayload[]>(
                         await this.getClientRoles(adminClient, realmName, client, rolesToAdd)
@@ -167,20 +185,6 @@ export abstract class BaseGroupActionProcessor extends BaseKeycloakAdminClientAc
                             clientUniqueId: client.id,
                             realm: realmName,
                             roles: roleMappingsToAdd,
-                        });
-                    });
-                }
-
-                if (rolesToRemove) {
-                    this.snapshot.log(
-                        `Removing client "${clientId}" role mapping for: ` + rolesToRemove.map(r => r.name).join(', '),
-                    );
-                    await this.wrapKeycloakAdminRequest(async () => {
-                        await adminClient.groups.delClientRoleMappings({
-                            id: groupId,
-                            realm: realmName,
-                            clientUniqueId: client.id,
-                            roles: <RoleMappingPayload[]>rolesToRemove,
                         });
                     });
                 }

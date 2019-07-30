@@ -10,6 +10,8 @@ import {
     GroupDeleteActionHandler,
     GroupGetActionHandler,
     GroupUpdateActionHandler,
+    ClientCreateActionHandler,
+    ClientRoleCreateActionHandler,
 } from '../../../src/handlers';
 
 import credentials from '../credentials';
@@ -30,11 +32,14 @@ class GroupActionHandlersTestSuite {
     @test()
     async crudOperations(): Promise<void> {
         const groupName = `g-${Date.now()}`;
+        const clientId = `c-${Date.now()}`;
         const actionHandlerRegistry = Container.get(ActionHandlersRegistry);
         const flowService = Container.get(FlowService);
         flowService.debug = true;
 
         actionHandlerRegistry.register(new SequenceFlowActionHandler(), plugin);
+        actionHandlerRegistry.register(new ClientCreateActionHandler(), plugin);
+        actionHandlerRegistry.register(new ClientRoleCreateActionHandler(), plugin);
         actionHandlerRegistry.register(new GroupCreateActionHandler(), plugin);
         actionHandlerRegistry.register(new GroupDeleteActionHandler(), plugin);
         actionHandlerRegistry.register(new GroupGetActionHandler(), plugin);
@@ -48,6 +53,36 @@ class GroupActionHandlersTestSuite {
             {
                 '--': [
                     {
+                        'keycloak.client.create': {
+                            credentials,
+                            realmName: 'master',
+                            client: {
+                                clientId,
+                                enabled: true,
+                            },
+                        },
+                    },
+                    {
+                        'keycloak.client.role.create': {
+                            credentials,
+                            realmName: 'master',
+                            clientId,
+                            role: {
+                                name: 'a',
+                            },
+                        },
+                    },
+                    {
+                        'keycloak.client.role.create': {
+                            credentials,
+                            realmName: 'master',
+                            clientId,
+                            role: {
+                                name: 'b',
+                            },
+                        },
+                    },
+                    {
                         'keycloak.group.create': {
                             credentials,
                             realmName: 'master',
@@ -55,7 +90,7 @@ class GroupActionHandlersTestSuite {
                                 name: groupName,
                                 realmRoles: ['admin'],
                                 clientRoles: {
-                                    broker: ['read-token'],
+                                    [clientId]: ['a'],
                                 },
                             },
                         },
@@ -75,9 +110,9 @@ class GroupActionHandlersTestSuite {
                             groupName,
                             group: {
                                 name: groupName,
-                                realmRoles: [],
+                                realmRoles: ['create-realm'],
                                 clientRoles: {
-                                    broker: [],
+                                    [clientId]: ['b'],
                                 },
                             },
                         },
@@ -108,11 +143,13 @@ class GroupActionHandlersTestSuite {
         assert(snapshot.successful);
         assert.deepStrictEqual(context.ctx.afterCreate.realmRoles, ['admin']);
         assert.deepStrictEqual(context.ctx.afterCreate.clientRoles, {
-            broker: ['read-token'],
+            [clientId]: ['a'],
         });
 
-        assert(!context.ctx.afterUpdate.realmRoles);
-        assert(!context.ctx.afterUpdate.clientRoles);
+        assert.deepStrictEqual(context.ctx.afterUpdate.realmRoles, ['create-realm']);
+        assert.deepStrictEqual(context.ctx.afterUpdate.clientRoles, {
+            [clientId]: ['b'],
+        });
 
         snapshot = await flowService.executeAction(
             '.',
@@ -276,6 +313,110 @@ class GroupActionHandlersTestSuite {
         assert.deepStrictEqual(failedStep.payload, {
             code: '404',
             message: `Unable to find group "${groupName}" in realm "master".`,
+        });
+    }
+
+    @test()
+    async failToAddMissingRealmRole(): Promise<void> {
+        const groupName = `g-${Date.now()}`;
+        const actionHandlerRegistry = Container.get(ActionHandlersRegistry);
+        const flowService = Container.get(FlowService);
+        flowService.debug = true;
+
+        actionHandlerRegistry.register(new SequenceFlowActionHandler(), plugin);
+        actionHandlerRegistry.register(new GroupCreateActionHandler(), plugin);
+        actionHandlerRegistry.register(new GroupDeleteActionHandler(), plugin);
+        actionHandlerRegistry.register(new GroupGetActionHandler(), plugin);
+        actionHandlerRegistry.register(new GroupUpdateActionHandler(), plugin);
+
+        const context = ContextUtil.generateEmptyContext();
+
+        const snapshot = await flowService.executeAction(
+            '.',
+            // action id with options
+            {
+                '--': [
+                    {
+                        'keycloak.group.create': {
+                            credentials,
+                            realmName: 'master',
+                            group: {
+                                name: groupName,
+                                realmRoles: ['foo'],
+                            },
+                        },
+                    },
+                ],
+            },
+            // shared context
+            context,
+            // delegated parameters
+            <IDelegatedParameters>{},
+        );
+
+        assert(!snapshot.successful);
+
+        const failedChildSnapshot: ActionSnapshot = snapshot
+            .getSteps()
+            .find(s => s.type === 'child' && !s.payload.successful).payload;
+        const failedStep = failedChildSnapshot.getSteps().find(s => s.type === 'failure');
+
+        assert.deepStrictEqual(failedStep.payload, {
+            code: '404',
+            message: 'Unable to find realm role "foo" in realm "master".',
+        });
+    }
+
+    @test()
+    async failToAddClientRoleMissingClient(): Promise<void> {
+        const groupName = `g-${Date.now()}`;
+        const actionHandlerRegistry = Container.get(ActionHandlersRegistry);
+        const flowService = Container.get(FlowService);
+        flowService.debug = true;
+
+        actionHandlerRegistry.register(new SequenceFlowActionHandler(), plugin);
+        actionHandlerRegistry.register(new GroupCreateActionHandler(), plugin);
+        actionHandlerRegistry.register(new GroupDeleteActionHandler(), plugin);
+        actionHandlerRegistry.register(new GroupGetActionHandler(), plugin);
+        actionHandlerRegistry.register(new GroupUpdateActionHandler(), plugin);
+
+        const context = ContextUtil.generateEmptyContext();
+
+        const snapshot = await flowService.executeAction(
+            '.',
+            // action id with options
+            {
+                '--': [
+                    {
+                        'keycloak.group.create': {
+                            credentials,
+                            realmName: 'master',
+                            group: {
+                                name: groupName,
+                                clientRoles: {
+                                    foo: ['bar'],
+                                },
+                            },
+                        },
+                    },
+                ],
+            },
+            // shared context
+            context,
+            // delegated parameters
+            <IDelegatedParameters>{},
+        );
+
+        assert(!snapshot.successful);
+
+        const failedChildSnapshot: ActionSnapshot = snapshot
+            .getSteps()
+            .find(s => s.type === 'child' && !s.payload.successful).payload;
+        const failedStep = failedChildSnapshot.getSteps().find(s => s.type === 'failure');
+
+        assert.deepStrictEqual(failedStep.payload, {
+            code: '404',
+            message: 'Unable to find client "foo" in realm "master".',
         });
     }
 }
