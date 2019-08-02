@@ -1,26 +1,5 @@
 import { IPlugin } from 'fbl';
-import {
-    ClientCreateActionHandler,
-    ClientDeleteActionHandler,
-    ClientGetActionHandler,
-    ClientUpdateActionHandler,
-    ClientRoleCreateActionHandler,
-    ClientRoleDeleteActionHandler,
-    ClientRoleGetActionHandler,
-    ClientRoleUpdateActionHandler,
-    GroupCreateActionHandler,
-    GroupDeleteActionHandler,
-    GroupGetActionHandler,
-    GroupUpdateActionHandler,
-    RealmCreateActionHandler,
-    RealmDeleteActionHandler,
-    RealmGetActionHandler,
-    RealmUpdateActionHandler,
-    RealmRoleCreateActionHandler,
-    RealmRoleDeleteActionHandler,
-    RealmRoleGetActionHandler,
-    RealmRoleUpdateActionHandler,
-} from './src/handlers';
+import * as handlers from './src/handlers';
 
 const packageJson = require('../package.json');
 
@@ -45,34 +24,47 @@ module.exports = <IPlugin>{
 
     actionHandlers: [
         // client
-        new ClientCreateActionHandler(),
-        new ClientDeleteActionHandler(),
-        new ClientGetActionHandler(),
-        new ClientUpdateActionHandler(),
+        new handlers.ClientCreateActionHandler(),
+        new handlers.ClientDeleteActionHandler(),
+        new handlers.ClientGetActionHandler(),
+        new handlers.ClientUpdateActionHandler(),
 
         // client roles
-        new ClientRoleCreateActionHandler(),
-        new ClientRoleDeleteActionHandler(),
-        new ClientRoleGetActionHandler(),
-        new ClientRoleUpdateActionHandler(),
+        new handlers.ClientRoleCreateActionHandler(),
+        new handlers.ClientRoleDeleteActionHandler(),
+        new handlers.ClientRoleGetActionHandler(),
+        new handlers.ClientRoleUpdateActionHandler(),
 
         // group
-        new GroupCreateActionHandler(),
-        new GroupDeleteActionHandler(),
-        new GroupGetActionHandler(),
-        new GroupUpdateActionHandler(),
+        new handlers.GroupCreateActionHandler(),
+        new handlers.GroupDeleteActionHandler(),
+        new handlers.GroupGetActionHandler(),
+        new handlers.GroupUpdateActionHandler(),
+
+        // group mappings roles
+        new handlers.GroupGetRoleMappingsActionHandler(),
+
+        // group mappings - realm roles
+        new handlers.GroupAddRealmRoleMappingsActionHandler(),
+        new handlers.GroupApplyRealmRoleMappingsActionHandler(),
+        new handlers.GroupDeleteRealmRoleMappingsActionHandler(),
+
+        // group mappings - client roles
+        new handlers.GroupAddClientRoleMappingsActionHandler(),
+        new handlers.GroupApplyClientRoleMappingsActionHandler(),
+        new handlers.GroupDeleteClientRoleMappingsActionHandler(),
 
         // realm
-        new RealmCreateActionHandler(),
-        new RealmDeleteActionHandler(),
-        new RealmGetActionHandler(),
-        new RealmUpdateActionHandler(),
+        new handlers.RealmCreateActionHandler(),
+        new handlers.RealmDeleteActionHandler(),
+        new handlers.RealmGetActionHandler(),
+        new handlers.RealmUpdateActionHandler(),
 
         // realm roles
-        new RealmRoleCreateActionHandler(),
-        new RealmRoleDeleteActionHandler(),
-        new RealmRoleGetActionHandler(),
-        new RealmRoleUpdateActionHandler(),
+        new handlers.RealmRoleCreateActionHandler(),
+        new handlers.RealmRoleDeleteActionHandler(),
+        new handlers.RealmRoleGetActionHandler(),
+        new handlers.RealmRoleUpdateActionHandler(),
     ],
 
     templateUtils: [],

@@ -13,8 +13,6 @@ export class GroupCreateActionProcessor extends BaseGroupActionProcessor {
             name: Joi.string()
                 .min(1)
                 .required(),
-            realmRoles: Joi.array().items(Joi.string().min(1)),
-            clientRoles: Joi.object().pattern(/.+/, Joi.array().items(Joi.string().min(1))),
         })
             .required()
             .options({
@@ -47,9 +45,6 @@ export class GroupCreateActionProcessor extends BaseGroupActionProcessor {
                 realm: this.options.realmName,
             });
         });
-
-        await this.updateRealmRoles(adminClient, group.id, this.options.realmName, this.options.group.realmRoles, {});
-        await this.updateClientRoles(adminClient, group.id, this.options.realmName, this.options.group.clientRoles, {});
 
         this.snapshot.log(
             `Group "${this.options.group.name}" for realm "${this.options.realmName}" created. Group ID: ${group.id}`,
