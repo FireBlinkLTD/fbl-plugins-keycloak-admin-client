@@ -66,4 +66,6 @@ pipeline:
 - [Realm Management](docs/Realm.md)
 - [Client Management](docs/Client.md)
 - [Client Role Management](docs/ClientRole.md)
+- [Group Management](docs/Group.md)
+- [Group Role Mappings](docs/GroupRoleMappings.md)
 - [Realm Role Management](docs/RealmRole.md)

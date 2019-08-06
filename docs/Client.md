@@ -2,7 +2,7 @@
 
 CRUD operations over `Client`.
 
-# Get Client
+## Get Client
 
 **ID:** com.fireblink.fbl.plugins.keycloak.admin.client.client.get
 
@@ -11,7 +11,7 @@ CRUD operations over `Client`.
 - `fbl.plugins.keycloak.admin.client.client.get`
 - `keycloak.client.get`
 
-## Example
+### Example
 
 ```yaml
 keycloak.client.get:
@@ -42,7 +42,7 @@ keycloak.client.get:
 - `fbl.plugins.keycloak.admin.client.client.create`
 - `keycloak.client.create`
 
-## Example
+### Example
 
 ```yaml
 keycloak.client.create:
@@ -68,7 +68,7 @@ keycloak.client.create:
 - `fbl.plugins.keycloak.admin.client.client.update`
 - `keycloak.client.update`
 
-## Example
+### Example
 
 ```yaml
 keycloak.client.update:
@@ -97,7 +97,7 @@ keycloak.client.update:
 - `fbl.plugins.keycloak.admin.client.client.delete`
 - `keycloak.client.delete`
 
-## Example
+### Example
 
 ```yaml
 keycloak.client.delete:

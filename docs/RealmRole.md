@@ -2,7 +2,7 @@
 
 CRUD operations over `Realm roles`.
 
-# Get Realm Role
+## Get Realm Role
 
 **ID:** com.fireblink.fbl.plugins.keycloak.admin.client.realm.role.get
 
@@ -11,7 +11,7 @@ CRUD operations over `Realm roles`.
 - `fbl.plugins.keycloak.admin.client.realm.role.get`
 - `keycloak.realm.role.get`
 
-## Example
+### Example
 
 ```yaml
 keycloak.realm.role.get:
@@ -42,7 +42,7 @@ keycloak.realm.role.get:
 - `fbl.plugins.keycloak.admin.client.realm.role.create`
 - `keycloak.realm.role.create`
 
-## Example
+### Example
 
 ```yaml
 keycloak.realm.role.create:
@@ -68,7 +68,7 @@ keycloak.realm.role.create:
 - `fbl.plugins.keycloak.admin.client.realm.role.update`
 - `keycloak.realm.role.update`
 
-## Example
+### Example
 
 ```yaml
 keycloak.realm.role.update:
@@ -97,7 +97,7 @@ keycloak.realm.role.update:
 - `fbl.plugins.keycloak.admin.client.realm.role.delete`
 - `keycloak.realm.role.delete`
 
-## Example
+### Example
 
 ```yaml
 keycloak.realm.role.delete:
