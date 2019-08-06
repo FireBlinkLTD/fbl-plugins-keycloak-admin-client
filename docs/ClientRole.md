@@ -2,7 +2,7 @@
 
 CRUD operations over `Client roles`.
 
-# Get Client Role
+## Get Client Role
 
 **ID:** com.fireblink.fbl.plugins.keycloak.admin.client.client.role.get
 
@@ -11,7 +11,7 @@ CRUD operations over `Client roles`.
 - `fbl.plugins.keycloak.admin.client.client.role.get`
 - `keycloak.client.role.get`
 
-## Example
+### Example
 
 ```yaml
 keycloak.client.role.get:
@@ -45,7 +45,7 @@ keycloak.client.role.get:
 - `fbl.plugins.keycloak.admin.client.client.role.create`
 - `keycloak.client.role.create`
 
-## Example
+### Example
 
 ```yaml
 keycloak.client.role.create:
@@ -74,7 +74,7 @@ keycloak.client.role.create:
 - `fbl.plugins.keycloak.admin.client.client.role.update`
 - `keycloak.client.role.update`
 
-## Example
+### Example
 
 ```yaml
 keycloak.client.role.update:
@@ -106,7 +106,7 @@ keycloak.client.role.update:
 - `fbl.plugins.keycloak.admin.client.client.role.delete`
 - `keycloak.client.role.delete`
 
-## Example
+### Example
 
 ```yaml
 keycloak.client.role.delete:

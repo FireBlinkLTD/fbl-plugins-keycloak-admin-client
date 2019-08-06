@@ -2,7 +2,7 @@
 
 CRUD operations over `Realm`.
 
-# Get Realm
+## Get Realm
 
 **ID:** com.fireblink.fbl.plugins.keycloak.admin.client.realm.get
 
@@ -11,7 +11,7 @@ CRUD operations over `Realm`.
 - `fbl.plugins.keycloak.admin.client.realm.get`
 - `keycloak.realm.get`
 
-## Example
+### Example
 
 ```yaml
 keycloak.realm.get:
@@ -39,7 +39,7 @@ keycloak.realm.get:
 - `fbl.plugins.keycloak.admin.client.realm.create`
 - `keycloak.realm.create`
 
-## Example
+### Example
 
 ```yaml
 keycloak.realm.create:
@@ -62,7 +62,7 @@ keycloak.realm.create:
 - `fbl.plugins.keycloak.admin.client.realm.update`
 - `keycloak.realm.update`
 
-## Example
+### Example
 
 ```yaml
 keycloak.realm.update:
@@ -88,7 +88,7 @@ keycloak.realm.update:
 - `fbl.plugins.keycloak.admin.client.realm.delete`
 - `keycloak.realm.delete`
 
-## Example
+### Example
 
 ```yaml
 keycloak.realm.delete:
