@@ -1,8 +1,6 @@
 import * as Joi from 'joi';
 
 import { KEYCLOAK_CREDENTIALS_SCHEMA } from '../../schemas';
-import { ActionError } from 'fbl';
-import GroupRepresentation from 'keycloak-admin/lib/defs/groupRepresentation';
 import { BaseGroupActionProcessor } from './BaseGroupActionProcessor';
 
 export class GroupDeleteActionProcessor extends BaseGroupActionProcessor {
