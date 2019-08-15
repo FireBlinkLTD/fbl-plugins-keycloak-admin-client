@@ -111,6 +111,7 @@ export abstract class BaseGroupClientRoleMappingsActionProcessor extends BaseGro
         mappings: MappingsRepresentation,
     ): Promise<void> {
         let rolesRepresentationsToRemove: RoleRepresentation[] = [];
+        /* istanbul ignore else */
         if (mappings.clientMappings && mappings.clientMappings[client.clientId]) {
             rolesRepresentationsToRemove = mappings.clientMappings[client.clientId].mappings.filter(
                 (r: RoleRepresentation) => {

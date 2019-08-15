@@ -75,7 +75,7 @@ keycloak.client.update:
   # [required] Credentials to authenticate with, check ./Credentials.md for more information
   credentials: $ref:secrets.keycloak.credentials
 
-  # [required] Realm name to update
+  # [required] Realm name
   realmName: realm-name
 
   # [required] ClientID field, not simply ID
@@ -104,7 +104,7 @@ keycloak.client.delete:
   # [required] Credentials to authenticate with, check ./Credentials.md for more information
   credentials: $ref:secrets.keycloak.credentials
 
-  # [required] Realm name to delete
+  # [required] Realm name
   realmName: realm-name
 
   # [required] ClientID field, not simply ID

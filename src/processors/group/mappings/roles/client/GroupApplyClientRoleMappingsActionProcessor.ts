@@ -49,6 +49,7 @@ export class GroupApplyClientRoleMappingsActionProcessor extends BaseGroupClient
         let rolesToAdd: string[] = clientRoles;
         let rolesToRemove: string[] = [];
 
+        /* istanbul ignore else */
         if (mappings.clientMappings && mappings.clientMappings[clientId]) {
             rolesToAdd = clientRoles.filter((r: string) => {
                 return !mappings.clientMappings[clientId].mappings.find((role: RoleRepresentation) => role.name === r);

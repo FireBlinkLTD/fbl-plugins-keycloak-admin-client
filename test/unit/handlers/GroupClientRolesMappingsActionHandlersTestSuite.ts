@@ -1,4 +1,4 @@
-import { ContextUtil, ActionHandlersRegistry, FlowService } from 'fbl';
+import { ContextUtil, ActionHandlersRegistry, FlowService, ActionSnapshot } from 'fbl';
 import { SequenceFlowActionHandler } from 'fbl/dist/src/plugins/flow/SequenceFlowActionHandler';
 
 import { suite, test } from 'mocha-typescript';
@@ -174,6 +174,63 @@ class GroupClientRoleMappingsActionHandlersTestSuite {
         assert.deepStrictEqual(context.ctx.afterDelete, {
             realmRoles: [],
             clientRoles: {},
+        });
+    }
+
+    @test()
+    async failToFindClient(): Promise<void> {
+        const groupName = `g-${Date.now()}`;
+        const clientId = `c-${Date.now()}`;
+        const actionHandlerRegistry = Container.get(ActionHandlersRegistry);
+        const flowService = Container.get(FlowService);
+        flowService.debug = true;
+
+        actionHandlerRegistry.register(new SequenceFlowActionHandler(), plugin);
+        actionHandlerRegistry.register(new GroupCreateActionHandler(), plugin);
+        actionHandlerRegistry.register(new GroupAddClientRoleMappingsActionHandler(), plugin);
+
+        const context = ContextUtil.generateEmptyContext();
+
+        const realmName = 'master';
+
+        const snapshot = await flowService.executeAction(
+            '.',
+            {
+                '--': [
+                    {
+                        'keycloak.group.create': {
+                            credentials,
+                            realmName,
+                            group: {
+                                name: groupName,
+                            },
+                        },
+                    },
+                    {
+                        'keycloak.group.mappings.client.roles.add': {
+                            credentials,
+                            realmName,
+                            clientId,
+                            groupName,
+                            clientRoles: ['a'],
+                        },
+                    },
+                ],
+            },
+            context,
+            {},
+        );
+
+        assert(!snapshot.successful);
+
+        const failedChildSnapshot: ActionSnapshot = snapshot
+            .getSteps()
+            .find(s => s.type === 'child' && !s.payload.successful).payload;
+        const failedStep = failedChildSnapshot.getSteps().find(s => s.type === 'failure');
+
+        assert.deepStrictEqual(failedStep.payload, {
+            code: '404',
+            message: `Unable to find client "${clientId}" in realm "${realmName}".`,
         });
     }
 }
