@@ -1,7 +1,6 @@
 import * as Joi from 'joi';
 
 import { KEYCLOAK_CREDENTIALS_SCHEMA } from '../../schemas';
-import { ActionError } from 'fbl';
 import { BaseUserActionProcessor } from './BaseUserActionProcessor';
 
 export class UserUpdateActionProcessor extends BaseUserActionProcessor {
