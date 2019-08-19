@@ -69,3 +69,4 @@ pipeline:
 - [Group Management](docs/Group.md)
 - [Group Role Mappings](docs/GroupRoleMappings.md)
 - [Realm Role Management](docs/RealmRole.md)
+- [User Management](docs/User.md)

@@ -88,6 +88,8 @@ export abstract class BaseGroupRealmRoleMappingsActionProcessor extends BaseGrou
         mappings: MappingsRepresentation,
     ): Promise<void> {
         let rolesRepresentationsToRemove: RoleRepresentation[] = [];
+
+        /* istanbul ignore else */
         if (mappings.realmMappings) {
             rolesRepresentationsToRemove = mappings.realmMappings.filter((r: RoleRepresentation) => {
                 return rolesToRemove.indexOf(r.name) >= 0;

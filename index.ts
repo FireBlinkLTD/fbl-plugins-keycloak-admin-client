@@ -65,6 +65,17 @@ module.exports = <IPlugin>{
         new handlers.RealmRoleDeleteActionHandler(),
         new handlers.RealmRoleGetActionHandler(),
         new handlers.RealmRoleUpdateActionHandler(),
+
+        // user
+        new handlers.UserCreateActionHandler(),
+        new handlers.UserDeleteActionHandler(),
+        new handlers.UserGetActionHandler(),
+        new handlers.UserUpdateActionHandler(),
+
+        // user group mappings
+        new handlers.UserAddToGroupActionHandler(),
+        new handlers.UserDeleteFromGroupActionHandler(),
+        new handlers.UserGetGroupsActionHandler(),
     ],
 
     templateUtils: [],

@@ -45,6 +45,7 @@ export class GroupApplyRealmRoleMappingsActionProcessor extends BaseGroupRealmRo
         let rolesToAdd: string[] = realmRoles;
         let rolesToRemove: string[] = [];
 
+        /* istanbul ignore else */
         if (mappings.realmMappings) {
             rolesToAdd = realmRoles.filter((r: string) => {
                 return !mappings.realmMappings.find(role => role.name === r);
