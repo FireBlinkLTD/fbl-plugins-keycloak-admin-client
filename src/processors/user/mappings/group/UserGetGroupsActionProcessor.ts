@@ -1,10 +1,10 @@
 import * as Joi from 'joi';
 
-import { KEYCLOAK_CREDENTIALS_SCHEMA } from '../../schemas';
-import { ActionError } from 'fbl';
-import { BaseUserActionProcessor } from './BaseUserActionProcessor';
+import { KEYCLOAK_CREDENTIALS_SCHEMA } from '../../../../schemas';
+import { BaseUserGroupActionProcessor } from './BaseUserGroupActionProcessor';
+import { FBL_ASSIGN_TO_SCHEMA, FBL_PUSH_TO_SCHEMA, ContextUtil } from 'fbl';
 
-export class UserDeleteActionProcessor extends BaseUserActionProcessor {
+export class UserGetGroupsActionProcessor extends BaseUserGroupActionProcessor {
     private static validationSchema = Joi.object({
         credentials: KEYCLOAK_CREDENTIALS_SCHEMA,
         realmName: Joi.string()
@@ -12,6 +12,8 @@ export class UserDeleteActionProcessor extends BaseUserActionProcessor {
             .required(),
         username: Joi.string().min(1),
         email: Joi.string().min(1),
+        assignGroupsTo: FBL_ASSIGN_TO_SCHEMA,
+        pushGroupsTo: FBL_PUSH_TO_SCHEMA,
     })
         .xor('username', 'email')
         .required()
@@ -24,7 +26,7 @@ export class UserDeleteActionProcessor extends BaseUserActionProcessor {
      * @inheritdoc
      */
     getValidationSchema(): Joi.SchemaLike | null {
-        return UserDeleteActionProcessor.validationSchema;
+        return UserGetGroupsActionProcessor.validationSchema;
     }
 
     /**
@@ -32,6 +34,7 @@ export class UserDeleteActionProcessor extends BaseUserActionProcessor {
      */
     async execute(): Promise<void> {
         const adminClient = await this.getKeycloakAdminClient(this.options.credentials);
+
         const user = await this.findUser(
             adminClient,
             this.options.realmName,
@@ -40,10 +43,15 @@ export class UserDeleteActionProcessor extends BaseUserActionProcessor {
         );
 
         await this.wrapKeycloakAdminRequest(async () => {
-            await adminClient.users.del({
+            const groups = await adminClient.users.listGroups({
                 id: user.id,
                 realm: this.options.realmName,
             });
+
+            const groupNames = groups.map(g => g.name);
+
+            ContextUtil.assignTo(this.context, this.parameters, this.snapshot, this.options.assignGroupsTo, groupNames);
+            ContextUtil.pushTo(this.context, this.parameters, this.snapshot, this.options.pushGroupsTo, groupNames);
         });
     }
 }

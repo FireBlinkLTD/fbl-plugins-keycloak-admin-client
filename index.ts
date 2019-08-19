@@ -71,6 +71,11 @@ module.exports = <IPlugin>{
         new handlers.UserDeleteActionHandler(),
         new handlers.UserGetActionHandler(),
         new handlers.UserUpdateActionHandler(),
+
+        // user group mappings
+        new handlers.UserAddToGroupActionHandler(),
+        new handlers.UserDeleteFromGroupActionHandler(),
+        new handlers.UserGetGroupsActionHandler(),
     ],
 
     templateUtils: [],
