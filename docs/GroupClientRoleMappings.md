@@ -24,13 +24,13 @@ keycloak.group.mappings.client.roles.add:
   # [required] Group name
   groupName: admins
 
-  # [required] client roles mappings to add
+  # [required] client-id
+  clientId: client
+
+  # [required] list of client roles to map with
   clientRoles:
-    clientId-1:
-      - a
-      - b
-    clientId-2:
-      - d
+    - d
+    - e
 ```
 
 ## Delete Client Role Mappings
@@ -55,12 +55,13 @@ keycloak.group.mappings.client.roles.delete:
   # [required] Group name
   groupName: admins
 
-  # [required] List of client roles to unassign
+  # [required] client-id
+  clientId: client
+
+  # [required] list of client roles to unmap
   clientRoles:
-    clientId-1:
-      - a
-    clientId-2:
-      - d
+    - d
+    - e
 ```
 
 ## Apply Client Role Mappings
@@ -89,10 +90,12 @@ keycloak.group.mappings.client.roles.apply:
   # [required] Group name
   groupName: admins
 
-  # [required] List of client roles to be mapped
+  # [required] client-id
+  clientId: client
+
+  # [required] list of client roles to map exactly with
+  # Note: empty list will remove all currently mapped roles
   clientRoles:
-    clientId-1: [] # Unassign all roles
-    clientId-2:
-      - d
-      - e
+    - d
+    - e
 ```
