@@ -21,6 +21,10 @@ export class UserCreateActionProcessor extends BaseKeycloakAdminClientActionProc
 
                 enabled: Joi.boolean(),
             })
+            .options({
+                allowUnknown: true,
+                abortEarly: true,
+            })
             .required(),
     })
         .required()

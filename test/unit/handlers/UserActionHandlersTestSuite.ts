@@ -57,6 +57,7 @@ class UserActionHandlersTestSuite {
                                 email,
                                 username,
                                 enabled: false,
+                                firstName: 'test',
                             },
                         },
                     },

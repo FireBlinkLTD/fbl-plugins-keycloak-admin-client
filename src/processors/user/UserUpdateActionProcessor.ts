@@ -23,6 +23,10 @@ export class UserUpdateActionProcessor extends BaseUserActionProcessor {
 
                 enabled: Joi.boolean(),
             })
+            .options({
+                allowUnknown: true,
+                abortEarly: true,
+            })
             .required(),
     })
         .xor('username', 'email')
