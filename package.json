@@ -25,7 +25,7 @@
   "devDependencies": {
     "@commitlint/cli": "8.1.0",
     "@commitlint/config-conventional": "8.1.0",
-    "@types/chai": "4.2.1",
+    "@types/chai": "4.2.2",
     "@types/form-data": "2.5.0",
     "@types/joi": "14.3.3",
     "@types/node": "12.7.4",
