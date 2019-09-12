@@ -43,6 +43,7 @@ class ClientActionHandlersTestSuite {
         const context = ContextUtil.generateEmptyContext();
 
         let snapshot = await flowService.executeAction(
+            'index.yml',
             '.',
             // action id with options
             {
@@ -102,6 +103,7 @@ class ClientActionHandlersTestSuite {
         assert.notStrictEqual(context.ctx.afterCreate.enabled, context.ctx.afterUpdate.enabled);
 
         snapshot = await flowService.executeAction(
+            'index.yml',
             '.',
             // action id with options
             {
@@ -142,6 +144,7 @@ class ClientActionHandlersTestSuite {
         const context = ContextUtil.generateEmptyContext();
 
         const snapshot = await flowService.executeAction(
+            'index.yml',
             '.',
             // action id with options
             {
@@ -207,6 +210,7 @@ class ClientActionHandlersTestSuite {
         const context = ContextUtil.generateEmptyContext();
 
         const snapshot = await flowService.executeAction(
+            'index.yml',
             '.',
             // action id with options
             {
@@ -244,6 +248,7 @@ class ClientActionHandlersTestSuite {
         const context = ContextUtil.generateEmptyContext();
 
         const snapshot = await flowService.executeAction(
+            'index.yml',
             '.',
             // action id with options
             {

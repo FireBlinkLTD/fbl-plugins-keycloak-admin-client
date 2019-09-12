@@ -45,6 +45,7 @@ class UserActionHandlersTestSuite {
         const context = ContextUtil.generateEmptyContext();
 
         let snapshot = await flowService.executeAction(
+            'index.yml',
             '.',
             // action id with options
             {
@@ -117,6 +118,7 @@ class UserActionHandlersTestSuite {
         assert.strictEqual(context.ctx.afterCreateByUsername.enabled, context.ctx.afterCreateByEmail.enabled);
 
         snapshot = await flowService.executeAction(
+            'index.yml',
             '.',
             // action id with options
             {
@@ -159,6 +161,7 @@ class UserActionHandlersTestSuite {
         const context = ContextUtil.generateEmptyContext();
 
         const snapshot = await flowService.executeAction(
+            'index.yml',
             '.',
             // action id with options
             {
@@ -228,6 +231,7 @@ class UserActionHandlersTestSuite {
         const context = ContextUtil.generateEmptyContext();
 
         let snapshot = await flowService.executeAction(
+            'index.yml',
             '.',
             // action id with options
             {
@@ -255,6 +259,7 @@ class UserActionHandlersTestSuite {
         });
 
         snapshot = await flowService.executeAction(
+            'index.yml',
             '.',
             // action id with options
             {
@@ -297,6 +302,7 @@ class UserActionHandlersTestSuite {
 
         // delete by username
         let snapshot = await flowService.executeAction(
+            'index.yml',
             '.',
             // action id with options
             {
@@ -321,6 +327,7 @@ class UserActionHandlersTestSuite {
 
         // delete by email
         snapshot = await flowService.executeAction(
+            'index.yml',
             '.',
             // action id with options
             {
@@ -359,6 +366,7 @@ class UserActionHandlersTestSuite {
 
         // delete by username
         let snapshot = await flowService.executeAction(
+            'index.yml',
             '.',
             // action id with options
             {
@@ -383,6 +391,7 @@ class UserActionHandlersTestSuite {
 
         // delete by email
         snapshot = await flowService.executeAction(
+            'index.yml',
             '.',
             // action id with options
             {

@@ -7,9 +7,6 @@ import { Container } from 'typedi';
 
 import {
     UserCreateActionHandler,
-    UserDeleteActionHandler,
-    UserGetActionHandler,
-    UserUpdateActionHandler,
     UserAddToGroupActionHandler,
     GroupCreateActionHandler,
     UserGetGroupsActionHandler,
@@ -52,6 +49,7 @@ class UserActionHandlersTestSuite {
         const context = ContextUtil.generateEmptyContext();
 
         const snapshot = await flowService.executeAction(
+            'index.yml',
             '.',
             // action id with options
             {
@@ -139,6 +137,7 @@ class UserActionHandlersTestSuite {
         const context = ContextUtil.generateEmptyContext();
 
         const snapshot = await flowService.executeAction(
+            'index.yml',
             '.',
             // action id with options
             {

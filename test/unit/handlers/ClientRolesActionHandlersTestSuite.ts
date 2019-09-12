@@ -45,6 +45,7 @@ class ClientRolesActionHandlersTestSuite {
         const context = ContextUtil.generateEmptyContext();
 
         let snapshot = await flowService.executeAction(
+            'index.yml',
             '.',
             // action id with options
             {
@@ -119,6 +120,7 @@ class ClientRolesActionHandlersTestSuite {
         assert.strictEqual(context.ctx.afterUpdate.name, 'test:new');
 
         snapshot = await flowService.executeAction(
+            'index.yml',
             '.',
             // action id with options
             {
@@ -159,6 +161,7 @@ class ClientRolesActionHandlersTestSuite {
         const context = ContextUtil.generateEmptyContext();
 
         let snapshot = await flowService.executeAction(
+            'index.yml',
             '.',
             // action id with options
             {
@@ -185,6 +188,7 @@ class ClientRolesActionHandlersTestSuite {
         });
 
         snapshot = await flowService.executeAction(
+            'index.yml',
             '.',
             // action id with options
             {
@@ -209,6 +213,7 @@ class ClientRolesActionHandlersTestSuite {
         });
 
         snapshot = await flowService.executeAction(
+            'index.yml',
             '.',
             // action id with options
             {
@@ -233,6 +238,7 @@ class ClientRolesActionHandlersTestSuite {
         });
 
         snapshot = await flowService.executeAction(
+            'index.yml',
             '.',
             // action id with options
             {

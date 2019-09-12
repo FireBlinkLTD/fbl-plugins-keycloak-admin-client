@@ -32,7 +32,6 @@ class GroupActionHandlersTestSuite {
     @test()
     async crudOperations(): Promise<void> {
         const groupName = `g-${Date.now()}`;
-        const clientId = `c-${Date.now()}`;
         const actionHandlerRegistry = Container.get(ActionHandlersRegistry);
         const flowService = Container.get(FlowService);
         flowService.debug = true;
@@ -46,6 +45,7 @@ class GroupActionHandlersTestSuite {
         const context = ContextUtil.generateEmptyContext();
 
         let snapshot = await flowService.executeAction(
+            'index.yml',
             '.',
             // action id with options
             {
@@ -105,6 +105,7 @@ class GroupActionHandlersTestSuite {
         assert.deepStrictEqual(context.ctx.afterUpdate.name, groupName + '_new');
 
         snapshot = await flowService.executeAction(
+            'index.yml',
             '.',
             // action id with options
             {
@@ -145,6 +146,7 @@ class GroupActionHandlersTestSuite {
         const context = ContextUtil.generateEmptyContext();
 
         const snapshot = await flowService.executeAction(
+            'index.yml',
             '.',
             // action id with options
             {
@@ -208,6 +210,7 @@ class GroupActionHandlersTestSuite {
         const context = ContextUtil.generateEmptyContext();
 
         const snapshot = await flowService.executeAction(
+            'index.yml',
             '.',
             // action id with options
             {
@@ -246,6 +249,7 @@ class GroupActionHandlersTestSuite {
         const context = ContextUtil.generateEmptyContext();
 
         const snapshot = await flowService.executeAction(
+            'index.yml',
             '.',
             // action id with options
             {

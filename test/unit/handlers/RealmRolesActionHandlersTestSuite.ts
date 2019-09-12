@@ -43,6 +43,7 @@ class RealmRolesActionHandlersTestSuite {
         const context = ContextUtil.generateEmptyContext();
 
         let snapshot = await flowService.executeAction(
+            'index.yml',
             '.',
             // action id with options
             {
@@ -102,6 +103,7 @@ class RealmRolesActionHandlersTestSuite {
         assert.strictEqual(context.ctx.afterUpdate.name, `${roleName}:new`);
 
         snapshot = await flowService.executeAction(
+            'index.yml',
             '.',
             // action id with options
             {

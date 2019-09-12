@@ -51,6 +51,7 @@ class GroupRealmRoleMappingsActionHandlersTestSuite {
         const realmName = 'master';
 
         const snapshot = await flowService.executeAction(
+            'index.yml',
             '.',
             {
                 '--': [
@@ -175,6 +176,7 @@ class GroupRealmRoleMappingsActionHandlersTestSuite {
         const realmName = 'master';
 
         const snapshot = await flowService.executeAction(
+            'index.yml',
             '.',
             {
                 '--': [

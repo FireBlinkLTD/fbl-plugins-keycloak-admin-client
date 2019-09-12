@@ -32,8 +32,8 @@ This is the most recommended way. Create `package.json` next to your flow file w
   },
   "license": "UNLICENSED",
   "dependencies": {
-    "@fbl-plguins/keycloak-admin-client": "1.1.0",
-    "fbl": "1.9.2"
+    "@fbl-plguins/keycloak-admin-client": "1.1.2",
+    "fbl": "1.10.0"
   }
 }
 ```
@@ -53,9 +53,9 @@ After that you can use `yarn fbl <args>` to execute your flow or even register a
 
 ```yaml
 requires:
-  fbl: '>=1.9.2'
+  fbl: '>=1.10.0 <2.0.0'
   plugins:
-    '@fbl-plguins/keycloak-admin-client': '>=1.1.0'
+    '@fbl-plguins/keycloak-admin-client': '>=1.1.2'
 
 pipeline:
   # your flow goes here
