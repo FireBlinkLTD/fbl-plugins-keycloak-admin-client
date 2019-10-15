@@ -1,11 +1,11 @@
-import { BaseGroupMappingsActionProcessor } from '../BaseGroupMappingsActionProcessor';
+import { BaseUserMappingsActionProcessor } from '../BaseUserMappingsActionProcessor';
 import KeycloakAdminClient from 'keycloak-admin';
 import MappingsRepresentation from 'keycloak-admin/lib/defs/mappingsRepresentation';
 import RoleRepresentation, { RoleMappingPayload } from 'keycloak-admin/lib/defs/roleRepresentation';
 import { ActionError } from 'fbl';
 import ClientRepresentation from 'keycloak-admin/lib/defs/clientRepresentation';
 
-export abstract class BaseGroupClientRoleMappingsActionProcessor extends BaseGroupMappingsActionProcessor {
+export abstract class BaseUserClientRoleMappingsActionProcessor extends BaseUserMappingsActionProcessor {
     /**
      * Find client
      * @param adminClient
@@ -62,7 +62,7 @@ export abstract class BaseGroupClientRoleMappingsActionProcessor extends BaseGro
      */
     async addRoleMappings(
         adminClient: KeycloakAdminClient,
-        groupId: string,
+        userId: string,
         client: ClientRepresentation,
         realmName: string,
         rolesToAdd: string[],
@@ -84,8 +84,8 @@ export abstract class BaseGroupClientRoleMappingsActionProcessor extends BaseGro
         if (rolesToAdd.length) {
             this.snapshot.log(`Adding client "${client.clientId}" role mappings for: ` + rolesToAdd.join(', '));
             await this.wrapKeycloakAdminRequest(async () => {
-                await adminClient.groups.addClientRoleMappings({
-                    id: groupId,
+                await adminClient.users.addClientRoleMappings({
+                    id: userId,
                     clientUniqueId: client.id,
                     realm: realmName,
                     roles: roleMappingsToAdd,
@@ -97,14 +97,14 @@ export abstract class BaseGroupClientRoleMappingsActionProcessor extends BaseGro
     /**
      * Delete client role mappings
      * @param adminClient
-     * @param groupId
+     * @param userId
      * @param realmName
      * @param rolesToRemove
      * @param mappings
      */
     async deleteRoleMappings(
         adminClient: KeycloakAdminClient,
-        groupId: string,
+        userId: string,
         client: ClientRepresentation,
         realmName: string,
         rolesToRemove: string[],
@@ -127,8 +127,8 @@ export abstract class BaseGroupClientRoleMappingsActionProcessor extends BaseGro
                     rolesRepresentationsToRemove.map(r => r.name).join(', '),
             );
             await this.wrapKeycloakAdminRequest(async () => {
-                await adminClient.groups.delClientRoleMappings({
-                    id: groupId,
+                await adminClient.users.delClientRoleMappings({
+                    id: userId,
                     clientUniqueId: client.id,
                     realm: realmName,
                     roles: <RoleMappingPayload[]>rolesRepresentationsToRemove,

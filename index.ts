@@ -76,6 +76,19 @@ module.exports = <IPlugin>{
         new handlers.UserAddToGroupActionHandler(),
         new handlers.UserDeleteFromGroupActionHandler(),
         new handlers.UserGetGroupsActionHandler(),
+
+        // user mappings roles
+        new handlers.UserGetRoleMappingsActionHandler(),
+
+        // user realm roles mappings
+        new handlers.UserAddRealmRoleMappingsActionHandler(),
+        new handlers.UserApplyRealmRoleMappingsActionHandler(),
+        new handlers.UserDeleteRealmRoleMappingsActionHandler(),
+
+        // user client roles mappings
+        new handlers.UserAddClientRoleMappingsActionHandler(),
+        new handlers.UserApplyClientRoleMappingsActionHandler(),
+        new handlers.UserDeleteClientRoleMappingsActionHandler(),
     ],
 
     templateUtils: [],

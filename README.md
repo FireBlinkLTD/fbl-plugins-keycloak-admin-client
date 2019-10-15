@@ -63,11 +63,23 @@ pipeline:
 
 ## Action Handlers
 
+### Realm
+
 - [Realm Management](docs/Realm.md)
+- [Realm Role Management](docs/RealmRole.md)
+
+### Client
+
 - [Client Management](docs/Client.md)
 - [Client Role Management](docs/ClientRole.md)
+
+### Group
+
 - [Group Management](docs/Group.md)
 - [Group Role Mappings](docs/GroupRoleMappings.md)
-- [Realm Role Management](docs/RealmRole.md)
+
+### User
+
 - [User Management](docs/User.md)
 - [User Group Mappings](docs/UserGroupMappings.md)
+- [User Role Mappings](docs/UserRoleMappings.md)
