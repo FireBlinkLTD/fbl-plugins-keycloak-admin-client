@@ -31,26 +31,13 @@ export class ClientDeleteActionProcessor extends BaseKeycloakAdminClientActionPr
      * @inheritdoc
      */
     async execute(): Promise<void> {
-        const adminClient = await this.getKeycloakAdminClient(this.options.credentials);
-
-        const clients = await this.wrapKeycloakAdminRequest(async () => {
-            return await adminClient.clients.find({
-                clientId: this.options.clientId,
-                realm: this.options.realmName,
-            });
-        });
-
-        if (!clients.length) {
-            throw new ActionError(
-                `Unable to delete client with clientId: ${this.options.clientId} of realm "${this.options.realmName}". Client not found`,
-                '404',
-            );
-        }
-
+        const { credentials, realmName, clientId } = this.options;
+        const adminClient = await this.getKeycloakAdminClient(credentials);
+        const client = await this.findClient(adminClient, realmName, clientId);
         await this.wrapKeycloakAdminRequest(async () => {
             await adminClient.clients.del({
-                id: clients[0].id,
-                realm: this.options.realmName,
+                id: client.id,
+                realm: realmName,
             });
         });
     }

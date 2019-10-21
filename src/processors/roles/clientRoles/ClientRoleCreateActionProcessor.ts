@@ -44,25 +44,13 @@ export class ClientRoleCreateActionProcessor extends BaseKeycloakAdminClientActi
     async execute(): Promise<void> {
         const adminClient = await this.getKeycloakAdminClient(this.options.credentials);
 
-        const clients = await this.wrapKeycloakAdminRequest(async () => {
-            return await adminClient.clients.find({
-                clientId: this.options.clientId,
-                realm: this.options.realmName,
-            });
-        });
-
-        if (!clients.length) {
-            throw new ActionError(
-                `Unable to create role "${this.options.role.name}" for client with clientId: ${this.options.clientId} of realm "${this.options.realmName}". Client not found`,
-                '404',
-            );
-        }
-
-        this.options.role.id = clients[0].id;
-        this.options.role.realm = this.options.realmName;
-
+        const client = await this.findClient(adminClient, this.options.realmName, this.options.clientId);
         await this.wrapKeycloakAdminRequest(async () => {
-            await adminClient.clients.createRole(this.options.role);
+            await adminClient.clients.createRole({
+                id: client.id,
+                realm: this.options.realmName,
+                ...this.options.role,
+            });
         });
     }
 }

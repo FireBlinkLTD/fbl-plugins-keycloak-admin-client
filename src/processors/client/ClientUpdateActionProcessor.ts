@@ -39,29 +39,17 @@ export class ClientUpdateActionProcessor extends BaseKeycloakAdminClientActionPr
      * @inheritdoc
      */
     async execute(): Promise<void> {
-        const adminClient = await this.getKeycloakAdminClient(this.options.credentials);
+        const { realmName, credentials, client } = this.options;
+        const adminClient = await this.getKeycloakAdminClient(credentials);
 
-        const clients = await this.wrapKeycloakAdminRequest(async () => {
-            return await adminClient.clients.find({
-                clientId: this.options.client.clientId,
-                realm: this.options.realmName,
-            });
-        });
-
-        if (!clients.length) {
-            throw new ActionError(
-                `Unable to update client with clientId: ${this.options.client.clientId} of realm "${this.options.realmName}". Client not found`,
-                '404',
-            );
-        }
-
+        const kcClient = await this.findClient(adminClient, realmName, client.clientId);
         await this.wrapKeycloakAdminRequest(async () => {
             await adminClient.clients.update(
                 {
-                    id: clients[0].id,
-                    realm: this.options.realmName,
+                    id: kcClient.id,
+                    realm: realmName,
                 },
-                this.options.client,
+                client,
             );
         });
     }

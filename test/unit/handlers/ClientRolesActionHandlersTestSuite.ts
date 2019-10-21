@@ -184,7 +184,7 @@ class ClientRolesActionHandlersTestSuite {
         let failedStep = snapshot.getSteps().find(s => s.type === 'failure');
         assert.deepStrictEqual(failedStep.payload, {
             code: '404',
-            message: `Unable to create role "test" for client with clientId: ${clientId} of realm "master". Client not found`,
+            message: `Client with clientId "${clientId}" of realm "master" not found`,
         });
 
         snapshot = await flowService.executeAction(
@@ -209,7 +209,7 @@ class ClientRolesActionHandlersTestSuite {
         failedStep = snapshot.getSteps().find(s => s.type === 'failure');
         assert.deepStrictEqual(failedStep.payload, {
             code: '404',
-            message: `Unable to delete role "test" for client with clientId: ${clientId} of realm "master". Client not found`,
+            message: `Client with clientId "${clientId}" of realm "master" not found`,
         });
 
         snapshot = await flowService.executeAction(
@@ -234,7 +234,7 @@ class ClientRolesActionHandlersTestSuite {
         failedStep = snapshot.getSteps().find(s => s.type === 'failure');
         assert.deepStrictEqual(failedStep.payload, {
             code: '404',
-            message: `Unable to find role "test" for client with clientId: ${clientId} of realm "master". Client not found`,
+            message: `Client with clientId "${clientId}" of realm "master" not found`,
         });
 
         snapshot = await flowService.executeAction(
@@ -262,7 +262,7 @@ class ClientRolesActionHandlersTestSuite {
         failedStep = snapshot.getSteps().find(s => s.type === 'failure');
         assert.deepStrictEqual(failedStep.payload, {
             code: '404',
-            message: `Unable to update role "test" for client with clientId: ${clientId} of realm "master". Client not found`,
+            message: `Client with clientId "${clientId}" of realm "master" not found`,
         });
     }
 }

@@ -1,10 +1,10 @@
 import * as Joi from 'joi';
 
-import { BaseKeycloakAdminClientActionProcessor } from '../../BaseKeycloakAdminClientActionProcessor';
 import { KEYCLOAK_CREDENTIALS_SCHEMA } from '../../../schemas';
 import { FBL_ASSIGN_TO_SCHEMA, FBL_PUSH_TO_SCHEMA, ContextUtil, ActionError } from 'fbl';
+import { BaseRoleActionProcessor } from '../BaseRoleActionProcessor';
 
-export class RealmRoleGetActionProcessor extends BaseKeycloakAdminClientActionProcessor {
+export class RealmRoleGetActionProcessor extends BaseRoleActionProcessor {
     private static validationSchema = Joi.object({
         credentials: KEYCLOAK_CREDENTIALS_SCHEMA,
         realmName: Joi.string()
@@ -33,19 +33,24 @@ export class RealmRoleGetActionProcessor extends BaseKeycloakAdminClientActionPr
      * @inheritdoc
      */
     async execute(): Promise<void> {
-        const adminClient = await this.getKeycloakAdminClient(this.options.credentials);
+        const { credentials, roleName, realmName } = this.options;
+        const adminClient = await this.getKeycloakAdminClient(credentials);
 
         await this.wrapKeycloakAdminRequest(async () => {
             const role = await adminClient.roles.findOneByName({
-                name: this.options.roleName,
-                realm: this.options.realmName,
+                name: roleName,
+                realm: realmName,
             });
 
             if (!role) {
                 throw new ActionError(
-                    `Unable to find role "${this.options.roleName}" of realm "${this.options.realmName}". Role not found`,
+                    `Unable to find role "${roleName}" of realm "${realmName}". Role not found`,
                     '404',
                 );
+            }
+
+            if (role.composite) {
+                role.composites = await this.getCompositeRoles(adminClient, realmName, role);
             }
 
             ContextUtil.assignTo(this.context, this.parameters, this.snapshot, this.options.assignRoleTo, role);

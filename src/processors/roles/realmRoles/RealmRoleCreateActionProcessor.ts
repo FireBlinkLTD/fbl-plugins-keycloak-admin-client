@@ -1,9 +1,11 @@
 import * as Joi from 'joi';
 
-import { BaseKeycloakAdminClientActionProcessor } from '../../BaseKeycloakAdminClientActionProcessor';
 import { KEYCLOAK_CREDENTIALS_SCHEMA } from '../../../schemas';
+import RoleRepresentation from 'keycloak-admin/lib/defs/roleRepresentation';
+import { ICompositeRoleMappingRepresentation } from '../../../interfaces';
+import { BaseRoleActionProcessor } from '../BaseRoleActionProcessor';
 
-export class RealmRoleCreateActionProcessor extends BaseKeycloakAdminClientActionProcessor {
+export class RealmRoleCreateActionProcessor extends BaseRoleActionProcessor {
     private static validationSchema = Joi.object({
         credentials: KEYCLOAK_CREDENTIALS_SCHEMA,
         realmName: Joi.string()
@@ -38,11 +40,30 @@ export class RealmRoleCreateActionProcessor extends BaseKeycloakAdminClientActio
      * @inheritdoc
      */
     async execute(): Promise<void> {
+        const { role, realmName } = this.options;
         const adminClient = await this.getKeycloakAdminClient(this.options.credentials);
-        this.options.role.realm = this.options.realmName;
 
         await this.wrapKeycloakAdminRequest(async () => {
-            await adminClient.roles.create(this.options.role);
+            let compositeRoles: ICompositeRoleMappingRepresentation;
+            if (role.composites) {
+                compositeRoles = await this.findCompositeRoles(adminClient, realmName, role.composites);
+            }
+
+            await adminClient.roles.create(role);
+
+            const parentRole = await adminClient.roles.findOneByName({
+                name: role.name,
+                realm: realmName,
+            });
+
+            if (compositeRoles) {
+                const roles: RoleRepresentation[] = [...compositeRoles.realm];
+                for (const clientId of Object.keys(compositeRoles.client)) {
+                    roles.push(...compositeRoles.client[clientId]);
+                }
+
+                await this.addCompositeRoles(adminClient, realmName, parentRole, roles);
+            }
         });
     }
 }
