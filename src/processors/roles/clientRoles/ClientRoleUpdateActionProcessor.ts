@@ -1,10 +1,9 @@
 import * as Joi from 'joi';
 
-import { BaseKeycloakAdminClientActionProcessor } from '../../BaseKeycloakAdminClientActionProcessor';
 import { KEYCLOAK_CREDENTIALS_SCHEMA } from '../../../schemas';
-import { ActionError } from 'fbl';
+import { BaseRoleActionProcessor } from '../BaseRoleActionProcessor';
 
-export class ClientRoleUpdateActionProcessor extends BaseKeycloakAdminClientActionProcessor {
+export class ClientRoleUpdateActionProcessor extends BaseRoleActionProcessor {
     private static validationSchema = Joi.object({
         credentials: KEYCLOAK_CREDENTIALS_SCHEMA,
         realmName: Joi.string()
@@ -45,17 +44,30 @@ export class ClientRoleUpdateActionProcessor extends BaseKeycloakAdminClientActi
      * @inheritdoc
      */
     async execute(): Promise<void> {
-        const adminClient = await this.getKeycloakAdminClient(this.options.credentials);
-        const client = await this.findClient(adminClient, this.options.realmName, this.options.clientId);
+        const { clientId, roleName, realmName, role, credentials } = this.options;
+        const adminClient = await this.getKeycloakAdminClient(credentials);
+        const client = await this.findClient(adminClient, realmName, clientId);
         await this.wrapKeycloakAdminRequest(async () => {
             await adminClient.clients.updateRole(
                 {
                     id: client.id,
-                    roleName: this.options.roleName,
-                    realm: this.options.realmName,
+                    roleName: roleName,
+                    realm: realmName,
                 },
-                this.options.role,
+                role,
             );
+
+            const parentRole = await adminClient.clients.findRole({
+                id: client.id,
+                roleName: role.name,
+                realm: realmName,
+            });
+
+            if (parentRole.composite) {
+                parentRole.composites = await this.getCompositeRoles(adminClient, realmName, parentRole);
+            }
+
+            await this.applyCompositeRoles(adminClient, realmName, parentRole, role.composites);
         });
     }
 }

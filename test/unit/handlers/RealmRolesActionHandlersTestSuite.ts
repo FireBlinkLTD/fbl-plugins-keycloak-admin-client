@@ -146,7 +146,6 @@ class RealmRolesActionHandlersTestSuite {
         actionHandlerRegistry.register(new ClientRoleCreateActionHandler(), plugin);
         actionHandlerRegistry.register(new SequenceFlowActionHandler(), plugin);
         actionHandlerRegistry.register(new RealmRoleCreateActionHandler(), plugin);
-        actionHandlerRegistry.register(new RealmRoleDeleteActionHandler(), plugin);
         actionHandlerRegistry.register(new RealmRoleGetActionHandler(), plugin);
         actionHandlerRegistry.register(new RealmRoleUpdateActionHandler(), plugin);
 

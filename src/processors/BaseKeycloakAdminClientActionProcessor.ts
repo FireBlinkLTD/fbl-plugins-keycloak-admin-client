@@ -54,6 +54,7 @@ export abstract class BaseKeycloakAdminClientActionProcessor extends ActionProce
             };
 
             request(req, (err, resp, responseBody) => {
+                /* istanbul ignore next */
                 if (err) {
                     return reject(err);
                 }
@@ -62,8 +63,11 @@ export abstract class BaseKeycloakAdminClientActionProcessor extends ActionProce
                     return resolve(responseBody);
                 }
 
+                /* istanbul ignore else */
+
                 if (!responseBody) {
                     responseBody = {
+                        message: `Error`,
                         response: {
                             status: resp.statusCode,
                             data: {

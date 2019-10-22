@@ -20,7 +20,9 @@ export abstract class BaseRoleActionProcessor extends BaseKeycloakAdminClientAct
             client: {},
         };
 
+        /* istanbul ignore else */
         if (roles) {
+            /* istanbul ignore else */
             if (roles.realm) {
                 for (const name of roles.realm) {
                     const roleRepresentation = await adminClient.roles.findOneByName({
@@ -32,6 +34,7 @@ export abstract class BaseRoleActionProcessor extends BaseKeycloakAdminClientAct
                 }
             }
 
+            /* istanbul ignore else */
             if (roles.client) {
                 for (const clientId of Object.keys(roles.client)) {
                     const client = await this.findClient(adminClient, realm, clientId);
@@ -174,7 +177,9 @@ export abstract class BaseRoleActionProcessor extends BaseKeycloakAdminClientAct
         }
 
         if (composites && parentRole.composites) {
+            /* istanbul ignore next */
             const compositesRealm = composites.realm || [];
+            /* istanbul ignore next */
             const parentRoleRealm = parentRole.composites.realm || [];
 
             for (const realmRoleName of compositesRealm) {
@@ -189,7 +194,9 @@ export abstract class BaseRoleActionProcessor extends BaseKeycloakAdminClientAct
                 }
             }
 
+            /* istanbul ignore next */
             const compositesClient = composites.client || {};
+            /* istanbul ignore next */
             const parentRoleClient = parentRole.composites.client || {};
 
             for (const clientId of Object.keys(compositesClient)) {
@@ -198,7 +205,9 @@ export abstract class BaseRoleActionProcessor extends BaseKeycloakAdminClientAct
                 } else {
                     const parentRoles = parentRoleClient[clientId];
                     for (const roleName of compositesClient[clientId]) {
+                        /* istanbul ignore else */
                         if (parentRoles.indexOf(roleName) < 0) {
+                            /* istanbul ignore else */
                             if (!compositeRolesToAdd.client[clientId]) {
                                 compositeRolesToAdd.client[clientId] = [];
                             }
@@ -215,7 +224,9 @@ export abstract class BaseRoleActionProcessor extends BaseKeycloakAdminClientAct
                 } else {
                     const childRoles = compositesClient[clientId];
                     for (const roleName of parentRoleClient[clientId]) {
+                        /* istanbul ignore else */
                         if (childRoles.indexOf(roleName) < 0) {
+                            /* istanbul ignore else */
                             if (!compositeRolesToRemove.client[clientId]) {
                                 compositeRolesToRemove.client[clientId] = [];
                             }
