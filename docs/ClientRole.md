@@ -62,6 +62,19 @@ keycloak.client.role.create:
   role:
     # [required] Role name
     name: role-name
+
+    # [optional] define composite role configuration
+    composites:
+      # [optional] realm roles
+      realm:
+        - realm-role-1
+        - realm-role-2
+
+      # [optional] clientId/roles mapping
+      client:
+        someClientId:
+          - client-role-1
+          - client-role-2
     # [optional] other client fields - https://www.keycloak.org/docs-api/6.0/rest-api/index.html#_rolerepresentation
 ```
 
@@ -94,6 +107,20 @@ keycloak.client.role.update:
   role:
     # [required] Role name
     name: role-name
+
+    # [optional] define composite role configuration
+    # Note: roles not specified in the configuration below will removed from mapping
+    composites:
+      # [optional] realm roles
+      realm:
+        - realm-role-1
+        - realm-role-2
+
+      # [optional] clientId/roles mapping
+      client:
+        someClientId:
+          - client-role-1
+          - client-role-2
     # [optional] other client fields - https://www.keycloak.org/docs-api/6.0/rest-api/index.html#_rolerepresentation
 ```
 
