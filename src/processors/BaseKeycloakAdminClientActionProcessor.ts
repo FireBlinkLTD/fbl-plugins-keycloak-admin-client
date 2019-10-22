@@ -3,7 +3,6 @@ import KeycloakAdminClient from 'keycloak-admin';
 import { ICredentials } from '../interfaces';
 import * as request from 'request';
 import ClientRepresentation from 'keycloak-admin/lib/defs/clientRepresentation';
-import RoleRepresentation from 'keycloak-admin/lib/defs/roleRepresentation';
 
 export abstract class BaseKeycloakAdminClientActionProcessor extends ActionProcessor {
     /**

@@ -1,7 +1,6 @@
 import * as Joi from 'joi';
 
 import { KEYCLOAK_CREDENTIALS_SCHEMA } from '../../../schemas';
-import { ICompositeRoleMappingRepresentation, ICompositeRoleRepresentation } from '../../../interfaces';
 import { BaseRoleActionProcessor } from '../BaseRoleActionProcessor';
 
 export class RealmRoleUpdateActionProcessor extends BaseRoleActionProcessor {
