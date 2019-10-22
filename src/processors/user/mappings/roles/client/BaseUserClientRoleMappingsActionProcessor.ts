@@ -2,7 +2,6 @@ import { BaseUserMappingsActionProcessor } from '../BaseUserMappingsActionProces
 import KeycloakAdminClient from 'keycloak-admin';
 import MappingsRepresentation from 'keycloak-admin/lib/defs/mappingsRepresentation';
 import RoleRepresentation, { RoleMappingPayload } from 'keycloak-admin/lib/defs/roleRepresentation';
-import { ActionError } from 'fbl';
 import ClientRepresentation from 'keycloak-admin/lib/defs/clientRepresentation';
 
 export abstract class BaseUserClientRoleMappingsActionProcessor extends BaseUserMappingsActionProcessor {
