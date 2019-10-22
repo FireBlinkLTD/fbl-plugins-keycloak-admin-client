@@ -10,8 +10,6 @@ import {
     GroupDeleteActionHandler,
     GroupGetActionHandler,
     GroupUpdateActionHandler,
-    ClientCreateActionHandler,
-    ClientRoleCreateActionHandler,
 } from '../../../src/handlers';
 
 import credentials from '../credentials';

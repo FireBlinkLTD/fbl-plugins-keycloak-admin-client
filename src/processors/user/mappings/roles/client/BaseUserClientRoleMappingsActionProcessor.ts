@@ -7,29 +7,6 @@ import ClientRepresentation from 'keycloak-admin/lib/defs/clientRepresentation';
 
 export abstract class BaseUserClientRoleMappingsActionProcessor extends BaseUserMappingsActionProcessor {
     /**
-     * Find client
-     * @param adminClient
-     * @param clientId
-     * @param realmName
-     */
-    async findClient(
-        adminClient: KeycloakAdminClient,
-        clientId: string,
-        realmName: string,
-    ): Promise<ClientRepresentation> {
-        const clients = await adminClient.clients.find({
-            clientId,
-            realm: realmName,
-        });
-
-        if (!clients.length) {
-            throw new ActionError(`Unable to find client "${clientId}" in realm "${realmName}".`, '404');
-        }
-
-        return clients[0];
-    }
-
-    /**
      * Find existing client roles
      * @param adminClient
      * @param realmName

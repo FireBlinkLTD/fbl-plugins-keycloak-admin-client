@@ -43,7 +43,7 @@ export class GroupApplyClientRoleMappingsActionProcessor extends BaseGroupClient
         const { realmName, groupName, clientRoles, clientId } = this.options;
 
         const group = await this.findGroup(adminClient, realmName, groupName);
-        const client = await this.findClient(adminClient, clientId, realmName);
+        const client = await this.findClient(adminClient, realmName, clientId);
         const mappings = await this.findRoleMappings(adminClient, group.id, realmName);
 
         let rolesToAdd: string[] = clientRoles;

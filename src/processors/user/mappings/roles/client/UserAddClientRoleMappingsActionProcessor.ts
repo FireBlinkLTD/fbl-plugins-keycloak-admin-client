@@ -42,7 +42,7 @@ export class UserAddClientRoleMappingsActionProcessor extends BaseUserClientRole
         const { realmName, username, email, clientRoles, clientId } = this.options;
 
         const user = await this.findUser(adminClient, realmName, username, email);
-        const client = await this.findClient(adminClient, clientId, realmName);
+        const client = await this.findClient(adminClient, realmName, clientId);
         const mappings = await this.findRoleMappings(adminClient, user.id, realmName);
 
         await this.addRoleMappings(adminClient, user.id, client, realmName, clientRoles, mappings);

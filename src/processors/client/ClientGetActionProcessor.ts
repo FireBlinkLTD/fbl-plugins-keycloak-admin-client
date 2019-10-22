@@ -33,22 +33,10 @@ export class ClientGetActionProcessor extends BaseKeycloakAdminClientActionProce
      * @inheritdoc
      */
     async execute(): Promise<void> {
-        const adminClient = await this.getKeycloakAdminClient(this.options.credentials);
-        const clients = await this.wrapKeycloakAdminRequest(async () => {
-            return await adminClient.clients.find({
-                clientId: this.options.clientId,
-                realm: this.options.realmName,
-            });
-        });
-
-        if (!clients.length) {
-            throw new ActionError(
-                `Unable to find client with clientId: ${this.options.clientId} of realm "${this.options.realmName}".`,
-                '404',
-            );
-        }
-
-        ContextUtil.assignTo(this.context, this.parameters, this.snapshot, this.options.assignClientTo, clients[0]);
-        ContextUtil.pushTo(this.context, this.parameters, this.snapshot, this.options.pushClientTo, clients[0]);
+        const { credentials, realmName, clientId, assignClientTo, pushClientTo } = this.options;
+        const adminClient = await this.getKeycloakAdminClient(credentials);
+        const client = await this.findClient(adminClient, realmName, clientId);
+        ContextUtil.assignTo(this.context, this.parameters, this.snapshot, assignClientTo, client);
+        ContextUtil.pushTo(this.context, this.parameters, this.snapshot, pushClientTo, client);
     }
 }

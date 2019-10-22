@@ -162,26 +162,32 @@ class UserClientRoleMappingsActionHandlersTestSuite {
 
         assert(snapshot.successful);
 
+        context.ctx.afterAdd.realmRoles.sort();
+        context.ctx.afterAdd.clientRoles.account.sort();
         assert.deepStrictEqual(context.ctx.afterAdd, {
             realmRoles: ['offline_access', 'uma_authorization'],
             clientRoles: {
-                account: ['view-profile', 'manage-account'],
+                account: ['manage-account', 'view-profile'],
                 [clientId]: ['a'],
             },
         });
 
+        context.ctx.afterApply.realmRoles.sort();
+        context.ctx.afterApply.clientRoles.account.sort();
         assert.deepStrictEqual(context.ctx.afterApply, {
             realmRoles: ['offline_access', 'uma_authorization'],
             clientRoles: {
-                account: ['view-profile', 'manage-account'],
+                account: ['manage-account', 'view-profile'],
                 [clientId]: ['b'],
             },
         });
 
+        context.ctx.afterDelete.realmRoles.sort();
+        context.ctx.afterDelete.clientRoles.account.sort();
         assert.deepStrictEqual(context.ctx.afterDelete, {
             realmRoles: ['offline_access', 'uma_authorization'],
             clientRoles: {
-                account: ['view-profile', 'manage-account'],
+                account: ['manage-account', 'view-profile'],
             },
         });
     }
@@ -244,7 +250,7 @@ class UserClientRoleMappingsActionHandlersTestSuite {
 
         assert.deepStrictEqual(failedStep.payload, {
             code: '404',
-            message: `Unable to find client "${clientId}" in realm "${realmName}".`,
+            message: `Client with clientId "${clientId}" of realm "${realmName}" not found`,
         });
     }
 }

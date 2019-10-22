@@ -148,24 +148,27 @@ class UserRealmRoleMappingsActionHandlersTestSuite {
         assert(snapshot.successful);
 
         context.ctx.afterAdd.realmRoles.sort();
+        context.ctx.afterAdd.clientRoles.account.sort();
         assert.deepStrictEqual(context.ctx.afterAdd, {
             realmRoles: ['offline_access', role1, 'uma_authorization'],
             clientRoles: {
-                account: ['view-profile', 'manage-account'],
+                account: ['manage-account', 'view-profile'],
             },
         });
 
+        context.ctx.afterApply.clientRoles.account.sort();
         assert.deepStrictEqual(context.ctx.afterApply, {
             realmRoles: [role2],
             clientRoles: {
-                account: ['view-profile', 'manage-account'],
+                account: ['manage-account', 'view-profile'],
             },
         });
 
+        context.ctx.afterDelete.clientRoles.account.sort();
         assert.deepStrictEqual(context.ctx.afterDelete, {
             realmRoles: [],
             clientRoles: {
-                account: ['view-profile', 'manage-account'],
+                account: ['manage-account', 'view-profile'],
             },
         });
     }

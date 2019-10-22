@@ -232,7 +232,7 @@ class GroupClientRoleMappingsActionHandlersTestSuite {
 
         assert.deepStrictEqual(failedStep.payload, {
             code: '404',
-            message: `Unable to find client "${clientId}" in realm "${realmName}".`,
+            message: `Client with clientId "${clientId}" of realm "${realmName}" not found`,
         });
     }
 }

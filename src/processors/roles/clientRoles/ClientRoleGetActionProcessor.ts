@@ -1,10 +1,10 @@
 import * as Joi from 'joi';
 
-import { BaseKeycloakAdminClientActionProcessor } from '../../BaseKeycloakAdminClientActionProcessor';
 import { KEYCLOAK_CREDENTIALS_SCHEMA } from '../../../schemas';
 import { FBL_ASSIGN_TO_SCHEMA, FBL_PUSH_TO_SCHEMA, ContextUtil, ActionError } from 'fbl';
+import { BaseRoleActionProcessor } from '../BaseRoleActionProcessor';
 
-export class ClientRoleGetActionProcessor extends BaseKeycloakAdminClientActionProcessor {
+export class ClientRoleGetActionProcessor extends BaseRoleActionProcessor {
     private static validationSchema = Joi.object({
         credentials: KEYCLOAK_CREDENTIALS_SCHEMA,
         realmName: Joi.string()
@@ -36,38 +36,30 @@ export class ClientRoleGetActionProcessor extends BaseKeycloakAdminClientActionP
      * @inheritdoc
      */
     async execute(): Promise<void> {
-        const adminClient = await this.getKeycloakAdminClient(this.options.credentials);
+        const { credentials, roleName, realmName, clientId, assignRoleTo, pushRoleTo } = this.options;
+        const adminClient = await this.getKeycloakAdminClient(credentials);
 
-        const clients = await this.wrapKeycloakAdminRequest(async () => {
-            return await adminClient.clients.find({
-                clientId: this.options.clientId,
-                realm: this.options.realmName,
-            });
-        });
-
-        if (!clients.length) {
-            throw new ActionError(
-                `Unable to find role "${this.options.roleName}" for client with clientId: ${this.options.clientId} of realm "${this.options.realmName}". Client not found`,
-                '404',
-            );
-        }
-
+        const client = await this.findClient(adminClient, realmName, clientId);
         await this.wrapKeycloakAdminRequest(async () => {
             const role = await adminClient.clients.findRole({
-                id: clients[0].id,
-                roleName: this.options.roleName,
-                realm: this.options.realmName,
+                id: client.id,
+                roleName: roleName,
+                realm: realmName,
             });
 
             if (!role) {
                 throw new ActionError(
-                    `Unable to find role "${this.options.roleName}" for client with clientId: ${this.options.clientId} of realm "${this.options.realmName}". Role not found`,
+                    `Unable to find role "${roleName}" for client with clientId: ${clientId} of realm "${realmName}". Role not found`,
                     '404',
                 );
             }
 
-            ContextUtil.assignTo(this.context, this.parameters, this.snapshot, this.options.assignRoleTo, role);
-            ContextUtil.pushTo(this.context, this.parameters, this.snapshot, this.options.pushRoleTo, role);
+            if (role.composite) {
+                role.composites = await this.getCompositeRoles(adminClient, realmName, role);
+            }
+
+            ContextUtil.assignTo(this.context, this.parameters, this.snapshot, assignRoleTo, role);
+            ContextUtil.pushTo(this.context, this.parameters, this.snapshot, pushRoleTo, role);
         });
     }
 }

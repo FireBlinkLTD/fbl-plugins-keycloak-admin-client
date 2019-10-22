@@ -124,7 +124,7 @@ class ClientActionHandlersTestSuite {
         const failedStep = snapshot.getSteps().find(s => s.type === 'failure');
         assert.deepStrictEqual(failedStep.payload, {
             code: '404',
-            message: `Unable to find client with clientId: ${clientId} of realm "master".`,
+            message: `Client with clientId "${clientId}" of realm "master" not found`,
         });
     }
 
@@ -232,7 +232,7 @@ class ClientActionHandlersTestSuite {
         const failedStep = snapshot.getSteps().find(s => s.type === 'failure');
         assert.deepStrictEqual(failedStep.payload, {
             code: '404',
-            message: `Unable to update client with clientId: ${clientId} of realm "master". Client not found`,
+            message: `Client with clientId "${clientId}" of realm "master" not found`,
         });
     }
 
@@ -268,7 +268,7 @@ class ClientActionHandlersTestSuite {
         const failedStep = snapshot.getSteps().find(s => s.type === 'failure');
         assert.deepStrictEqual(failedStep.payload, {
             code: '404',
-            message: `Unable to delete client with clientId: ${clientId} of realm "master". Client not found`,
+            message: `Client with clientId "${clientId}" of realm "master" not found`,
         });
     }
 }
