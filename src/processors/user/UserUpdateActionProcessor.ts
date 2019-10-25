@@ -46,23 +46,18 @@ export class UserUpdateActionProcessor extends BaseUserActionProcessor {
     /**
      * @inheritdoc
      */
-    async execute(): Promise<void> {
-        const adminClient = await this.getKeycloakAdminClient(this.options.credentials);
-        const user = await this.findUser(
-            adminClient,
-            this.options.realmName,
-            this.options.username,
-            this.options.email,
-        );
+    async process(): Promise<void> {
+        const { credentials, realmName, username, email, user } = this.options;
 
-        await this.wrapKeycloakAdminRequest(async () => {
-            await adminClient.users.update(
-                {
-                    id: user.id,
-                    realm: this.options.realmName,
-                },
-                this.options.user,
-            );
-        });
+        const adminClient = await this.getKeycloakAdminClient(credentials);
+        const kcUser = await this.findUser(adminClient, realmName, username, email);
+
+        await adminClient.users.update(
+            {
+                id: kcUser.id,
+                realm: realmName,
+            },
+            user,
+        );
     }
 }

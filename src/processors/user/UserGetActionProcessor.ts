@@ -32,16 +32,13 @@ export class UserGetActionProcessor extends BaseUserActionProcessor {
     /**
      * @inheritdoc
      */
-    async execute(): Promise<void> {
-        const adminClient = await this.getKeycloakAdminClient(this.options.credentials);
-        const user = await this.findUser(
-            adminClient,
-            this.options.realmName,
-            this.options.username,
-            this.options.email,
-        );
+    async process(): Promise<void> {
+        const { credentials, realmName, username, email, assignUserTo, pushUserTo } = this.options;
 
-        ContextUtil.assignTo(this.context, this.parameters, this.snapshot, this.options.assignUserTo, user);
-        ContextUtil.pushTo(this.context, this.parameters, this.snapshot, this.options.pushUserTo, user);
+        const adminClient = await this.getKeycloakAdminClient(credentials);
+        const user = await this.findUser(adminClient, realmName, username, email);
+
+        ContextUtil.assignTo(this.context, this.parameters, this.snapshot, assignUserTo, user);
+        ContextUtil.pushTo(this.context, this.parameters, this.snapshot, pushUserTo, user);
     }
 }

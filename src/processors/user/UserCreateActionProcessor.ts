@@ -43,14 +43,13 @@ export class UserCreateActionProcessor extends BaseKeycloakAdminClientActionProc
     /**
      * @inheritdoc
      */
-    async execute(): Promise<void> {
-        const adminClient = await this.getKeycloakAdminClient(this.options.credentials);
+    async process(): Promise<void> {
+        const { credentials, realmName, user } = this.options;
 
-        await this.wrapKeycloakAdminRequest(async () => {
-            await adminClient.users.create({
-                ...this.options.user,
-                realm: this.options.realmName,
-            });
+        const adminClient = await this.getKeycloakAdminClient(credentials);
+        await adminClient.users.create({
+            ...user,
+            realm: realmName,
         });
     }
 }

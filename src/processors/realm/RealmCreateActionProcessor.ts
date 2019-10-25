@@ -34,10 +34,10 @@ export class RealmCreateActionProcessor extends BaseKeycloakAdminClientActionPro
     /**
      * @inheritdoc
      */
-    async execute(): Promise<void> {
-        const adminClient = await this.getKeycloakAdminClient(this.options.credentials);
-        await this.wrapKeycloakAdminRequest(async () => {
-            await adminClient.realms.create(this.options.realm);
-        });
+    async process(): Promise<void> {
+        const { credentials, realm } = this.options;
+
+        const adminClient = await this.getKeycloakAdminClient(credentials);
+        await adminClient.realms.create(realm);
     }
 }

@@ -37,12 +37,13 @@ export class ClientCreateActionProcessor extends BaseKeycloakAdminClientActionPr
     /**
      * @inheritdoc
      */
-    async execute(): Promise<void> {
-        const adminClient = await this.getKeycloakAdminClient(this.options.credentials);
-        this.options.client.realm = this.options.realmName;
+    async process(): Promise<void> {
+        const { realmName, credentials, client } = this.options;
 
-        await this.wrapKeycloakAdminRequest(async () => {
-            await adminClient.clients.create(this.options.client);
+        const adminClient = await this.getKeycloakAdminClient(credentials);
+        await adminClient.clients.create({
+            realm: realmName,
+            ...client,
         });
     }
 }

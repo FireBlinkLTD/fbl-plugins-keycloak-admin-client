@@ -35,6 +35,12 @@ module.exports = <IPlugin>{
         new handlers.ClientRoleGetActionHandler(),
         new handlers.ClientRoleUpdateActionHandler(),
 
+        // client service account roles
+        new handlers.ServiceAccountAddRoleMappingsActionHandler(),
+        new handlers.ServiceAccountApplyRoleMappingsActionHandler(),
+        new handlers.ServiceAccountDeleteRoleMappingsActionHandler(),
+        new handlers.ServiceAccountGetRoleMappingsActionHandler(),
+
         // group
         new handlers.GroupCreateActionHandler(),
         new handlers.GroupDeleteActionHandler(),
@@ -42,17 +48,10 @@ module.exports = <IPlugin>{
         new handlers.GroupUpdateActionHandler(),
 
         // group mappings roles
+        new handlers.GroupAddRoleMappingsActionHandler(),
+        new handlers.GroupApplyRoleMappingsActionHandler(),
+        new handlers.GroupDeleteRoleMappingsActionHandler(),
         new handlers.GroupGetRoleMappingsActionHandler(),
-
-        // group mappings - realm roles
-        new handlers.GroupAddRealmRoleMappingsActionHandler(),
-        new handlers.GroupApplyRealmRoleMappingsActionHandler(),
-        new handlers.GroupDeleteRealmRoleMappingsActionHandler(),
-
-        // group mappings - client roles
-        new handlers.GroupAddClientRoleMappingsActionHandler(),
-        new handlers.GroupApplyClientRoleMappingsActionHandler(),
-        new handlers.GroupDeleteClientRoleMappingsActionHandler(),
 
         // realm
         new handlers.RealmCreateActionHandler(),
@@ -78,17 +77,10 @@ module.exports = <IPlugin>{
         new handlers.UserGetGroupsActionHandler(),
 
         // user mappings roles
+        new handlers.UserAddRoleMappingsActionHandler(),
+        new handlers.UserApplyRoleMappingsActionHandler(),
+        new handlers.UserDeleteRoleMappingsActionHandler(),
         new handlers.UserGetRoleMappingsActionHandler(),
-
-        // user realm roles mappings
-        new handlers.UserAddRealmRoleMappingsActionHandler(),
-        new handlers.UserApplyRealmRoleMappingsActionHandler(),
-        new handlers.UserDeleteRealmRoleMappingsActionHandler(),
-
-        // user client roles mappings
-        new handlers.UserAddClientRoleMappingsActionHandler(),
-        new handlers.UserApplyClientRoleMappingsActionHandler(),
-        new handlers.UserDeleteClientRoleMappingsActionHandler(),
     ],
 
     templateUtils: [],

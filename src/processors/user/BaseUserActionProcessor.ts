@@ -16,19 +16,17 @@ export abstract class BaseUserActionProcessor extends BaseKeycloakAdminClientAct
         username?: string,
         email?: string,
     ): Promise<UserRepresentation> {
-        return await this.wrapKeycloakAdminRequest(async () => {
-            const users = await adminClient.users.find({
-                realm: realmName,
-                username: username,
-                email: email,
-                max: 1,
-            });
-
-            if (!users.length) {
-                throw new ActionError(`Unable to find user "${username || email}" in realm "${realmName}"`, '404');
-            }
-
-            return users[0];
+        const users = await adminClient.users.find({
+            realm: realmName,
+            username: username,
+            email: email,
+            max: 1,
         });
+
+        if (!users.length) {
+            throw new ActionError(`Unable to find user "${username || email}" in realm "${realmName}"`, '404');
+        }
+
+        return users[0];
     }
 }

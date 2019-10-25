@@ -1,9 +1,9 @@
 import * as Joi from 'joi';
 
 import { KEYCLOAK_CREDENTIALS_SCHEMA } from '../../schemas';
-import { BaseGroupActionProcessor } from './BaseGroupActionProcessor';
+import { BaseKeycloakAdminClientActionProcessor } from '../BaseKeycloakAdminClientActionProcessor';
 
-export class GroupCreateActionProcessor extends BaseGroupActionProcessor {
+export class GroupCreateActionProcessor extends BaseKeycloakAdminClientActionProcessor {
     private static validationSchema = Joi.object({
         credentials: KEYCLOAK_CREDENTIALS_SCHEMA,
         realmName: Joi.string()
@@ -36,18 +36,15 @@ export class GroupCreateActionProcessor extends BaseGroupActionProcessor {
     /**
      * @inheritdoc
      */
-    async execute(): Promise<void> {
-        const adminClient = await this.getKeycloakAdminClient(this.options.credentials);
+    async process(): Promise<void> {
+        const { credentials, realmName, group } = this.options;
 
-        const group = await this.wrapKeycloakAdminRequest(async () => {
-            return await adminClient.groups.create({
-                ...this.options.group,
-                realm: this.options.realmName,
-            });
+        const adminClient = await this.getKeycloakAdminClient(credentials);
+        const createdGroup = await adminClient.groups.create({
+            ...group,
+            realm: realmName,
         });
 
-        this.snapshot.log(
-            `Group "${this.options.group.name}" for realm "${this.options.realmName}" created. Group ID: ${group.id}`,
-        );
+        this.snapshot.log(`Group "${group.name}" for realm "${realmName}" created. Group ID: ${createdGroup.id}`);
     }
 }

@@ -1,12 +1,7 @@
-import { BaseGroupActionHandler } from '../../BaseGroupActionHandler';
 import { IContext, ActionSnapshot, IDelegatedParameters, ActionProcessor } from 'fbl';
 import { GroupGetRoleMappingsActionProcessor } from '../../../../processors';
-
-export class GroupGetRoleMappingsActionHandler extends BaseGroupActionHandler {
-    get group(): string {
-        return 'group.mappings.roles';
-    }
-
+import { BaseGroupRoleMappingsActionHandler } from './BaseGroupRoleMappingsActionHandler';
+export class GroupGetRoleMappingsActionHandler extends BaseGroupRoleMappingsActionHandler {
     get action(): string {
         return 'get';
     }

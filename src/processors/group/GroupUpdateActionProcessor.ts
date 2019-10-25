@@ -1,9 +1,9 @@
 import * as Joi from 'joi';
 
 import { KEYCLOAK_CREDENTIALS_SCHEMA } from '../../schemas';
-import { BaseGroupActionProcessor } from './BaseGroupActionProcessor';
+import { BaseKeycloakAdminClientActionProcessor } from '../BaseKeycloakAdminClientActionProcessor';
 
-export class GroupUpdateActionProcessor extends BaseGroupActionProcessor {
+export class GroupUpdateActionProcessor extends BaseKeycloakAdminClientActionProcessor {
     private static validationSchema = Joi.object({
         credentials: KEYCLOAK_CREDENTIALS_SCHEMA,
         realmName: Joi.string()
@@ -39,20 +39,19 @@ export class GroupUpdateActionProcessor extends BaseGroupActionProcessor {
     /**
      * @inheritdoc
      */
-    async execute(): Promise<void> {
-        const adminClient = await this.getKeycloakAdminClient(this.options.credentials);
+    async process(): Promise<void> {
+        const { credentials, realmName, groupName, group } = this.options;
 
-        const group = await this.findGroup(adminClient, this.options.realmName, this.options.groupName);
+        const adminClient = await this.getKeycloakAdminClient(credentials);
+        const kcGroup = await this.findGroup(adminClient, realmName, groupName);
 
-        await this.wrapKeycloakAdminRequest(async () => {
-            // update group itself
-            await adminClient.groups.update(
-                {
-                    id: group.id,
-                    realm: this.options.realmName,
-                },
-                this.options.group,
-            );
-        });
+        // update group itself
+        await adminClient.groups.update(
+            {
+                id: kcGroup.id,
+                realm: realmName,
+            },
+            group,
+        );
     }
 }

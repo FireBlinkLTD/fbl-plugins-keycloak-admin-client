@@ -42,37 +42,36 @@ export class ClientRoleCreateActionProcessor extends BaseRoleActionProcessor {
     /**
      * @inheritdoc
      */
-    async execute(): Promise<void> {
+    async process(): Promise<void> {
         const { credentials, realmName, clientId, role } = this.options;
+
         const adminClient = await this.getKeycloakAdminClient(credentials);
-
         const client = await this.findClient(adminClient, realmName, clientId);
-        await this.wrapKeycloakAdminRequest(async () => {
-            let compositeRoles: ICompositeRoleMappingRepresentation;
-            if (role.composites) {
-                compositeRoles = await this.findCompositeRoles(adminClient, realmName, role.composites);
-            }
 
-            await adminClient.clients.createRole({
-                id: client.id,
-                realm: realmName,
-                ...role,
-            });
+        let compositeRoles: ICompositeRoleMappingRepresentation;
+        if (role.composites) {
+            compositeRoles = await this.findCompositeRoles(adminClient, realmName, role.composites);
+        }
 
-            const parentRole = await adminClient.clients.findRole({
-                id: client.id,
-                roleName: role.name,
-                realm: realmName,
-            });
-
-            if (compositeRoles) {
-                const roles: RoleRepresentation[] = [...compositeRoles.realm];
-                for (const cid of Object.keys(compositeRoles.client)) {
-                    roles.push(...compositeRoles.client[cid]);
-                }
-
-                await this.addCompositeRoles(adminClient, realmName, parentRole, roles);
-            }
+        await adminClient.clients.createRole({
+            id: client.id,
+            realm: realmName,
+            ...role,
         });
+
+        const parentRole = await adminClient.clients.findRole({
+            id: client.id,
+            roleName: role.name,
+            realm: realmName,
+        });
+
+        if (compositeRoles) {
+            const roles: RoleRepresentation[] = [...compositeRoles.realm];
+            for (const cid of Object.keys(compositeRoles.client)) {
+                roles.push(...compositeRoles.client[cid]);
+            }
+
+            await this.addCompositeRoles(adminClient, realmName, parentRole, roles);
+        }
     }
 }

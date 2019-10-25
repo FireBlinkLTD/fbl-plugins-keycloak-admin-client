@@ -72,6 +72,7 @@ pipeline:
 
 - [Client Management](docs/Client.md)
 - [Client Role Management](docs/ClientRole.md)
+- [Client Service Account Role Mappings](docs/ClientServiceAccountRoleMappings.md)
 
 ### Group
 

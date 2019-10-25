@@ -1,9 +1,9 @@
 import * as Joi from 'joi';
 
 import { KEYCLOAK_CREDENTIALS_SCHEMA } from '../../schemas';
-import { BaseGroupActionProcessor } from './BaseGroupActionProcessor';
+import { BaseKeycloakAdminClientActionProcessor } from '../BaseKeycloakAdminClientActionProcessor';
 
-export class GroupDeleteActionProcessor extends BaseGroupActionProcessor {
+export class GroupDeleteActionProcessor extends BaseKeycloakAdminClientActionProcessor {
     private static validationSchema = Joi.object({
         credentials: KEYCLOAK_CREDENTIALS_SCHEMA,
         realmName: Joi.string()
@@ -29,16 +29,15 @@ export class GroupDeleteActionProcessor extends BaseGroupActionProcessor {
     /**
      * @inheritdoc
      */
-    async execute(): Promise<void> {
-        const adminClient = await this.getKeycloakAdminClient(this.options.credentials);
+    async process(): Promise<void> {
+        const { credentials, realmName, groupName } = this.options;
 
-        const exactGroup = await this.findGroup(adminClient, this.options.realmName, this.options.groupName);
+        const adminClient = await this.getKeycloakAdminClient(credentials);
+        const exactGroup = await this.findGroup(adminClient, realmName, groupName);
 
-        await this.wrapKeycloakAdminRequest(async () => {
-            await adminClient.groups.del({
-                realm: this.options.realmName,
-                id: exactGroup.id,
-            });
+        await adminClient.groups.del({
+            realm: realmName,
+            id: exactGroup.id,
         });
     }
 }

@@ -32,23 +32,17 @@ export class UserDeleteFromGroupActionProcessor extends BaseUserGroupActionProce
     /**
      * @inheritdoc
      */
-    async execute(): Promise<void> {
-        const adminClient = await this.getKeycloakAdminClient(this.options.credentials);
+    async process(): Promise<void> {
+        const { credentials, realmName, username, email, groupName } = this.options;
 
-        const user = await this.findUser(
-            adminClient,
-            this.options.realmName,
-            this.options.username,
-            this.options.email,
-        );
-        const group = await this.findGroup(adminClient, this.options.realmName, this.options.groupName);
+        const adminClient = await this.getKeycloakAdminClient(credentials);
+        const user = await this.findUser(adminClient, realmName, username, email);
+        const group = await this.findGroup(adminClient, realmName, groupName);
 
-        await this.wrapKeycloakAdminRequest(async () => {
-            await adminClient.users.delFromGroup({
-                id: user.id,
-                groupId: group.id,
-                realm: this.options.realmName,
-            });
+        await adminClient.users.delFromGroup({
+            id: user.id,
+            groupId: group.id,
+            realm: this.options.realmName,
         });
     }
 }

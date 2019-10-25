@@ -1,3 +1,4 @@
-export * from './client';
-export * from './realm';
+export * from './GroupAddRoleMappingsActionProcessor';
+export * from './GroupApplyRoleMappingsActionProcessor';
+export * from './GroupDeleteRoleMappingsActionProcessor';
 export * from './GroupGetRoleMappingsActionProcessor';

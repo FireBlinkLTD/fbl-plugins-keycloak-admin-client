@@ -29,15 +29,14 @@ export class ClientDeleteActionProcessor extends BaseKeycloakAdminClientActionPr
     /**
      * @inheritdoc
      */
-    async execute(): Promise<void> {
+    async process(): Promise<void> {
         const { credentials, realmName, clientId } = this.options;
+
         const adminClient = await this.getKeycloakAdminClient(credentials);
         const client = await this.findClient(adminClient, realmName, clientId);
-        await this.wrapKeycloakAdminRequest(async () => {
-            await adminClient.clients.del({
-                id: client.id,
-                realm: realmName,
-            });
+        await adminClient.clients.del({
+            id: client.id,
+            realm: realmName,
         });
     }
 }

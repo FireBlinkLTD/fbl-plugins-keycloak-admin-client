@@ -32,26 +32,20 @@ export class UserGetGroupsActionProcessor extends BaseUserGroupActionProcessor {
     /**
      * @inheritdoc
      */
-    async execute(): Promise<void> {
-        const adminClient = await this.getKeycloakAdminClient(this.options.credentials);
+    async process(): Promise<void> {
+        const { credentials, realmName, username, email, assignGroupsTo, pushGroupsTo } = this.options;
 
-        const user = await this.findUser(
-            adminClient,
-            this.options.realmName,
-            this.options.username,
-            this.options.email,
-        );
+        const adminClient = await this.getKeycloakAdminClient(credentials);
+        const user = await this.findUser(adminClient, realmName, username, email);
 
-        await this.wrapKeycloakAdminRequest(async () => {
-            const groups = await adminClient.users.listGroups({
-                id: user.id,
-                realm: this.options.realmName,
-            });
-
-            const groupNames = groups.map(g => g.name);
-
-            ContextUtil.assignTo(this.context, this.parameters, this.snapshot, this.options.assignGroupsTo, groupNames);
-            ContextUtil.pushTo(this.context, this.parameters, this.snapshot, this.options.pushGroupsTo, groupNames);
+        const groups = await adminClient.users.listGroups({
+            id: user.id,
+            realm: realmName,
         });
+
+        const groupNames = groups.map(g => g.name);
+
+        ContextUtil.assignTo(this.context, this.parameters, this.snapshot, assignGroupsTo, groupNames);
+        ContextUtil.pushTo(this.context, this.parameters, this.snapshot, pushGroupsTo, groupNames);
     }
 }

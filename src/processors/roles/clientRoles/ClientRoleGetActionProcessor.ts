@@ -35,31 +35,30 @@ export class ClientRoleGetActionProcessor extends BaseRoleActionProcessor {
     /**
      * @inheritdoc
      */
-    async execute(): Promise<void> {
+    async process(): Promise<void> {
         const { credentials, roleName, realmName, clientId, assignRoleTo, pushRoleTo } = this.options;
+
         const adminClient = await this.getKeycloakAdminClient(credentials);
-
         const client = await this.findClient(adminClient, realmName, clientId);
-        await this.wrapKeycloakAdminRequest(async () => {
-            const role = await adminClient.clients.findRole({
-                id: client.id,
-                roleName: roleName,
-                realm: realmName,
-            });
 
-            if (!role) {
-                throw new ActionError(
-                    `Unable to find role "${roleName}" for client with clientId: ${clientId} of realm "${realmName}". Role not found`,
-                    '404',
-                );
-            }
-
-            if (role.composite) {
-                role.composites = await this.getCompositeRoles(adminClient, realmName, role);
-            }
-
-            ContextUtil.assignTo(this.context, this.parameters, this.snapshot, assignRoleTo, role);
-            ContextUtil.pushTo(this.context, this.parameters, this.snapshot, pushRoleTo, role);
+        const role = await adminClient.clients.findRole({
+            id: client.id,
+            roleName: roleName,
+            realm: realmName,
         });
+
+        if (!role) {
+            throw new ActionError(
+                `Unable to find role "${roleName}" for client with clientId: ${clientId} of realm "${realmName}". Role not found`,
+                '404',
+            );
+        }
+
+        if (role.composite) {
+            role.composites = await this.getCompositeRoles(adminClient, realmName, role);
+        }
+
+        ContextUtil.assignTo(this.context, this.parameters, this.snapshot, assignRoleTo, role);
+        ContextUtil.pushTo(this.context, this.parameters, this.snapshot, pushRoleTo, role);
     }
 }

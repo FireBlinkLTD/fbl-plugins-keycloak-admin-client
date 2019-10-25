@@ -2,9 +2,9 @@ import * as Joi from 'joi';
 
 import { KEYCLOAK_CREDENTIALS_SCHEMA } from '../../schemas';
 import { FBL_ASSIGN_TO_SCHEMA, FBL_PUSH_TO_SCHEMA, ContextUtil } from 'fbl';
-import { BaseGroupActionProcessor } from './BaseGroupActionProcessor';
+import { BaseKeycloakAdminClientActionProcessor } from '../BaseKeycloakAdminClientActionProcessor';
 
-export class GroupGetActionProcessor extends BaseGroupActionProcessor {
+export class GroupGetActionProcessor extends BaseKeycloakAdminClientActionProcessor {
     private static validationSchema = Joi.object({
         credentials: KEYCLOAK_CREDENTIALS_SCHEMA,
         realmName: Joi.string()
@@ -32,12 +32,13 @@ export class GroupGetActionProcessor extends BaseGroupActionProcessor {
     /**
      * @inheritdoc
      */
-    async execute(): Promise<void> {
-        const adminClient = await this.getKeycloakAdminClient(this.options.credentials);
+    async process(): Promise<void> {
+        const { credentials, realmName, groupName, assignGroupTo, pushGroupTo } = this.options;
 
-        const group = await this.findGroup(adminClient, this.options.realmName, this.options.groupName);
+        const adminClient = await this.getKeycloakAdminClient(credentials);
+        const group = await this.findGroup(adminClient, realmName, groupName);
 
-        ContextUtil.assignTo(this.context, this.parameters, this.snapshot, this.options.assignGroupTo, group);
-        ContextUtil.pushTo(this.context, this.parameters, this.snapshot, this.options.pushGroupTo, group);
+        ContextUtil.assignTo(this.context, this.parameters, this.snapshot, assignGroupTo, group);
+        ContextUtil.pushTo(this.context, this.parameters, this.snapshot, pushGroupTo, group);
     }
 }

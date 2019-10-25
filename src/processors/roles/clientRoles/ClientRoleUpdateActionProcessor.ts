@@ -43,31 +43,31 @@ export class ClientRoleUpdateActionProcessor extends BaseRoleActionProcessor {
     /**
      * @inheritdoc
      */
-    async execute(): Promise<void> {
+    async process(): Promise<void> {
         const { clientId, roleName, realmName, role, credentials } = this.options;
+
         const adminClient = await this.getKeycloakAdminClient(credentials);
         const client = await this.findClient(adminClient, realmName, clientId);
-        await this.wrapKeycloakAdminRequest(async () => {
-            await adminClient.clients.updateRole(
-                {
-                    id: client.id,
-                    roleName: roleName,
-                    realm: realmName,
-                },
-                role,
-            );
 
-            const parentRole = await adminClient.clients.findRole({
+        await adminClient.clients.updateRole(
+            {
                 id: client.id,
-                roleName: role.name,
+                roleName: roleName,
                 realm: realmName,
-            });
+            },
+            role,
+        );
 
-            if (parentRole.composite) {
-                parentRole.composites = await this.getCompositeRoles(adminClient, realmName, parentRole);
-            }
-
-            await this.applyCompositeRoles(adminClient, realmName, parentRole, role.composites);
+        const parentRole = await adminClient.clients.findRole({
+            id: client.id,
+            roleName: role.name,
+            realm: realmName,
         });
+
+        if (parentRole.composite) {
+            parentRole.composites = await this.getCompositeRoles(adminClient, realmName, parentRole);
+        }
+
+        await this.applyCompositeRoles(adminClient, realmName, parentRole, role.composites);
     }
 }

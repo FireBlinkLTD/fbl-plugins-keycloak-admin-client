@@ -32,10 +32,12 @@ export class ClientGetActionProcessor extends BaseKeycloakAdminClientActionProce
     /**
      * @inheritdoc
      */
-    async execute(): Promise<void> {
+    async process(): Promise<void> {
         const { credentials, realmName, clientId, assignClientTo, pushClientTo } = this.options;
+
         const adminClient = await this.getKeycloakAdminClient(credentials);
         const client = await this.findClient(adminClient, realmName, clientId);
+
         ContextUtil.assignTo(this.context, this.parameters, this.snapshot, assignClientTo, client);
         ContextUtil.pushTo(this.context, this.parameters, this.snapshot, pushClientTo, client);
     }

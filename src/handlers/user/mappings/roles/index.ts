@@ -1,3 +1,4 @@
-export * from './client';
-export * from './realm';
+export * from './UserAddRoleMappingsActionHandler';
+export * from './UserApplyRoleMappingsActionHandler';
+export * from './UserDeleteRoleMappingsActionHandler';
 export * from './UserGetRoleMappingsActionHandler';

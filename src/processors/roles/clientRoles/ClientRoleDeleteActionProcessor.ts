@@ -32,16 +32,16 @@ export class ClientRoleDeleteActionProcessor extends BaseKeycloakAdminClientActi
     /**
      * @inheritdoc
      */
-    async execute(): Promise<void> {
-        const adminClient = await this.getKeycloakAdminClient(this.options.credentials);
+    async process(): Promise<void> {
+        const { credentials, realmName, clientId, roleName } = this.options;
 
-        const client = await this.findClient(adminClient, this.options.realmName, this.options.clientId);
-        await this.wrapKeycloakAdminRequest(async () => {
-            await adminClient.clients.delRole({
-                id: client.id,
-                roleName: this.options.roleName,
-                realm: this.options.realmName,
-            });
+        const adminClient = await this.getKeycloakAdminClient(credentials);
+        const client = await this.findClient(adminClient, realmName, clientId);
+
+        await adminClient.clients.delRole({
+            id: client.id,
+            roleName: roleName,
+            realm: realmName,
         });
     }
 }

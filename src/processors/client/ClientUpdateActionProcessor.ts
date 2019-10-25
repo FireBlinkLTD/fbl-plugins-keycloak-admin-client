@@ -37,19 +37,17 @@ export class ClientUpdateActionProcessor extends BaseKeycloakAdminClientActionPr
     /**
      * @inheritdoc
      */
-    async execute(): Promise<void> {
+    async process(): Promise<void> {
         const { realmName, credentials, client } = this.options;
-        const adminClient = await this.getKeycloakAdminClient(credentials);
 
+        const adminClient = await this.getKeycloakAdminClient(credentials);
         const kcClient = await this.findClient(adminClient, realmName, client.clientId);
-        await this.wrapKeycloakAdminRequest(async () => {
-            await adminClient.clients.update(
-                {
-                    id: kcClient.id,
-                    realm: realmName,
-                },
-                client,
-            );
-        });
+        await adminClient.clients.update(
+            {
+                id: kcClient.id,
+                realm: realmName,
+            },
+            client,
+        );
     }
 }
