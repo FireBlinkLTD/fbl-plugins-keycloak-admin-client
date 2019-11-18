@@ -49,7 +49,10 @@ export class RealmRoleCreateActionProcessor extends BaseRoleActionProcessor {
             compositeRoles = await this.findCompositeRoles(adminClient, realmName, role.composites);
         }
 
-        await adminClient.roles.create(role);
+        await adminClient.roles.create({
+            ...role,
+            realm: realmName,
+        });
 
         const parentRole = await adminClient.roles.findOneByName({
             name: role.name,
