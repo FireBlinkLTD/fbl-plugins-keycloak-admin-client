@@ -29,7 +29,7 @@
     "@types/chai": "4.2.7",
     "@types/form-data": "2.5.0",
     "@types/joi": "14.3.4",
-    "@types/node": "12.12.16",
+    "@types/node": "12.12.17",
     "@types/request": "2.48.3",
     "chai": "4.2.0",
     "chai-as-promised": "7.1.1",
