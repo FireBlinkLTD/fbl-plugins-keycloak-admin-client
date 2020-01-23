@@ -1,4 +1,4 @@
-import { ContextUtil, ActionHandlersRegistry, FlowService, ActionSnapshot } from 'fbl';
+import { ContextUtil, ActionHandlersRegistry, FlowService } from 'fbl';
 import { SequenceFlowActionHandler } from 'fbl/dist/src/plugins/flow/SequenceFlowActionHandler';
 
 import { suite, test } from 'mocha-typescript';
@@ -14,6 +14,7 @@ import {
     UserAddRoleMappingsActionHandler,
     UserApplyRoleMappingsActionHandler,
     UserDeleteRoleMappingsActionHandler,
+    RealmCreateActionHandler,
 } from '../../../src/handlers';
 
 import credentials from '../credentials';
@@ -33,6 +34,7 @@ class UserRolesMappingsActionHandlersTestSuite {
 
     @test()
     async allOperations(): Promise<void> {
+        const realmName = `r${Date.now()}`;
         const username = `u${Date.now()}`;
         const email = `${username}@fireblink.com`;
         const clientId = `c-${Date.now()}`;
@@ -46,6 +48,7 @@ class UserRolesMappingsActionHandlersTestSuite {
         flowService.debug = true;
 
         actionHandlerRegistry.register(new SequenceFlowActionHandler(), plugin);
+        actionHandlerRegistry.register(new RealmCreateActionHandler(), plugin);
         actionHandlerRegistry.register(new UserCreateActionHandler(), plugin);
         actionHandlerRegistry.register(new RealmRoleCreateActionHandler(), plugin);
         actionHandlerRegistry.register(new ClientCreateActionHandler(), plugin);
@@ -57,18 +60,24 @@ class UserRolesMappingsActionHandlersTestSuite {
 
         const context = ContextUtil.generateEmptyContext();
 
-        const realmName = 'master';
-
         const snapshot = await flowService.executeAction(
             'index.yml',
             '.',
             {
                 '--': [
+                    {
+                        'keycloak.realm.create': {
+                            credentials,
+                            realm: {
+                                realm: realmName,
+                            },
+                        },
+                    },
                     // create realm roles
                     {
                         'keycloak.realm.role.create': {
                             credentials,
-                            realmName: 'master',
+                            realmName,
                             role: {
                                 name: realmRole1,
                             },
@@ -77,7 +86,7 @@ class UserRolesMappingsActionHandlersTestSuite {
                     {
                         'keycloak.realm.role.create': {
                             credentials,
-                            realmName: 'master',
+                            realmName,
                             role: {
                                 name: realmRole2,
                             },
@@ -233,6 +242,7 @@ class UserRolesMappingsActionHandlersTestSuite {
 
     @test()
     async applyEmpty(): Promise<void> {
+        const realmName = `r${Date.now()}`;
         const username = `u${Date.now()}`;
         const email = `${username}@fireblink.com`;
         const clientId = `c-${Date.now()}`;
@@ -246,6 +256,7 @@ class UserRolesMappingsActionHandlersTestSuite {
         flowService.debug = true;
 
         actionHandlerRegistry.register(new SequenceFlowActionHandler(), plugin);
+        actionHandlerRegistry.register(new RealmCreateActionHandler(), plugin);
         actionHandlerRegistry.register(new UserCreateActionHandler(), plugin);
         actionHandlerRegistry.register(new RealmRoleCreateActionHandler(), plugin);
         actionHandlerRegistry.register(new ClientCreateActionHandler(), plugin);
@@ -257,18 +268,24 @@ class UserRolesMappingsActionHandlersTestSuite {
 
         const context = ContextUtil.generateEmptyContext();
 
-        const realmName = 'master';
-
         const snapshot = await flowService.executeAction(
             'index.yml',
             '.',
             {
                 '--': [
+                    {
+                        'keycloak.realm.create': {
+                            credentials,
+                            realm: {
+                                realm: realmName,
+                            },
+                        },
+                    },
                     // create realm roles
                     {
                         'keycloak.realm.role.create': {
                             credentials,
-                            realmName: 'master',
+                            realmName,
                             role: {
                                 name: realmRole1,
                             },
@@ -277,7 +294,7 @@ class UserRolesMappingsActionHandlersTestSuite {
                     {
                         'keycloak.realm.role.create': {
                             credentials,
-                            realmName: 'master',
+                            realmName,
                             role: {
                                 name: realmRole2,
                             },

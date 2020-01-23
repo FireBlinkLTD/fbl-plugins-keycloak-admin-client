@@ -12,6 +12,10 @@ const KEYCLOAK_CREDENTIALS_SCHEMA = Joi.object({
         scheme: ['http', 'https'],
     }),
     realmName: Joi.string(),
+
+    requestConfig: Joi.object({
+        timeout: Joi.number().min(1),
+    }),
 }).options({ abortEarly: true });
 
 export { KEYCLOAK_CREDENTIALS_SCHEMA };

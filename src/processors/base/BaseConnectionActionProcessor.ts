@@ -9,6 +9,16 @@ export abstract class BaseConnectionActionProcessor extends ActionProcessor {
      * @param credentials
      */
     async getKeycloakAdminClient(credentials: ICredentials): Promise<KeycloakAdminClient> {
+        const credentialsWithTimeout = { ...credentials };
+
+        if (!credentialsWithTimeout.requestConfig) {
+            credentialsWithTimeout.requestConfig = {};
+        }
+
+        if (!credentialsWithTimeout.requestConfig.timeout && credentialsWithTimeout.requestConfig !== 0) {
+            credentialsWithTimeout.requestConfig.timeout = 30 * 1000;
+        }
+
         const client = new KeycloakAdminClient(credentials);
         await client.auth(credentials);
 
