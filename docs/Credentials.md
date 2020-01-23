@@ -16,6 +16,12 @@ credentials:
   # Note: it is better to reference sensitive data from secrets, e.g.:
   #username: $ref:secrets.keycloak.admin.username
   #password: $ref:secrets.keycloak.admin.password
+
+  # [optional] additional request configuration
+  requestConfig:
+    # [optional] request timeout in milliseconds
+    # Default value: 30000 (30 seconds)
+    timeout: 15000
 ```
 
 ## Service Account Example Configuration
