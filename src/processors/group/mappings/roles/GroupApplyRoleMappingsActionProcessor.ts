@@ -2,7 +2,6 @@ import * as Joi from 'joi';
 
 import { KEYCLOAK_CREDENTIALS_SCHEMA } from '../../../../schemas';
 import { BaseKeycloakAdminClientActionProcessor } from '../../../BaseKeycloakAdminClientActionProcessor';
-import { ICompositeRoleRepresentation } from '../../../../interfaces';
 
 export class GroupApplyRoleMappingsActionProcessor extends BaseKeycloakAdminClientActionProcessor {
     private static validationSchema = Joi.object({

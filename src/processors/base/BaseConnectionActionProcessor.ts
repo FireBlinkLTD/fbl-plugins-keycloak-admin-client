@@ -1,4 +1,4 @@
-import { ActionProcessor, ActionError } from 'fbl';
+import { ActionProcessor } from 'fbl';
 import KeycloakAdminClient from 'keycloak-admin';
 import { ICredentials } from '../../interfaces';
 import * as request from 'request';

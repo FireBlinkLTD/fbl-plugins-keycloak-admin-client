@@ -1,4 +1,3 @@
-import { BaseConnectionActionProcessor } from './BaseConnectionActionProcessor';
 import RoleRepresentation, { RoleMappingPayload } from 'keycloak-admin/lib/defs/roleRepresentation';
 import { ICompositeRoleRepresentation } from '../../interfaces';
 import ClientRepresentation from 'keycloak-admin/lib/defs/clientRepresentation';

@@ -1,7 +1,6 @@
 import { BaseConnectionActionProcessor } from './BaseConnectionActionProcessor';
 import RoleRepresentation, { RoleMappingPayload } from 'keycloak-admin/lib/defs/roleRepresentation';
 import { ICompositeRoleRepresentation } from '../../interfaces';
-import ClientRepresentation from 'keycloak-admin/lib/defs/clientRepresentation';
 import UserRepresentation from 'keycloak-admin/lib/defs/userRepresentation';
 import KeycloakAdminClient from 'keycloak-admin';
 import { ActionError } from 'fbl';

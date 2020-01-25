@@ -2,7 +2,6 @@ import * as Joi from 'joi';
 
 import { KEYCLOAK_CREDENTIALS_SCHEMA } from '../../../schemas';
 import { BaseServiceAccountActionProcessor } from './BaseServiceAccountActionProcessor';
-import { ICompositeRoleRepresentation } from '../../../interfaces';
 
 export class ClientApplyServiceAccountUserActionProcessor extends BaseServiceAccountActionProcessor {
     private static validationSchema = Joi.object({
