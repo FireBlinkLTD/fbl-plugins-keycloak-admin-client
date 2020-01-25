@@ -7,8 +7,12 @@ export abstract class BaseKeycloakAdminClientActionProcessor extends BaseActionP
             return await this.process();
         } catch (e) {
             /* istanbul ignore else */
-            if (e.response && e.response.data && e.response.data.errorMessage) {
-                throw new ActionError(`${e.message}: ${e.response.data.errorMessage}`, e.response.status.toString());
+            if (e.response && e.response.data) {
+                /* istanbul ignore next */
+                throw new ActionError(
+                    `${e.message}: ${JSON.stringify(e.response.data.errorMessage || e.response.data)}`,
+                    e.response.status.toString(),
+                );
             }
 
             throw e;

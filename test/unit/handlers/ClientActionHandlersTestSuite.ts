@@ -194,7 +194,7 @@ class ClientActionHandlersTestSuite {
 
         assert.deepStrictEqual(failedStep.payload, {
             code: '409',
-            message: `Request failed with status code 409: Client ${clientId} already exists`,
+            message: `Request failed with status code 409: "Client ${clientId} already exists"`,
         });
     }
 

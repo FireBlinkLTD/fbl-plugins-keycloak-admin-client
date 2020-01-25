@@ -192,7 +192,7 @@ class GroupActionHandlersTestSuite {
 
         assert.deepStrictEqual(failedStep.payload, {
             code: '409',
-            message: `Request failed with status code 409: Top level group named '${groupName}' already exists.`,
+            message: `Request failed with status code 409: "Top level group named '${groupName}' already exists."`,
         });
     }
 

@@ -57,14 +57,13 @@ export abstract class BaseConnectionActionProcessor extends ActionProcessor {
                 }
 
                 /* istanbul ignore else */
-
                 if (!responseBody) {
                     responseBody = {
-                        message: `Error`,
+                        message: `Request failed with status code ${resp.statusCode}`,
                         response: {
                             status: resp.statusCode,
                             data: {
-                                errorMessage: `Request failed: ${resp.statusCode} - ${resp.statusMessage}`,
+                                errorMessage: resp.statusMessage,
                             },
                         },
                     };

@@ -213,7 +213,7 @@ class UserActionHandlersTestSuite {
 
         assert.deepStrictEqual(failedStep.payload, {
             code: '409',
-            message: `Request failed with status code 409: User exists with same username`,
+            message: `Request failed with status code 409: "User exists with same username"`,
         });
     }
 
