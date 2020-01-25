@@ -30,6 +30,8 @@ export class RealmDeleteActionProcessor extends BaseKeycloakAdminClientActionPro
         const { credentials, realmName } = this.options;
 
         const adminClient = await this.getKeycloakAdminClient(credentials);
+        this.snapshot.log(`[realm=${realmName}] Removing realm.`);
         await adminClient.realms.del({ realm: realmName });
+        this.snapshot.log(`[realm=${realmName}] Realm successfully removed.`);
     }
 }

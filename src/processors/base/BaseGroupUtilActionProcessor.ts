@@ -13,7 +13,7 @@ export abstract class BaseGroupUtilsActionProcessor extends BaseClientUtilsActio
      * @param groupName
      */
     async findGroup(adminClient: KeycloakAdminClient, realm: string, groupName: string): Promise<GroupRepresentation> {
-        this.snapshot.log(`Looking for group "${groupName}" in realm "${realm}"`);
+        this.snapshot.log(`[realm=${realm}] [group=${groupName}] Looking for group.`);
         // search will return all groups that contain the name, so we need to filter by exact match later
         const groups = await adminClient.groups.find({
             realm,
@@ -24,6 +24,8 @@ export abstract class BaseGroupUtilsActionProcessor extends BaseClientUtilsActio
         if (!exactGroup) {
             throw new ActionError(`Unable to find group "${groupName}" in realm "${realm}".`, '404');
         }
+
+        this.snapshot.log(`[realm=${realm}] [group=${groupName}] Group found.`);
 
         return exactGroup;
     }
@@ -39,11 +41,12 @@ export abstract class BaseGroupUtilsActionProcessor extends BaseClientUtilsActio
         group: GroupRepresentation,
         realmName: string,
     ): Promise<ICompositeRoleRepresentation> {
-        this.snapshot.log(`Looking for group "${group.name}" role mappings in realm "${realmName}"`);
+        this.snapshot.log(`[realm=${realmName}] [group=${group.name}] Looking for group role mappings.`);
         const mappings = await adminClient.groups.listRoleMappings({
             id: group.id,
             realm: realmName,
         });
+        this.snapshot.log(`[realm=${realmName}] [group=${group.name}] Group role mappings loaded.`);
 
         const result: ICompositeRoleRepresentation = {
             realm: [],

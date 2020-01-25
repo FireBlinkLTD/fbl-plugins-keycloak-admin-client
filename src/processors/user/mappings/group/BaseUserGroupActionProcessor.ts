@@ -9,6 +9,7 @@ export abstract class BaseUserGroupActionProcessor extends BaseUserActionProcess
      */
     async findGroup(adminClient: KeycloakAdminClient, realm: string, groupName: string): Promise<GroupRepresentation> {
         // search will return all groups that contain the name, so we need to filter by exact match later
+        this.snapshot.log(`[realm=${realm}] [group=${groupName}] Loading group.`);
         const groups = await adminClient.groups.find({
             realm,
             search: groupName,
@@ -18,6 +19,7 @@ export abstract class BaseUserGroupActionProcessor extends BaseUserActionProcess
         if (!exactGroup) {
             throw new ActionError(`Unable to find group "${groupName}" in realm "${realm}".`, '404');
         }
+        this.snapshot.log(`[realm=${realm}] [group=${groupName}] Group found.`);
 
         return exactGroup;
     }

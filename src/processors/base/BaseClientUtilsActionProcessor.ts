@@ -15,6 +15,7 @@ export abstract class BaseClientUtilsActionProcessor extends BaseRealmUtilsActio
      * @param clientId
      */
     async findClient(adminClient: KeycloakAdminClient, realm: string, clientId: string): Promise<ClientRepresentation> {
+        this.snapshot.log(`[realm=${realm}] [clientId=${clientId}] Looking for a client.`);
         const clients = await adminClient.clients.find({
             clientId,
             realm,
@@ -23,6 +24,7 @@ export abstract class BaseClientUtilsActionProcessor extends BaseRealmUtilsActio
         if (!clients.length) {
             throw new ActionError(`Client with clientId "${clientId}" of realm "${realm}" not found`, '404');
         }
+        this.snapshot.log(`[realm=${realm}] [clientId=${clientId}] Client successfully loaded.`);
 
         return clients[0];
     }
@@ -40,12 +42,16 @@ export abstract class BaseClientUtilsActionProcessor extends BaseRealmUtilsActio
         client: ClientRepresentation,
         roles: string[],
     ): Promise<RoleRepresentation[]> {
+        this.snapshot.log(`[realm=${realmName}] [clientId=${client.clientId}] Looking for client roles.`);
         const clientRoles = await adminClient.clients.listRoles({
             id: client.id,
             realm: realmName,
         });
 
-        return clientRoles.filter(r => roles.indexOf(r.name) >= 0);
+        const filteredRoles = clientRoles.filter(r => roles.indexOf(r.name) >= 0);
+        this.snapshot.log(`[realm=${realmName}] [clientId=${client.clientId}] Found ${filteredRoles.length} roles.`);
+
+        return filteredRoles;
     }
 
     /**
@@ -78,13 +84,18 @@ export abstract class BaseClientUtilsActionProcessor extends BaseRealmUtilsActio
 
         /* istanbul ignore else */
         if (rolesToAdd.length) {
-            this.snapshot.log(`Adding client "${client.clientId}" role mappings for: ` + rolesToAdd.join(', '));
+            this.snapshot.log(
+                `[realm=${realmName}] [clientId=${client.clientId}] Adding role mappings for: ` + rolesToAdd.join(', '),
+            );
             await adminClient.users.addClientRoleMappings({
                 id: user.id,
                 clientUniqueId: client.id,
                 realm: realmName,
                 roles: roleMappingsToAdd,
             });
+            this.snapshot.log(
+                `[realm=${realmName}] [clientId=${client.clientId}] Added role mappings for: ` + rolesToAdd.join(', '),
+            );
         }
     }
 
@@ -113,7 +124,10 @@ export abstract class BaseClientUtilsActionProcessor extends BaseRealmUtilsActio
 
         /* istanbul ignore else */
         if (rolesToRemove.length) {
-            this.snapshot.log(`Removing client "${client.clientId}" role mappings for: ` + rolesToRemove.join(', '));
+            this.snapshot.log(
+                `[realm=${realmName}] [clientId=${client.clientId}] Removing client role mappings for: ` +
+                    rolesToRemove.join(', '),
+            );
 
             const roles = await this.getClientRoles(adminClient, realmName, client, rolesToRemove);
 
@@ -123,6 +137,10 @@ export abstract class BaseClientUtilsActionProcessor extends BaseRealmUtilsActio
                 realm: realmName,
                 roles: <RoleMappingPayload[]>roles,
             });
+            this.snapshot.log(
+                `[realm=${realmName}] [clientId=${client.clientId}] Removed client role mappings for: ` +
+                    rolesToRemove.join(', '),
+            );
         }
     }
 
@@ -152,7 +170,10 @@ export abstract class BaseClientUtilsActionProcessor extends BaseRealmUtilsActio
 
         /* istanbul ignore else */
         if (rolesToAdd.length) {
-            this.snapshot.log(`Adding client "${client.clientId}" role mappings for: ` + rolesToAdd.join(', '));
+            this.snapshot.log(
+                `[realm=${realmName}] [clientId=${client.clientId}] Adding client role mappings for: ` +
+                    rolesToAdd.join(', '),
+            );
             const roleMappingsToAdd = <RoleMappingPayload[]>(
                 await this.getClientRoles(adminClient, realmName, client, rolesToAdd)
             );
@@ -163,6 +184,11 @@ export abstract class BaseClientUtilsActionProcessor extends BaseRealmUtilsActio
                 realm: realmName,
                 roles: roleMappingsToAdd,
             });
+
+            this.snapshot.log(
+                `[realm=${realmName}] [clientId=${client.clientId}] Added client role mappings for: ` +
+                    rolesToAdd.join(', '),
+            );
         }
     }
 
@@ -191,7 +217,10 @@ export abstract class BaseClientUtilsActionProcessor extends BaseRealmUtilsActio
 
         /* istanbul ignore else */
         if (rolesToRemove.length) {
-            this.snapshot.log(`Removing client "${client.clientId}" role mappings for: ` + rolesToRemove.join(', '));
+            this.snapshot.log(
+                `[realm=${realmName}] [clientId=${client.clientId}] Removing client role mappings for: ` +
+                    rolesToRemove.join(', '),
+            );
             const roles = await this.getClientRoles(adminClient, realmName, client, rolesToRemove);
 
             await adminClient.groups.delClientRoleMappings({
@@ -200,6 +229,10 @@ export abstract class BaseClientUtilsActionProcessor extends BaseRealmUtilsActio
                 realm: realmName,
                 roles: <RoleMappingPayload[]>roles,
             });
+            this.snapshot.log(
+                `[realm=${realmName}] [clientId=${client.clientId}] Removed client role mappings for: ` +
+                    rolesToRemove.join(', '),
+            );
         }
     }
 }

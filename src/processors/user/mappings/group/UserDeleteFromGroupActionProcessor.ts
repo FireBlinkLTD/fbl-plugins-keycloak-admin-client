@@ -39,10 +39,16 @@ export class UserDeleteFromGroupActionProcessor extends BaseUserGroupActionProce
         const user = await this.findUser(adminClient, realmName, username, email);
         const group = await this.findGroup(adminClient, realmName, groupName);
 
+        this.snapshot.log(
+            `[realm=${realmName}] [username=${user.username}] [group=${groupName}] Removing user from group.`,
+        );
         await adminClient.users.delFromGroup({
             id: user.id,
             groupId: group.id,
             realm: this.options.realmName,
         });
+        this.snapshot.log(
+            `[realm=${realmName}] [username=${user.username}] [group=${groupName}] User succssfully removed from group.`,
+        );
     }
 }

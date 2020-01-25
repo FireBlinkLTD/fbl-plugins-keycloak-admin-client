@@ -38,10 +38,12 @@ export class ClientRoleDeleteActionProcessor extends BaseKeycloakAdminClientActi
         const adminClient = await this.getKeycloakAdminClient(credentials);
         const client = await this.findClient(adminClient, realmName, clientId);
 
+        this.snapshot.log(`[realm=${realmName}] [clientId=${client.clientId}] Removing role ${roleName}.`);
         await adminClient.clients.delRole({
             id: client.id,
             roleName: roleName,
             realm: realmName,
         });
+        this.snapshot.log(`[realm=${realmName}] [clientId=${client.clientId}] Role ${roleName} successfully removed.`);
     }
 }

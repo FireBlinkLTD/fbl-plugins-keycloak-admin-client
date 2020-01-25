@@ -39,10 +39,16 @@ export class UserAddToGroupActionProcessor extends BaseUserGroupActionProcessor 
         const user = await this.findUser(adminClient, realmName, username, email);
         const group = await this.findGroup(adminClient, realmName, groupName);
 
+        this.snapshot.log(
+            `[realm=${realmName}] [username=${user.username}] [group=${groupName}] Adding user to group.`,
+        );
         await adminClient.users.addToGroup({
             id: user.id,
             groupId: group.id,
             realm: realmName,
         });
+        this.snapshot.log(
+            `[realm=${realmName}] [username=${user.username}] [group=${groupName}] User successfully added to group.`,
+        );
     }
 }

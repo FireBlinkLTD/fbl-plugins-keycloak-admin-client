@@ -38,10 +38,14 @@ export class UserGetGroupsActionProcessor extends BaseUserGroupActionProcessor {
         const adminClient = await this.getKeycloakAdminClient(credentials);
         const user = await this.findUser(adminClient, realmName, username, email);
 
+        this.snapshot.log(`[realm=${realmName}] [username=${user.username}] Looking for groups user is added to.`);
         const groups = await adminClient.users.listGroups({
             id: user.id,
             realm: realmName,
         });
+        this.snapshot.log(
+            `[realm=${realmName}] [username=${user.username}] Groups that user is added to successfully loaded.`,
+        );
 
         const groupNames = groups.map(g => g.name);
 

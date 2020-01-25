@@ -41,6 +41,7 @@ export class ClientRoleGetActionProcessor extends BaseRoleActionProcessor {
         const adminClient = await this.getKeycloakAdminClient(credentials);
         const client = await this.findClient(adminClient, realmName, clientId);
 
+        this.snapshot.log(`[realm=${realmName}] [clientId=${client.clientId}] Looking for a role ${roleName}.`);
         const role = await adminClient.clients.findRole({
             id: client.id,
             roleName: roleName,
@@ -54,6 +55,7 @@ export class ClientRoleGetActionProcessor extends BaseRoleActionProcessor {
             );
         }
 
+        this.snapshot.log(`[realm=${realmName}] [clientId=${client.clientId}] Role ${roleName} successfully loaded.`);
         if (role.composite) {
             role.composites = await this.getCompositeRoles(adminClient, realmName, role);
         }

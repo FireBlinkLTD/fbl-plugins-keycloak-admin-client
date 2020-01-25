@@ -16,6 +16,17 @@ export abstract class BaseUserActionProcessor extends BaseKeycloakAdminClientAct
         username?: string,
         email?: string,
     ): Promise<UserRepresentation> {
+        let logPreffix = `[realm=${realmName}] `;
+
+        if (username) {
+            logPreffix += `[username=${username}] `;
+        }
+
+        if (email) {
+            logPreffix += `[email=${email}] `;
+        }
+
+        this.snapshot.log(`${logPreffix}Looking for a user.`);
         const users = await adminClient.users.find({
             realm: realmName,
             username: username,
@@ -26,6 +37,8 @@ export abstract class BaseUserActionProcessor extends BaseKeycloakAdminClientAct
         if (!users.length) {
             throw new ActionError(`Unable to find user "${username || email}" in realm "${realmName}"`, '404');
         }
+
+        this.snapshot.log(`${logPreffix}User found.`);
 
         return users[0];
     }

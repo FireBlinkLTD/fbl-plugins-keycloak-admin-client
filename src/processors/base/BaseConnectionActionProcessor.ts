@@ -20,7 +20,9 @@ export abstract class BaseConnectionActionProcessor extends ActionProcessor {
         }
 
         const client = new KeycloakAdminClient(credentials);
+        this.snapshot.log('Authenticating.');
         await client.auth(credentials);
+        this.snapshot.log('Successfully authenticated.');
 
         return client;
     }

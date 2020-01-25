@@ -41,9 +41,11 @@ export class ClientCreateActionProcessor extends BaseKeycloakAdminClientActionPr
         const { realmName, credentials, client } = this.options;
 
         const adminClient = await this.getKeycloakAdminClient(credentials);
+        this.snapshot.log(`[realm=${realmName}] [clientId=${client.clientId}] Creating new client.`);
         await adminClient.clients.create({
             realm: realmName,
             ...client,
         });
+        this.snapshot.log(`[realm=${realmName}] [clientId=${client.clientId}] Client successfully created.`);
     }
 }

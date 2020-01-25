@@ -40,11 +40,11 @@ export class GroupCreateActionProcessor extends BaseKeycloakAdminClientActionPro
         const { credentials, realmName, group } = this.options;
 
         const adminClient = await this.getKeycloakAdminClient(credentials);
-        const createdGroup = await adminClient.groups.create({
+        this.snapshot.log(`[realm=${realmName}] [group=${group.name}] Creating new group.`);
+        await adminClient.groups.create({
             ...group,
             realm: realmName,
         });
-
-        this.snapshot.log(`Group "${group.name}" for realm "${realmName}" created. Group ID: ${createdGroup.id}`);
+        this.snapshot.log(`[realm=${realmName}] [group=${group.name}] Group successfully created.`);
     }
 }

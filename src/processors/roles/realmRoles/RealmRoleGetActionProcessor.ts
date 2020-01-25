@@ -36,6 +36,7 @@ export class RealmRoleGetActionProcessor extends BaseRoleActionProcessor {
         const { credentials, roleName, realmName, assignRoleTo, pushRoleTo } = this.options;
 
         const adminClient = await this.getKeycloakAdminClient(credentials);
+        this.snapshot.log(`[realm=${realmName}] Loading role ${roleName}.`);
         const role = await adminClient.roles.findOneByName({
             name: roleName,
             realm: realmName,
@@ -45,6 +46,7 @@ export class RealmRoleGetActionProcessor extends BaseRoleActionProcessor {
             throw new ActionError(`Unable to find role "${roleName}" of realm "${realmName}". Role not found`, '404');
         }
 
+        this.snapshot.log(`[realm=${realmName}] Role ${roleName} successfully loaded.`);
         if (role.composite) {
             role.composites = await this.getCompositeRoles(adminClient, realmName, role);
         }

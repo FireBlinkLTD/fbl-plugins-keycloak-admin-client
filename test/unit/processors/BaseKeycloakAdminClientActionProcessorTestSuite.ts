@@ -1,7 +1,7 @@
 import { suite, test } from 'mocha-typescript';
 import * as assert from 'assert';
 
-import { UserCreateActionProcessor, BaseKeycloakAdminClientActionProcessor } from '../../../src/processors';
+import { BaseKeycloakAdminClientActionProcessor } from '../../../src/processors';
 
 import credentials from '../credentials';
 import { ContextUtil, ActionSnapshot } from 'fbl';

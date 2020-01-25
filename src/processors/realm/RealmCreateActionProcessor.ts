@@ -38,6 +38,8 @@ export class RealmCreateActionProcessor extends BaseKeycloakAdminClientActionPro
         const { credentials, realm } = this.options;
 
         const adminClient = await this.getKeycloakAdminClient(credentials);
+        this.snapshot.log(`[realm=${realm.realm}] Creating realm.`);
         await adminClient.realms.create(realm);
+        this.snapshot.log(`[realm=${realm.realm}] Realm successfully created.`);
     }
 }

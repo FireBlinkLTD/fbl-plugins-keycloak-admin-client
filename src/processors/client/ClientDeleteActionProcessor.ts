@@ -34,9 +34,11 @@ export class ClientDeleteActionProcessor extends BaseKeycloakAdminClientActionPr
 
         const adminClient = await this.getKeycloakAdminClient(credentials);
         const client = await this.findClient(adminClient, realmName, clientId);
+        this.snapshot.log(`[realm=${realmName}] [clientId=${client.clientId}] Removing client.`);
         await adminClient.clients.del({
             id: client.id,
             realm: realmName,
         });
+        this.snapshot.log(`[realm=${realmName}] [clientId=${client.clientId}] Client successfully removed.`);
     }
 }

@@ -33,11 +33,13 @@ export class RealmGetActionProcessor extends BaseKeycloakAdminClientActionProces
         const { credentials, realmName, assignRealmTo, pushRealmTo } = this.options;
 
         const adminClient = await this.getKeycloakAdminClient(credentials);
+        this.snapshot.log(`[realm=${realmName}] Looking for realm.`);
         const realm = await adminClient.realms.findOne({ realm: realmName });
 
         if (!realm) {
             throw new ActionError(`Unable to find realm with name: ${realmName}`, '404');
         }
+        this.snapshot.log(`[realm=${realmName}] Realm successully loaded.`);
 
         ContextUtil.assignTo(this.context, this.parameters, this.snapshot, assignRealmTo, realm);
         ContextUtil.pushTo(this.context, this.parameters, this.snapshot, pushRealmTo, realm);

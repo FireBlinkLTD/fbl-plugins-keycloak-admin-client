@@ -52,6 +52,7 @@ export class UserUpdateActionProcessor extends BaseUserActionProcessor {
         const adminClient = await this.getKeycloakAdminClient(credentials);
         const kcUser = await this.findUser(adminClient, realmName, username, email);
 
+        this.snapshot.log(`[realm=${realmName}] [username=${kcUser.username}] Updating user.`);
         await adminClient.users.update(
             {
                 id: kcUser.id,
@@ -59,5 +60,6 @@ export class UserUpdateActionProcessor extends BaseUserActionProcessor {
             },
             user,
         );
+        this.snapshot.log(`[realm=${realmName}] [username=${kcUser.username}] User successfully updated.`);
     }
 }

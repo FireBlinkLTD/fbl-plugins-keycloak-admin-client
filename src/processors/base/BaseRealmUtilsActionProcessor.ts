@@ -19,7 +19,7 @@ export abstract class BaseRealmUtilsActionProcessor extends BaseConnectionAction
         roles: string[],
         realmName: string,
     ): Promise<RoleRepresentation[]> {
-        this.snapshot.log(`Loading realm "${realmName}" roles: ${roles.join(',')}`);
+        this.snapshot.log(`[realm=${realmName}] Loading realm roles: ${roles.join(',')}`);
         const realmRoles: RoleRepresentation[] = [];
 
         // unfortunatelly .find method is broken in adminClient, need to get each role one by one
@@ -34,6 +34,8 @@ export abstract class BaseRealmUtilsActionProcessor extends BaseConnectionAction
             }
             realmRoles.push(r);
         }
+
+        this.snapshot.log(`[realm=${realmName}] Realm roles loaded: ${roles.join(',')}`);
 
         return realmRoles;
     }
@@ -62,12 +64,13 @@ export abstract class BaseRealmUtilsActionProcessor extends BaseConnectionAction
 
         /* istanbul ignore else */
         if (rolesToAdd.length) {
-            this.snapshot.log('Adding realm role mappings for: ' + rolesToAdd.join(', '));
+            this.snapshot.log(`[realm=${realmName}] Adding realm role mappings for: ` + rolesToAdd.join(', '));
             await adminClient.users.addRealmRoleMappings({
                 id: user.id,
                 realm: realmName,
                 roles: roleMappingsToAdd,
             });
+            this.snapshot.log(`[realm=${realmName}] Added realm role mappings for: ` + rolesToAdd.join(', '));
         }
     }
 
@@ -93,15 +96,15 @@ export abstract class BaseRealmUtilsActionProcessor extends BaseConnectionAction
 
         /* istanbul ignore else */
         if (rolesToRemove.length) {
-            this.snapshot.log('Removing realm role mappings for: ' + rolesToRemove.join(', '));
-
             const roles = await this.getRealmRoles(adminClient, rolesToRemove, realmName);
 
+            this.snapshot.log(`[realm=${realmName}] Removing realm role mappings for: ` + rolesToRemove.join(', '));
             await adminClient.users.delRealmRoleMappings({
                 id: user.id,
                 realm: realmName,
                 roles: <RoleMappingPayload[]>roles,
             });
+            this.snapshot.log(`[realm=${realmName}] Removed realm role mappings for: ` + rolesToRemove.join(', '));
         }
     }
 
@@ -127,16 +130,17 @@ export abstract class BaseRealmUtilsActionProcessor extends BaseConnectionAction
 
         /* istanbul ignore else */
         if (rolesToAdd.length) {
-            this.snapshot.log('Adding realm role mappings for: ' + rolesToAdd.join(', '));
             const roleMappingsToAdd = <RoleMappingPayload[]>(
                 await this.getRealmRoles(adminClient, rolesToAdd, realmName)
             );
 
+            this.snapshot.log(`[realm=${realmName}] Adding realm role mappings for: ` + rolesToAdd.join(', '));
             await adminClient.groups.addRealmRoleMappings({
                 id: group.id,
                 realm: realmName,
                 roles: roleMappingsToAdd,
             });
+            this.snapshot.log(`[realm=${realmName}] Added realm role mappings for: ` + rolesToAdd.join(', '));
         }
     }
 
@@ -162,14 +166,15 @@ export abstract class BaseRealmUtilsActionProcessor extends BaseConnectionAction
 
         /* istanbul ignore else */
         if (rolesToRemove.length) {
-            this.snapshot.log('Removing realm role mappings for: ' + rolesToRemove.join(', '));
             const roles = await this.getRealmRoles(adminClient, rolesToRemove, realmName);
 
+            this.snapshot.log(`[realm=${realmName}] Removing realm role mappings for: ` + rolesToRemove.join(', '));
             await adminClient.groups.delRealmRoleMappings({
                 id: group.id,
                 realm: realmName,
                 roles: <RoleMappingPayload[]>roles,
             });
+            this.snapshot.log(`[realm=${realmName}] Removed realm role mappings for: ` + rolesToRemove.join(', '));
         }
     }
 }

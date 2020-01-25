@@ -16,10 +16,12 @@ export abstract class BaseUserUtilsActionProcessor extends BaseGroupUtilsActionP
         user: UserRepresentation,
         realmName: string,
     ): Promise<ICompositeRoleRepresentation> {
+        this.snapshot.log(`[realm=${realmName}] [username=${user.username}] Looking for user role mappings.`);
         const mappings = await adminClient.users.listRoleMappings({
             id: user.id,
             realm: realmName,
         });
+        this.snapshot.log(`[realm=${realmName}] [username=${user.username}] User role mappings successfully loaded.`);
 
         const result: ICompositeRoleRepresentation = {
             realm: [],

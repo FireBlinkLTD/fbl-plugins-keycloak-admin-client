@@ -33,9 +33,11 @@ export class RealmRoleDeleteActionProcessor extends BaseKeycloakAdminClientActio
         const { credentials, roleName, realmName } = this.options;
 
         const adminClient = await this.getKeycloakAdminClient(credentials);
+        this.snapshot.log(`[realm=${realmName}] Removing role ${roleName}.`);
         await adminClient.roles.delByName({
             name: roleName,
             realm: realmName,
         });
+        this.snapshot.log(`[realm=${realmName}] Role ${roleName} successfully removed.`);
     }
 }

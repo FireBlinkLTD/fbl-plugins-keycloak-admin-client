@@ -49,17 +49,21 @@ export class RealmRoleCreateActionProcessor extends BaseRoleActionProcessor {
             compositeRoles = await this.findCompositeRoles(adminClient, realmName, role.composites);
         }
 
+        this.snapshot.log(`[realm=${realmName}] Creating role ${role.name}.`);
         await adminClient.roles.create({
             ...role,
             realm: realmName,
         });
-
-        const parentRole = await adminClient.roles.findOneByName({
-            name: role.name,
-            realm: realmName,
-        });
+        this.snapshot.log(`[realm=${realmName}] Role ${role.name} successfully created.`);
 
         if (compositeRoles) {
+            this.snapshot.log(`[realm=${realmName}] Loading role ${role.name}.`);
+            const parentRole = await adminClient.roles.findOneByName({
+                name: role.name,
+                realm: realmName,
+            });
+            this.snapshot.log(`[realm=${realmName}] Role ${role.name} successfully loaded.`);
+
             const roles: RoleRepresentation[] = [...compositeRoles.realm];
             for (const clientId of Object.keys(compositeRoles.client)) {
                 roles.push(...compositeRoles.client[clientId]);

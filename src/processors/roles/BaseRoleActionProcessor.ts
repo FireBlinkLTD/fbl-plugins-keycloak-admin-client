@@ -25,10 +25,12 @@ export abstract class BaseRoleActionProcessor extends BaseKeycloakAdminClientAct
             /* istanbul ignore else */
             if (roles.realm) {
                 for (const name of roles.realm) {
+                    this.snapshot.log(`[realm=${realm}] Loading role ${name}.`);
                     const roleRepresentation = await adminClient.roles.findOneByName({
                         name,
                         realm,
                     });
+                    this.snapshot.log(`[realm=${realm}] Role ${name} loaded.`);
 
                     result.realm.push(roleRepresentation);
                 }
@@ -40,11 +42,13 @@ export abstract class BaseRoleActionProcessor extends BaseKeycloakAdminClientAct
                     const client = await this.findClient(adminClient, realm, clientId);
                     result.client[clientId] = [];
                     for (const name of roles.client[clientId]) {
+                        this.snapshot.log(`[realm=${realm}] [clientId=${clientId}] Loading role ${name}.`);
                         const roleRepresentation = await adminClient.clients.findRole({
                             id: client.id,
                             roleName: name,
                             realm,
                         });
+                        this.snapshot.log(`[realm=${realm}] [clientId=${clientId}] Role ${name} loaded.`);
 
                         result.client[clientId].push(roleRepresentation);
                     }
@@ -67,10 +71,12 @@ export abstract class BaseRoleActionProcessor extends BaseKeycloakAdminClientAct
         realm: string,
         parentRole: RoleRepresentation,
     ): Promise<ICompositeRoleRepresentation> {
+        this.snapshot.log(`[realm=${realm}] Loading role ${parentRole.name} composites.`);
         const response: RoleRepresentation[] = await this.get(
             adminClient,
             `/admin/realms/${realm}/roles-by-id/${parentRole.id}/composites`,
         );
+        this.snapshot.log(`[realm=${realm}] Role ${parentRole.name} composites successfully loaded.`);
 
         const result: ICompositeRoleRepresentation = {
             realm: [],
@@ -82,10 +88,12 @@ export abstract class BaseRoleActionProcessor extends BaseKeycloakAdminClientAct
         for (const role of response) {
             if (role.clientRole) {
                 if (!clientMapping[role.containerId]) {
+                    this.snapshot.log(`[realm=${realm}] Loading client.`);
                     const client = await adminClient.clients.findOne({
                         id: role.containerId,
                         realm,
                     });
+                    this.snapshot.log(`[realm=${realm}] Client ${client.clientId} successfully loaded.`);
 
                     clientMapping[role.containerId] = client.clientId;
                 }
@@ -119,7 +127,9 @@ export abstract class BaseRoleActionProcessor extends BaseKeycloakAdminClientAct
         childRoles: RoleRepresentation[],
     ) {
         if (childRoles.length) {
+            this.snapshot.log(`[realm=${realm}] Adding composite roles.`);
             await this.post(adminClient, `/admin/realms/${realm}/roles-by-id/${parentRole.id}/composites`, childRoles);
+            this.snapshot.log(`[realm=${realm}] Composite roles successully added.`);
         }
     }
 
@@ -137,11 +147,13 @@ export abstract class BaseRoleActionProcessor extends BaseKeycloakAdminClientAct
         childRoles: RoleRepresentation[],
     ) {
         if (childRoles.length) {
+            this.snapshot.log(`[realm=${realm}] Removing composite roles.`);
             await this.delete(
                 adminClient,
                 `/admin/realms/${realm}/roles-by-id/${parentRole.id}/composites`,
                 childRoles,
             );
+            this.snapshot.log(`[realm=${realm}] Composite roles successfully removed.`);
         }
     }
 

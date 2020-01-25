@@ -41,6 +41,8 @@ export class RealmUpdateActionProcessor extends BaseKeycloakAdminClientActionPro
         const { credentials, realmName, realm } = this.options;
 
         const adminClient = await this.getKeycloakAdminClient(credentials);
+        this.snapshot.log(`[realm=${realmName}] Updating realm.`);
         await adminClient.realms.update({ realm: realmName }, realm);
+        this.snapshot.log(`[realm=${realmName}] Realm successfully updated.`);
     }
 }

@@ -23,9 +23,13 @@ export abstract class BaseServiceAccountActionProcessor extends BaseKeycloakAdmi
             );
         }
 
-        return await adminClient.clients.getServiceAccountUser({
+        this.snapshot.log(`[realm=${realm}] [clientId=${client.clientId}] Looking for service account user.`);
+        const user = await adminClient.clients.getServiceAccountUser({
             id: client.id,
             realm,
         });
+        this.snapshot.log(`[realm=${realm}] [clientId=${client.clientId}] Service account user successfully loaded.`);
+
+        return user;
     }
 }
