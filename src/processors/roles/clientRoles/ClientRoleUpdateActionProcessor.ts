@@ -43,30 +43,19 @@ export class ClientRoleUpdateActionProcessor extends BaseRoleActionProcessor {
     /**
      * @inheritdoc
      */
-    async process(): Promise<void> {
+    async execute(): Promise<void> {
         const { clientId, roleName, realmName, role, credentials } = this.options;
 
         const adminClient = await this.getKeycloakAdminClient(credentials);
         const client = await this.findClient(adminClient, realmName, clientId);
 
         this.snapshot.log(`[realm=${realmName}] [clientId=${client.clientId}] Updating role ${roleName}.`);
-        await adminClient.clients.updateRole(
-            {
-                id: client.id,
-                roleName: roleName,
-                realm: realmName,
-            },
-            role,
-        );
+        await adminClient.clients.updateRole(realmName, client.id, roleName, role);
         this.snapshot.log(`[realm=${realmName}] [clientId=${client.clientId}] Role ${roleName} successfully updated.`);
 
-        this.snapshot.log(`[realm=${realmName}] [clientId=${client.clientId}] Loading role ${roleName}.`);
-        const parentRole = await adminClient.clients.findRole({
-            id: client.id,
-            roleName: role.name,
-            realm: realmName,
-        });
-        this.snapshot.log(`[realm=${realmName}] [clientId=${client.clientId}] Role ${roleName} successfully loaded.`);
+        this.snapshot.log(`[realm=${realmName}] [clientId=${client.clientId}] Loading role ${role.name}.`);
+        const parentRole = await adminClient.clients.findRole(realmName, client.id, role.name);
+        this.snapshot.log(`[realm=${realmName}] [clientId=${client.clientId}] Role ${role.name} successfully loaded.`);
 
         if (parentRole.composite) {
             parentRole.composites = await this.getCompositeRoles(adminClient, realmName, parentRole);

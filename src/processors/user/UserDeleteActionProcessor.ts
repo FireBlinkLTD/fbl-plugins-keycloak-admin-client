@@ -29,17 +29,14 @@ export class UserDeleteActionProcessor extends BaseUserActionProcessor {
     /**
      * @inheritdoc
      */
-    async process(): Promise<void> {
+    async execute(): Promise<void> {
         const { credentials, realmName, username, email } = this.options;
 
         const adminClient = await this.getKeycloakAdminClient(credentials);
         const user = await this.findUser(adminClient, realmName, username, email);
 
         this.snapshot.log(`[realm=${realmName}] [username=${user.username}] Removing user.`);
-        await adminClient.users.del({
-            id: user.id,
-            realm: realmName,
-        });
+        await adminClient.users.delete(realmName, user.id);
         this.snapshot.log(`[realm=${realmName}] [username=${user.username}] User successfully removed.`);
     }
 }

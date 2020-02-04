@@ -32,7 +32,7 @@ export class UserDeleteFromGroupActionProcessor extends BaseUserGroupActionProce
     /**
      * @inheritdoc
      */
-    async process(): Promise<void> {
+    async execute(): Promise<void> {
         const { credentials, realmName, username, email, groupName } = this.options;
 
         const adminClient = await this.getKeycloakAdminClient(credentials);
@@ -42,11 +42,7 @@ export class UserDeleteFromGroupActionProcessor extends BaseUserGroupActionProce
         this.snapshot.log(
             `[realm=${realmName}] [username=${user.username}] [group=${groupName}] Removing user from group.`,
         );
-        await adminClient.users.delFromGroup({
-            id: user.id,
-            groupId: group.id,
-            realm: this.options.realmName,
-        });
+        await adminClient.users.deleteFromGroup(realmName, user.id, group.id);
         this.snapshot.log(
             `[realm=${realmName}] [username=${user.username}] [group=${groupName}] User succssfully removed from group.`,
         );

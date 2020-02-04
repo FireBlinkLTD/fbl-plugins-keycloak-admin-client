@@ -1,9 +1,7 @@
-import RoleRepresentation from 'keycloak-admin/lib/defs/roleRepresentation';
 import { ICompositeRoleRepresentation } from '../../interfaces';
-import KeycloakAdminClient from 'keycloak-admin';
 import { ActionError } from 'fbl';
 import { BaseClientUtilsActionProcessor } from './BaseClientUtilsActionProcessor';
-import GroupRepresentation from 'keycloak-admin/lib/defs/groupRepresentation';
+import { KeycloakClient } from '../../helpers/KeycloakClient';
 
 export abstract class BaseGroupUtilsActionProcessor extends BaseClientUtilsActionProcessor {
     /**
@@ -12,15 +10,14 @@ export abstract class BaseGroupUtilsActionProcessor extends BaseClientUtilsActio
      * @param realm
      * @param groupName
      */
-    async findGroup(adminClient: KeycloakAdminClient, realm: string, groupName: string): Promise<GroupRepresentation> {
+    async findGroup(adminClient: KeycloakClient, realm: string, groupName: string) {
         this.snapshot.log(`[realm=${realm}] [group=${groupName}] Looking for group.`);
         // search will return all groups that contain the name, so we need to filter by exact match later
-        const groups = await adminClient.groups.find({
-            realm,
+        const groups = await adminClient.groups.find(realm, {
             search: groupName,
         });
 
-        const exactGroup = groups.find((g: GroupRepresentation) => g.name === groupName);
+        const exactGroup = groups.find((g: any) => g.name === groupName);
         if (!exactGroup) {
             throw new ActionError(`Unable to find group "${groupName}" in realm "${realm}".`, '404');
         }
@@ -37,15 +34,12 @@ export abstract class BaseGroupUtilsActionProcessor extends BaseClientUtilsActio
      * @param realmName
      */
     async findGroupRoleMappings(
-        adminClient: KeycloakAdminClient,
-        group: GroupRepresentation,
+        adminClient: KeycloakClient,
+        group: any,
         realmName: string,
     ): Promise<ICompositeRoleRepresentation> {
         this.snapshot.log(`[realm=${realmName}] [group=${group.name}] Looking for group role mappings.`);
-        const mappings = await adminClient.groups.listRoleMappings({
-            id: group.id,
-            realm: realmName,
-        });
+        const mappings = await adminClient.groups.listRoleMappings(realmName, group.id);
         this.snapshot.log(`[realm=${realmName}] [group=${group.name}] Group role mappings loaded.`);
 
         const result: ICompositeRoleRepresentation = {
@@ -54,15 +48,13 @@ export abstract class BaseGroupUtilsActionProcessor extends BaseClientUtilsActio
         };
 
         if (mappings.realmMappings) {
-            result.realm = mappings.realmMappings.map(r => r.name);
+            result.realm = mappings.realmMappings.map((r: any) => r.name);
         }
 
         /* istanbul ignore else */
         if (mappings.clientMappings) {
             for (const clientId of Object.keys(mappings.clientMappings)) {
-                result.client[clientId] = mappings.clientMappings[clientId].mappings.map(
-                    (r: RoleRepresentation) => r.name,
-                );
+                result.client[clientId] = mappings.clientMappings[clientId].mappings.map((r: any) => r.name);
             }
         }
 

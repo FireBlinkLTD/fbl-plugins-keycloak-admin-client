@@ -32,7 +32,7 @@ export class UserGetRoleMappingsActionProcessor extends BaseUserActionProcessor 
     /**
      * @inheritdoc
      */
-    async process(): Promise<void> {
+    async execute(): Promise<void> {
         const { credentials, realmName, username, email, assignRoleMappingsTo, pushRoleMappingsTo } = this.options;
 
         const adminClient = await this.getKeycloakAdminClient(credentials);

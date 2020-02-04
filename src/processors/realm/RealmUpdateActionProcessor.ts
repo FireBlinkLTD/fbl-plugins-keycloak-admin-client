@@ -1,9 +1,9 @@
 import * as Joi from 'joi';
 
-import { BaseKeycloakAdminClientActionProcessor } from '../BaseKeycloakAdminClientActionProcessor';
 import { KEYCLOAK_CREDENTIALS_SCHEMA } from '../../schemas';
+import { BaseActionProcessor } from '../base';
 
-export class RealmUpdateActionProcessor extends BaseKeycloakAdminClientActionProcessor {
+export class RealmUpdateActionProcessor extends BaseActionProcessor {
     private static validationSchema = Joi.object({
         credentials: KEYCLOAK_CREDENTIALS_SCHEMA,
         realmName: Joi.string()
@@ -37,12 +37,12 @@ export class RealmUpdateActionProcessor extends BaseKeycloakAdminClientActionPro
     /**
      * @inheritdoc
      */
-    async process(): Promise<void> {
+    async execute(): Promise<void> {
         const { credentials, realmName, realm } = this.options;
 
         const adminClient = await this.getKeycloakAdminClient(credentials);
         this.snapshot.log(`[realm=${realmName}] Updating realm.`);
-        await adminClient.realms.update({ realm: realmName }, realm);
+        await adminClient.realms.update(realmName, realm);
         this.snapshot.log(`[realm=${realmName}] Realm successfully updated.`);
     }
 }

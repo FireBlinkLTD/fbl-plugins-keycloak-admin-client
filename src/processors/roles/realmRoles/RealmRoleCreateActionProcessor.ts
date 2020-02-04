@@ -1,7 +1,6 @@
 import * as Joi from 'joi';
 
 import { KEYCLOAK_CREDENTIALS_SCHEMA } from '../../../schemas';
-import RoleRepresentation from 'keycloak-admin/lib/defs/roleRepresentation';
 import { ICompositeRoleMappingRepresentation } from '../../../interfaces';
 import { BaseRoleActionProcessor } from '../BaseRoleActionProcessor';
 
@@ -39,7 +38,7 @@ export class RealmRoleCreateActionProcessor extends BaseRoleActionProcessor {
     /**
      * @inheritdoc
      */
-    async process(): Promise<void> {
+    async execute(): Promise<void> {
         const { credentials, role, realmName } = this.options;
 
         const adminClient = await this.getKeycloakAdminClient(credentials);
@@ -50,21 +49,15 @@ export class RealmRoleCreateActionProcessor extends BaseRoleActionProcessor {
         }
 
         this.snapshot.log(`[realm=${realmName}] Creating role ${role.name}.`);
-        await adminClient.roles.create({
-            ...role,
-            realm: realmName,
-        });
+        await adminClient.roles.create(realmName, role);
         this.snapshot.log(`[realm=${realmName}] Role ${role.name} successfully created.`);
 
         if (compositeRoles) {
             this.snapshot.log(`[realm=${realmName}] Loading role ${role.name}.`);
-            const parentRole = await adminClient.roles.findOneByName({
-                name: role.name,
-                realm: realmName,
-            });
+            const parentRole = await adminClient.roles.findOne(realmName, role.name);
             this.snapshot.log(`[realm=${realmName}] Role ${role.name} successfully loaded.`);
 
-            const roles: RoleRepresentation[] = [...compositeRoles.realm];
+            const roles = [...compositeRoles.realm];
             for (const clientId of Object.keys(compositeRoles.client)) {
                 roles.push(...compositeRoles.client[clientId]);
             }

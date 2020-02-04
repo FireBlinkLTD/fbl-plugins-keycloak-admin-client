@@ -1,9 +1,9 @@
 import * as Joi from 'joi';
 
-import { BaseKeycloakAdminClientActionProcessor } from '../../BaseKeycloakAdminClientActionProcessor';
 import { KEYCLOAK_CREDENTIALS_SCHEMA } from '../../../schemas';
+import { BaseActionProcessor } from '../../base';
 
-export class ClientRoleDeleteActionProcessor extends BaseKeycloakAdminClientActionProcessor {
+export class ClientRoleDeleteActionProcessor extends BaseActionProcessor {
     private static validationSchema = Joi.object({
         credentials: KEYCLOAK_CREDENTIALS_SCHEMA,
         realmName: Joi.string()
@@ -32,18 +32,14 @@ export class ClientRoleDeleteActionProcessor extends BaseKeycloakAdminClientActi
     /**
      * @inheritdoc
      */
-    async process(): Promise<void> {
+    async execute(): Promise<void> {
         const { credentials, realmName, clientId, roleName } = this.options;
 
         const adminClient = await this.getKeycloakAdminClient(credentials);
         const client = await this.findClient(adminClient, realmName, clientId);
 
         this.snapshot.log(`[realm=${realmName}] [clientId=${client.clientId}] Removing role ${roleName}.`);
-        await adminClient.clients.delRole({
-            id: client.id,
-            roleName: roleName,
-            realm: realmName,
-        });
+        await adminClient.clients.deleteRole(realmName, client.id, roleName);
         this.snapshot.log(`[realm=${realmName}] [clientId=${client.clientId}] Role ${roleName} successfully removed.`);
     }
 }

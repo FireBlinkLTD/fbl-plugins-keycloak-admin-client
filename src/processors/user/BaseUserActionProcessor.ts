@@ -1,21 +1,15 @@
-import KeycloakAdminClient from 'keycloak-admin';
 import { ActionError } from 'fbl';
-import UserRepresentation from 'keycloak-admin/lib/defs/userRepresentation';
-import { BaseKeycloakAdminClientActionProcessor } from '../BaseKeycloakAdminClientActionProcessor';
+import { KeycloakClient } from '../../helpers/KeycloakClient';
+import { BaseActionProcessor } from '../base';
 
-export abstract class BaseUserActionProcessor extends BaseKeycloakAdminClientActionProcessor {
+export abstract class BaseUserActionProcessor extends BaseActionProcessor {
     /**
      * Find realm roles
      * @param adminClient
      * @param roles
      * @param realmName
      */
-    async findUser(
-        adminClient: KeycloakAdminClient,
-        realmName: string,
-        username?: string,
-        email?: string,
-    ): Promise<UserRepresentation> {
+    async findUser(adminClient: KeycloakClient, realmName: string, username?: string, email?: string) {
         let logPreffix = `[realm=${realmName}] `;
 
         if (username) {
@@ -27,8 +21,7 @@ export abstract class BaseUserActionProcessor extends BaseKeycloakAdminClientAct
         }
 
         this.snapshot.log(`${logPreffix}Looking for a user.`);
-        const users = await adminClient.users.find({
-            realm: realmName,
+        const users = await adminClient.users.find(realmName, {
             username: username,
             email: email,
             max: 1,

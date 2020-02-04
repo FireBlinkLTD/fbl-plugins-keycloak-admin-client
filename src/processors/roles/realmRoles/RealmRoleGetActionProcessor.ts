@@ -1,7 +1,7 @@
 import * as Joi from 'joi';
 
 import { KEYCLOAK_CREDENTIALS_SCHEMA } from '../../../schemas';
-import { FBL_ASSIGN_TO_SCHEMA, FBL_PUSH_TO_SCHEMA, ContextUtil, ActionError } from 'fbl';
+import { FBL_ASSIGN_TO_SCHEMA, FBL_PUSH_TO_SCHEMA, ContextUtil } from 'fbl';
 import { BaseRoleActionProcessor } from '../BaseRoleActionProcessor';
 
 export class RealmRoleGetActionProcessor extends BaseRoleActionProcessor {
@@ -32,19 +32,12 @@ export class RealmRoleGetActionProcessor extends BaseRoleActionProcessor {
     /**
      * @inheritdoc
      */
-    async process(): Promise<void> {
+    async execute(): Promise<void> {
         const { credentials, roleName, realmName, assignRoleTo, pushRoleTo } = this.options;
 
         const adminClient = await this.getKeycloakAdminClient(credentials);
         this.snapshot.log(`[realm=${realmName}] Loading role ${roleName}.`);
-        const role = await adminClient.roles.findOneByName({
-            name: roleName,
-            realm: realmName,
-        });
-
-        if (!role) {
-            throw new ActionError(`Unable to find role "${roleName}" of realm "${realmName}". Role not found`, '404');
-        }
+        const role = await adminClient.roles.findOne(realmName, roleName);
 
         this.snapshot.log(`[realm=${realmName}] Role ${roleName} successfully loaded.`);
         if (role.composite) {

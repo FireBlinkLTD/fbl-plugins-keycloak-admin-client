@@ -1,11 +1,7 @@
-import RoleRepresentation, { RoleMappingPayload } from 'keycloak-admin/lib/defs/roleRepresentation';
 import { ICompositeRoleRepresentation } from '../../interfaces';
-import ClientRepresentation from 'keycloak-admin/lib/defs/clientRepresentation';
-import UserRepresentation from 'keycloak-admin/lib/defs/userRepresentation';
-import KeycloakAdminClient from 'keycloak-admin';
 import { ActionError } from 'fbl';
 import { BaseRealmUtilsActionProcessor } from './BaseRealmUtilsActionProcessor';
-import GroupRepresentation from 'keycloak-admin/lib/defs/groupRepresentation';
+import { KeycloakClient } from '../../helpers/KeycloakClient';
 
 export abstract class BaseClientUtilsActionProcessor extends BaseRealmUtilsActionProcessor {
     /**
@@ -14,12 +10,9 @@ export abstract class BaseClientUtilsActionProcessor extends BaseRealmUtilsActio
      * @param realm
      * @param clientId
      */
-    async findClient(adminClient: KeycloakAdminClient, realm: string, clientId: string): Promise<ClientRepresentation> {
+    async findClient(adminClient: KeycloakClient, realm: string, clientId: string) {
         this.snapshot.log(`[realm=${realm}] [clientId=${clientId}] Looking for a client.`);
-        const clients = await adminClient.clients.find({
-            clientId,
-            realm,
-        });
+        const clients = await adminClient.clients.find(realm, { clientId });
 
         if (!clients.length) {
             throw new ActionError(`Client with clientId "${clientId}" of realm "${realm}" not found`, '404');
@@ -36,19 +29,11 @@ export abstract class BaseClientUtilsActionProcessor extends BaseRealmUtilsActio
      * @param clientUniqueId
      * @param roles
      */
-    async getClientRoles(
-        adminClient: KeycloakAdminClient,
-        realmName: string,
-        client: ClientRepresentation,
-        roles: string[],
-    ): Promise<RoleRepresentation[]> {
+    async getClientRoles(adminClient: KeycloakClient, realmName: string, client: any, roles: string[]) {
         this.snapshot.log(`[realm=${realmName}] [clientId=${client.clientId}] Looking for client roles.`);
-        const clientRoles = await adminClient.clients.listRoles({
-            id: client.id,
-            realm: realmName,
-        });
+        const clientRoles = await adminClient.clients.listRoles(realmName, client.id);
 
-        const filteredRoles = clientRoles.filter(r => roles.indexOf(r.name) >= 0);
+        const filteredRoles = clientRoles.filter((r: any) => roles.indexOf(r.name) >= 0);
         this.snapshot.log(`[realm=${realmName}] [clientId=${client.clientId}] Found ${filteredRoles.length} roles.`);
 
         return filteredRoles;
@@ -65,9 +50,9 @@ export abstract class BaseClientUtilsActionProcessor extends BaseRealmUtilsActio
      * @param mappings
      */
     async addClientRoleMappingsForUser(
-        adminClient: KeycloakAdminClient,
-        user: UserRepresentation,
-        client: ClientRepresentation,
+        adminClient: KeycloakClient,
+        user: any,
+        client: any,
         realmName: string,
         rolesToAdd: string[],
         mappings: ICompositeRoleRepresentation,
@@ -78,21 +63,14 @@ export abstract class BaseClientUtilsActionProcessor extends BaseRealmUtilsActio
             });
         }
 
-        const roleMappingsToAdd = <RoleMappingPayload[]>(
-            await this.getClientRoles(adminClient, realmName, client, rolesToAdd)
-        );
+        const roleMappingsToAdd = await this.getClientRoles(adminClient, realmName, client, rolesToAdd);
 
         /* istanbul ignore else */
         if (rolesToAdd.length) {
             this.snapshot.log(
                 `[realm=${realmName}] [clientId=${client.clientId}] Adding role mappings for: ` + rolesToAdd.join(', '),
             );
-            await adminClient.users.addClientRoleMappings({
-                id: user.id,
-                clientUniqueId: client.id,
-                realm: realmName,
-                roles: roleMappingsToAdd,
-            });
+            await adminClient.users.addClientRoleMappings(realmName, user.id, client.id, roleMappingsToAdd);
             this.snapshot.log(
                 `[realm=${realmName}] [clientId=${client.clientId}] Added role mappings for: ` + rolesToAdd.join(', '),
             );
@@ -110,9 +88,9 @@ export abstract class BaseClientUtilsActionProcessor extends BaseRealmUtilsActio
      * @param mappings
      */
     async deleteClientRoleMappingsForUser(
-        adminClient: KeycloakAdminClient,
-        user: UserRepresentation,
-        client: ClientRepresentation,
+        adminClient: KeycloakClient,
+        user: any,
+        client: any,
         realmName: string,
         rolesToRemove: string[],
         mappings: ICompositeRoleRepresentation,
@@ -131,12 +109,7 @@ export abstract class BaseClientUtilsActionProcessor extends BaseRealmUtilsActio
 
             const roles = await this.getClientRoles(adminClient, realmName, client, rolesToRemove);
 
-            await adminClient.users.delClientRoleMappings({
-                id: user.id,
-                clientUniqueId: client.id,
-                realm: realmName,
-                roles: <RoleMappingPayload[]>roles,
-            });
+            await adminClient.users.delClientRoleMappings(realmName, user.id, client.id, roles);
             this.snapshot.log(
                 `[realm=${realmName}] [clientId=${client.clientId}] Removed client role mappings for: ` +
                     rolesToRemove.join(', '),
@@ -155,9 +128,9 @@ export abstract class BaseClientUtilsActionProcessor extends BaseRealmUtilsActio
      * @param mappings
      */
     async addClientRoleMappingsForGroup(
-        adminClient: KeycloakAdminClient,
-        group: GroupRepresentation,
-        client: ClientRepresentation,
+        adminClient: KeycloakClient,
+        group: any,
+        client: any,
         realmName: string,
         rolesToAdd: string[],
         mappings: ICompositeRoleRepresentation,
@@ -174,17 +147,9 @@ export abstract class BaseClientUtilsActionProcessor extends BaseRealmUtilsActio
                 `[realm=${realmName}] [clientId=${client.clientId}] Adding client role mappings for: ` +
                     rolesToAdd.join(', '),
             );
-            const roleMappingsToAdd = <RoleMappingPayload[]>(
-                await this.getClientRoles(adminClient, realmName, client, rolesToAdd)
-            );
+            const roleMappingsToAdd = await this.getClientRoles(adminClient, realmName, client, rolesToAdd);
 
-            await adminClient.groups.addClientRoleMappings({
-                id: group.id,
-                clientUniqueId: client.id,
-                realm: realmName,
-                roles: roleMappingsToAdd,
-            });
-
+            await adminClient.groups.addClientRoleMappings(realmName, group.id, client.id, roleMappingsToAdd);
             this.snapshot.log(
                 `[realm=${realmName}] [clientId=${client.clientId}] Added client role mappings for: ` +
                     rolesToAdd.join(', '),
@@ -203,9 +168,9 @@ export abstract class BaseClientUtilsActionProcessor extends BaseRealmUtilsActio
      * @param mappings
      */
     async deleteClientRoleMappingsForGroup(
-        adminClient: KeycloakAdminClient,
-        group: GroupRepresentation,
-        client: ClientRepresentation,
+        adminClient: KeycloakClient,
+        group: any,
+        client: any,
         realmName: string,
         rolesToRemove: string[],
         mappings: ICompositeRoleRepresentation,
@@ -223,12 +188,7 @@ export abstract class BaseClientUtilsActionProcessor extends BaseRealmUtilsActio
             );
             const roles = await this.getClientRoles(adminClient, realmName, client, rolesToRemove);
 
-            await adminClient.groups.delClientRoleMappings({
-                id: group.id,
-                clientUniqueId: client.id,
-                realm: realmName,
-                roles: <RoleMappingPayload[]>roles,
-            });
+            await adminClient.groups.delClientRoleMappings(realmName, group.id, client.id, roles);
             this.snapshot.log(
                 `[realm=${realmName}] [clientId=${client.clientId}] Removed client role mappings for: ` +
                     rolesToRemove.join(', '),

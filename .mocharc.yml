@@ -1,9 +1,9 @@
 bail: true
-timeout: 30000
-require: 
+timeout: 300000
+require:
   - source-map-support/register
   - ts-node/register
-reporter: mochawesome  
+reporter: mochawesome
 spec:
   - test/*.ts
   - test/**/*.ts

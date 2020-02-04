@@ -33,7 +33,7 @@ export class ClientGetServiceAccountUserActionProcessor extends BaseServiceAccou
     /**
      * @inheritdoc
      */
-    async process(): Promise<void> {
+    async execute(): Promise<void> {
         const { credentials, realmName, clientId, assignRoleMappingsTo, pushRoleMappingsTo } = this.options;
 
         const adminClient = await this.getKeycloakAdminClient(credentials);

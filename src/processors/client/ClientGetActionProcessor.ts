@@ -1,10 +1,10 @@
 import * as Joi from 'joi';
 
-import { BaseKeycloakAdminClientActionProcessor } from '../BaseKeycloakAdminClientActionProcessor';
 import { KEYCLOAK_CREDENTIALS_SCHEMA } from '../../schemas';
 import { FBL_ASSIGN_TO_SCHEMA, FBL_PUSH_TO_SCHEMA, ContextUtil } from 'fbl';
+import { BaseActionProcessor } from '../base';
 
-export class ClientGetActionProcessor extends BaseKeycloakAdminClientActionProcessor {
+export class ClientGetActionProcessor extends BaseActionProcessor {
     private static validationSchema = Joi.object({
         credentials: KEYCLOAK_CREDENTIALS_SCHEMA,
         realmName: Joi.string()
@@ -32,7 +32,7 @@ export class ClientGetActionProcessor extends BaseKeycloakAdminClientActionProce
     /**
      * @inheritdoc
      */
-    async process(): Promise<void> {
+    async execute(): Promise<void> {
         const { credentials, realmName, clientId, assignClientTo, pushClientTo } = this.options;
 
         const adminClient = await this.getKeycloakAdminClient(credentials);

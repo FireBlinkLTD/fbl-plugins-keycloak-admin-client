@@ -32,7 +32,7 @@ export class UserAddToGroupActionProcessor extends BaseUserGroupActionProcessor 
     /**
      * @inheritdoc
      */
-    async process(): Promise<void> {
+    async execute(): Promise<void> {
         const { credentials, realmName, username, email, groupName } = this.options;
 
         const adminClient = await this.getKeycloakAdminClient(credentials);
@@ -42,11 +42,7 @@ export class UserAddToGroupActionProcessor extends BaseUserGroupActionProcessor 
         this.snapshot.log(
             `[realm=${realmName}] [username=${user.username}] [group=${groupName}] Adding user to group.`,
         );
-        await adminClient.users.addToGroup({
-            id: user.id,
-            groupId: group.id,
-            realm: realmName,
-        });
+        await adminClient.users.addToGroup(realmName, user.id, group.id);
         this.snapshot.log(
             `[realm=${realmName}] [username=${user.username}] [group=${groupName}] User successfully added to group.`,
         );
