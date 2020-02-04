@@ -1,7 +1,7 @@
 import * as Joi from 'joi';
 
 import { KEYCLOAK_CREDENTIALS_SCHEMA } from '../../../schemas';
-import { FBL_ASSIGN_TO_SCHEMA, FBL_PUSH_TO_SCHEMA, ContextUtil, ActionError } from 'fbl';
+import { FBL_ASSIGN_TO_SCHEMA, FBL_PUSH_TO_SCHEMA, ContextUtil } from 'fbl';
 import { BaseRoleActionProcessor } from '../BaseRoleActionProcessor';
 
 export class RealmRoleGetActionProcessor extends BaseRoleActionProcessor {
