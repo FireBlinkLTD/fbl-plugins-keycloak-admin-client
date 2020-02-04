@@ -2,98 +2,17 @@ import { ActionProcessor, ActionError } from 'fbl';
 import KeycloakAdminClient from 'keycloak-admin';
 import { ICredentials } from '../../interfaces';
 import * as request from 'request';
+import { KeycloakClient } from '../../helpers/KeycloakClient';
 
 export abstract class BaseConnectionActionProcessor extends ActionProcessor {
     /**
      * Create new instance of `keycloak-admin` client and authenticate with provided credentials
      * @param credentials
      */
-    async getKeycloakAdminClient(credentials: ICredentials): Promise<KeycloakAdminClient> {
-        const credentialsWithTimeout = { ...credentials };
-
-        if (!credentialsWithTimeout.requestConfig) {
-            credentialsWithTimeout.requestConfig = {};
-        }
-
-        if (!credentialsWithTimeout.requestConfig.timeout && credentialsWithTimeout.requestConfig !== 0) {
-            credentialsWithTimeout.requestConfig.timeout = 30 * 1000;
-        }
-
-        const client = new KeycloakAdminClient(credentials);
-        this.snapshot.log('Authenticating.');
-        await client.auth(credentials);
-        this.snapshot.log('Successfully authenticated.');
+    async getKeycloakAdminClient(credentials: ICredentials): Promise<KeycloakClient> {
+        const client = new KeycloakClient(credentials, this.snapshot);
+        await client.auth();
 
         return client;
-    }
-
-    /**
-     * Make Keycloak API request
-     * @param client
-     * @param endpoint
-     * @param method
-     * @param body
-     */
-    private async request(client: KeycloakAdminClient, endpoint: string, method = 'GET', body?: any): Promise<any> {
-        return await new Promise((resolve, reject) => {
-            const req = {
-                auth: {
-                    bearer: client.getAccessToken(),
-                },
-                json: true,
-                body,
-                method,
-                url: `${client.baseUrl}${endpoint}`,
-            };
-
-            request(req, (err, resp, responseBody) => {
-                /* istanbul ignore next */
-                if (err) {
-                    return reject(err);
-                }
-
-                if (resp.statusCode >= 200 && resp.statusCode < 300) {
-                    return resolve(responseBody);
-                }
-
-                /* istanbul ignore else */
-                if (responseBody) {
-                    this.snapshot.log(`Failed response body: ${JSON.stringify(responseBody, null, 2)}`, true, false);
-                }
-
-                return reject(
-                    new ActionError(`Request failed with status code ${resp.statusCode}`, resp.statusCode.toString()),
-                );
-            });
-        });
-    }
-
-    /**
-     * Make POST Keycloak API request
-     * @param client
-     * @param endpoint
-     * @param body
-     */
-    async post(client: KeycloakAdminClient, endpoint: string, body: any): Promise<any> {
-        return await this.request(client, endpoint, 'POST', body);
-    }
-
-    /**
-     * Make GET Keycloak API request
-     * @param client
-     * @param endpoint
-     */
-    async get(client: KeycloakAdminClient, endpoint: string): Promise<any> {
-        return await this.request(client, endpoint);
-    }
-
-    /**
-     * Make DELETE Keycloak API request
-     * @param client
-     * @param endpoint
-     * @param body
-     */
-    async delete(client: KeycloakAdminClient, endpoint: string, body?: any): Promise<any> {
-        return await this.request(client, endpoint, 'DELETE', body);
     }
 }

@@ -39,15 +39,12 @@ export class UserGetGroupsActionProcessor extends BaseUserGroupActionProcessor {
         const user = await this.findUser(adminClient, realmName, username, email);
 
         this.snapshot.log(`[realm=${realmName}] [username=${user.username}] Looking for groups user is added to.`);
-        const groups = await adminClient.users.listGroups({
-            id: user.id,
-            realm: realmName,
-        });
+        const groups = await adminClient.users.listGroups(realmName, user.id);
         this.snapshot.log(
             `[realm=${realmName}] [username=${user.username}] Groups that user is added to successfully loaded.`,
         );
 
-        const groupNames = groups.map(g => g.name);
+        const groupNames = groups.map((g: any) => g.name);
 
         ContextUtil.assignTo(this.context, this.parameters, this.snapshot, assignGroupsTo, groupNames);
         ContextUtil.pushTo(this.context, this.parameters, this.snapshot, pushGroupsTo, groupNames);

@@ -50,22 +50,11 @@ export class ClientRoleUpdateActionProcessor extends BaseRoleActionProcessor {
         const client = await this.findClient(adminClient, realmName, clientId);
 
         this.snapshot.log(`[realm=${realmName}] [clientId=${client.clientId}] Updating role ${roleName}.`);
-        await adminClient.clients.updateRole(
-            {
-                id: client.id,
-                roleName: roleName,
-                realm: realmName,
-            },
-            role,
-        );
+        await adminClient.clients.updateRole(realmName, client.id, roleName, role);
         this.snapshot.log(`[realm=${realmName}] [clientId=${client.clientId}] Role ${roleName} successfully updated.`);
 
         this.snapshot.log(`[realm=${realmName}] [clientId=${client.clientId}] Loading role ${roleName}.`);
-        const parentRole = await adminClient.clients.findRole({
-            id: client.id,
-            roleName: role.name,
-            realm: realmName,
-        });
+        const parentRole = await adminClient.clients.findRole(realmName, client.id, roleName);
         this.snapshot.log(`[realm=${realmName}] [clientId=${client.clientId}] Role ${roleName} successfully loaded.`);
 
         if (parentRole.composite) {

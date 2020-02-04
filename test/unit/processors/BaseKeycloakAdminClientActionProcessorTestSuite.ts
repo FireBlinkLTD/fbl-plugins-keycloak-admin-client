@@ -21,32 +21,6 @@ class DummyProcessor extends BaseKeycloakAdminClientActionProcessor {
 @suite()
 export class BaseKeycloakAdminClientActionProcessorTestSuite {
     @test()
-    async makeRequestToWrongEndpoint(): Promise<void> {
-        const processor = new DummyProcessor(
-            {},
-            ContextUtil.generateEmptyContext(),
-            new ActionSnapshot('.', '.', {}, '.', 0, {}),
-            {},
-        );
-
-        processor.fn = async () => {
-            const client = await processor.getKeycloakAdminClient(credentials);
-            await processor.get(client, '/invalid/enpoint');
-        };
-
-        let error;
-        try {
-            await processor.execute();
-        } catch (err) {
-            error = err;
-        }
-
-        assert(error);
-        assert.strictEqual(error.message, 'Request failed with status code 404');
-        assert.strictEqual(error.code, '404');
-    }
-
-    @test()
     async unableToFindRealmRole(): Promise<void> {
         const processor = new DummyProcessor(
             {},

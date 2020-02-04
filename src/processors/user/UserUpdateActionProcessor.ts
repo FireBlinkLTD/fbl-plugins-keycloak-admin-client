@@ -53,13 +53,7 @@ export class UserUpdateActionProcessor extends BaseUserActionProcessor {
         const kcUser = await this.findUser(adminClient, realmName, username, email);
 
         this.snapshot.log(`[realm=${realmName}] [username=${kcUser.username}] Updating user.`);
-        await adminClient.users.update(
-            {
-                id: kcUser.id,
-                realm: realmName,
-            },
-            user,
-        );
+        await adminClient.users.update(realmName, kcUser.id, user);
         this.snapshot.log(`[realm=${realmName}] [username=${kcUser.username}] User successfully updated.`);
     }
 }

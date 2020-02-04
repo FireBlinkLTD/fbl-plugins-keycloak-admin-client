@@ -48,10 +48,7 @@ export class UserCreateActionProcessor extends BaseKeycloakAdminClientActionProc
 
         const adminClient = await this.getKeycloakAdminClient(credentials);
         this.snapshot.log(`[realm=${realmName}] [username=${user.username}] Creating new user.`);
-        await adminClient.users.create({
-            ...user,
-            realm: realmName,
-        });
+        await adminClient.users.create(realmName, user);
         this.snapshot.log(`[realm=${realmName}] [username=${user.username}] User successfully created.`);
     }
 }

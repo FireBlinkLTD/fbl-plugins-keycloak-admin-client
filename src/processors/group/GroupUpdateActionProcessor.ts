@@ -46,13 +46,7 @@ export class GroupUpdateActionProcessor extends BaseKeycloakAdminClientActionPro
         const kcGroup = await this.findGroup(adminClient, realmName, groupName);
 
         this.snapshot.log(`[realm=${realmName}] [group=${groupName}] Updating group.`);
-        await adminClient.groups.update(
-            {
-                id: kcGroup.id,
-                realm: realmName,
-            },
-            group,
-        );
+        await adminClient.groups.update(realmName, kcGroup.id, group);
         this.snapshot.log(`[realm=${realmName}] [group=${groupName}] Group successfully updated.`);
     }
 }

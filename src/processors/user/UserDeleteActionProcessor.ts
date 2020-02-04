@@ -36,10 +36,7 @@ export class UserDeleteActionProcessor extends BaseUserActionProcessor {
         const user = await this.findUser(adminClient, realmName, username, email);
 
         this.snapshot.log(`[realm=${realmName}] [username=${user.username}] Removing user.`);
-        await adminClient.users.del({
-            id: user.id,
-            realm: realmName,
-        });
+        await adminClient.users.delete(realmName, user.id);
         this.snapshot.log(`[realm=${realmName}] [username=${user.username}] User successfully removed.`);
     }
 }

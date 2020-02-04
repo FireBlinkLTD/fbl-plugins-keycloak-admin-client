@@ -42,11 +42,7 @@ export class ClientRoleGetActionProcessor extends BaseRoleActionProcessor {
         const client = await this.findClient(adminClient, realmName, clientId);
 
         this.snapshot.log(`[realm=${realmName}] [clientId=${client.clientId}] Looking for a role ${roleName}.`);
-        const role = await adminClient.clients.findRole({
-            id: client.id,
-            roleName: roleName,
-            realm: realmName,
-        });
+        const role = await adminClient.clients.findRole(realmName, client.id, roleName);
 
         if (!role) {
             throw new ActionError(

@@ -34,7 +34,7 @@ export class RealmGetActionProcessor extends BaseKeycloakAdminClientActionProces
 
         const adminClient = await this.getKeycloakAdminClient(credentials);
         this.snapshot.log(`[realm=${realmName}] Looking for realm.`);
-        const realm = await adminClient.realms.findOne({ realm: realmName });
+        const realm = await adminClient.realms.findOne(realmName);
 
         if (!realm) {
             throw new ActionError(`Unable to find realm with name: ${realmName}`, '404');

@@ -1,8 +1,8 @@
-import KeycloakAdminClient from 'keycloak-admin';
 import UserRepresentation from 'keycloak-admin/lib/defs/userRepresentation';
 import { ActionError } from 'fbl';
 import ClientRepresentation from 'keycloak-admin/lib/defs/clientRepresentation';
 import { BaseKeycloakAdminClientActionProcessor } from '../../BaseKeycloakAdminClientActionProcessor';
+import { KeycloakClient } from '../../../helpers/KeycloakClient';
 
 export abstract class BaseServiceAccountActionProcessor extends BaseKeycloakAdminClientActionProcessor {
     /**
@@ -12,7 +12,7 @@ export abstract class BaseServiceAccountActionProcessor extends BaseKeycloakAdmi
      * @param clientId
      */
     async getServiceAccountUser(
-        adminClient: KeycloakAdminClient,
+        adminClient: KeycloakClient,
         realm: string,
         client: ClientRepresentation,
     ): Promise<UserRepresentation> {
@@ -24,10 +24,7 @@ export abstract class BaseServiceAccountActionProcessor extends BaseKeycloakAdmi
         }
 
         this.snapshot.log(`[realm=${realm}] [clientId=${client.clientId}] Looking for service account user.`);
-        const user = await adminClient.clients.getServiceAccountUser({
-            id: client.id,
-            realm,
-        });
+        const user = await adminClient.clients.getServiceAccountUser(realm, client.id);
         this.snapshot.log(`[realm=${realm}] [clientId=${client.clientId}] Service account user successfully loaded.`);
 
         return user;

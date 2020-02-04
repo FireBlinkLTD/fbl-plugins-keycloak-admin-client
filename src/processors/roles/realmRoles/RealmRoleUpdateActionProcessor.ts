@@ -45,20 +45,11 @@ export class RealmRoleUpdateActionProcessor extends BaseRoleActionProcessor {
 
         const adminClient = await this.getKeycloakAdminClient(credentials);
         this.snapshot.log(`[realm=${realmName}] Upading role ${roleName}.`);
-        await adminClient.roles.updateByName(
-            {
-                name: roleName,
-                realm: realmName,
-            },
-            role,
-        );
+        await adminClient.roles.update(realmName, roleName, role);
         this.snapshot.log(`[realm=${realmName}] Role ${roleName} successfully updated.`);
 
         this.snapshot.log(`[realm=${realmName}] Loading role ${roleName}.`);
-        const parentRole = await adminClient.roles.findOneByName({
-            name: role.name,
-            realm: realmName,
-        });
+        const parentRole = await adminClient.roles.findOne(realmName, role.name);
         this.snapshot.log(`[realm=${realmName}] Role ${roleName} successfully loaded.`);
 
         if (parentRole.composite) {
