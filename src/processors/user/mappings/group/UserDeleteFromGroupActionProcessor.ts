@@ -32,7 +32,7 @@ export class UserDeleteFromGroupActionProcessor extends BaseUserGroupActionProce
     /**
      * @inheritdoc
      */
-    async process(): Promise<void> {
+    async execute(): Promise<void> {
         const { credentials, realmName, username, email, groupName } = this.options;
 
         const adminClient = await this.getKeycloakAdminClient(credentials);

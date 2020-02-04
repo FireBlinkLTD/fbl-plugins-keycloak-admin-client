@@ -25,10 +25,6 @@ export abstract class BaseRealmUtilsActionProcessor extends BaseConnectionAction
         // unfortunatelly .find method is broken in adminClient, need to get each role one by one
         for (const role of roles) {
             const r = await adminClient.roles.findOne(realmName, role);
-
-            if (!r) {
-                throw new ActionError(`Unable to find realm role "${role}" in realm "${realmName}".`, '404');
-            }
             realmRoles.push(r);
         }
 

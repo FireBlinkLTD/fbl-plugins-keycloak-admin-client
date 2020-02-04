@@ -32,7 +32,7 @@ export class UserGetGroupsActionProcessor extends BaseUserGroupActionProcessor {
     /**
      * @inheritdoc
      */
-    async process(): Promise<void> {
+    async execute(): Promise<void> {
         const { credentials, realmName, username, email, assignGroupsTo, pushGroupsTo } = this.options;
 
         const adminClient = await this.getKeycloakAdminClient(credentials);

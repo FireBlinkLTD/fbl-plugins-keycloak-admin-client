@@ -43,7 +43,7 @@ export class ClientRoleUpdateActionProcessor extends BaseRoleActionProcessor {
     /**
      * @inheritdoc
      */
-    async process(): Promise<void> {
+    async execute(): Promise<void> {
         const { clientId, roleName, realmName, role, credentials } = this.options;
 
         const adminClient = await this.getKeycloakAdminClient(credentials);
@@ -53,9 +53,9 @@ export class ClientRoleUpdateActionProcessor extends BaseRoleActionProcessor {
         await adminClient.clients.updateRole(realmName, client.id, roleName, role);
         this.snapshot.log(`[realm=${realmName}] [clientId=${client.clientId}] Role ${roleName} successfully updated.`);
 
-        this.snapshot.log(`[realm=${realmName}] [clientId=${client.clientId}] Loading role ${roleName}.`);
-        const parentRole = await adminClient.clients.findRole(realmName, client.id, roleName);
-        this.snapshot.log(`[realm=${realmName}] [clientId=${client.clientId}] Role ${roleName} successfully loaded.`);
+        this.snapshot.log(`[realm=${realmName}] [clientId=${client.clientId}] Loading role ${role.name}.`);
+        const parentRole = await adminClient.clients.findRole(realmName, client.id, role.name);
+        this.snapshot.log(`[realm=${realmName}] [clientId=${client.clientId}] Role ${role.name} successfully loaded.`);
 
         if (parentRole.composite) {
             parentRole.composites = await this.getCompositeRoles(adminClient, realmName, parentRole);

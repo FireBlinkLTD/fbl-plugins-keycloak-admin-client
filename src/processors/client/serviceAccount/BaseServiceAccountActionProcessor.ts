@@ -1,10 +1,10 @@
 import UserRepresentation from 'keycloak-admin/lib/defs/userRepresentation';
 import { ActionError } from 'fbl';
 import ClientRepresentation from 'keycloak-admin/lib/defs/clientRepresentation';
-import { BaseKeycloakAdminClientActionProcessor } from '../../BaseKeycloakAdminClientActionProcessor';
 import { KeycloakClient } from '../../../helpers/KeycloakClient';
+import { BaseActionProcessor } from '../../base';
 
-export abstract class BaseServiceAccountActionProcessor extends BaseKeycloakAdminClientActionProcessor {
+export abstract class BaseServiceAccountActionProcessor extends BaseActionProcessor {
     /**
      * Get Service Account user associated with the client
      * @param adminClient

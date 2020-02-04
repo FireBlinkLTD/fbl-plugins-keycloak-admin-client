@@ -18,8 +18,9 @@ export class KeycloakUsersResource extends BaseResourceRepresentation {
     }
 
     public async delClientRoleMappings(realm: string, id: string, clientUniqueId: string, roles: any) {
-        return await this.keycloakClient.post(
+        return await this.keycloakClient.delete(
             `/admin/realms/${realm}/users/${id}/role-mappings/clients/${clientUniqueId}`,
+            {},
             roles,
         );
     }
@@ -29,7 +30,7 @@ export class KeycloakUsersResource extends BaseResourceRepresentation {
     }
 
     public async delRealmRoleMappings(realm: string, id: string, roles: any) {
-        return await this.keycloakClient.post(`/admin/realms/${realm}/users/${id}/role-mappings/realm`, roles);
+        return await this.keycloakClient.delete(`/admin/realms/${realm}/users/${id}/role-mappings/realm`, {}, roles);
     }
 
     public async addToGroup(realm: string, id: string, groupId: string) {

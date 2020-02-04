@@ -144,7 +144,7 @@ class ClientRolesActionHandlersTestSuite {
         const failedStep = snapshot.getSteps().find(s => s.type === 'failure');
         assert.deepStrictEqual(failedStep.payload, {
             code: '404',
-            message: `Unable to find role "test:new" for client with clientId: ${clientId} of realm "master". Role not found`,
+            message: 'Request failed with status code 404',
         });
     }
 

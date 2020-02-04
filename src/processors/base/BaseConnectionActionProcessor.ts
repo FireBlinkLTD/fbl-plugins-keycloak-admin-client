@@ -1,7 +1,5 @@
-import { ActionProcessor, ActionError } from 'fbl';
-import KeycloakAdminClient from 'keycloak-admin';
+import { ActionProcessor } from 'fbl';
 import { ICredentials } from '../../interfaces';
-import * as request from 'request';
 import { KeycloakClient } from '../../helpers/KeycloakClient';
 
 export abstract class BaseConnectionActionProcessor extends ActionProcessor {

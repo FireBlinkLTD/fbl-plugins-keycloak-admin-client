@@ -126,7 +126,7 @@ class RealmRolesActionHandlersTestSuite {
         const failedStep = snapshot.getSteps().find(s => s.type === 'failure');
         assert.deepStrictEqual(failedStep.payload, {
             code: '404',
-            message: `Unable to find role "${roleName}:new" of realm "master". Role not found`,
+            message: `Request failed with status code 404`,
         });
     }
 

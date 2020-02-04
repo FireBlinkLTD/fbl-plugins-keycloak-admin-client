@@ -1,9 +1,9 @@
-import { BaseKeycloakAdminClientActionProcessor } from '../BaseKeycloakAdminClientActionProcessor';
 import RoleRepresentation from 'keycloak-admin/lib/defs/roleRepresentation';
 import { ICompositeRoleRepresentation, ICompositeRoleMappingRepresentation } from '../../interfaces';
 import { KeycloakClient } from '../../helpers/KeycloakClient';
+import { BaseActionProcessor } from '../base';
 
-export abstract class BaseRoleActionProcessor extends BaseKeycloakAdminClientActionProcessor {
+export abstract class BaseRoleActionProcessor extends BaseActionProcessor {
     /**
      * Find composite roles
      * @param adminClient
@@ -137,7 +137,7 @@ export abstract class BaseRoleActionProcessor extends BaseKeycloakAdminClientAct
     ) {
         if (childRoles.length) {
             this.snapshot.log(`[realm=${realm}] Removing composite roles.`);
-            await adminClient.delete(`/admin/realms/${realm}/roles-by-id/${parentRole.id}/composites`, childRoles);
+            await adminClient.delete(`/admin/realms/${realm}/roles-by-id/${parentRole.id}/composites`, {}, childRoles);
             this.snapshot.log(`[realm=${realm}] Composite roles successfully removed.`);
         }
     }

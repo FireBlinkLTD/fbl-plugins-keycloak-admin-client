@@ -46,7 +46,7 @@ export class UserUpdateActionProcessor extends BaseUserActionProcessor {
     /**
      * @inheritdoc
      */
-    async process(): Promise<void> {
+    async execute(): Promise<void> {
         const { credentials, realmName, username, email, user } = this.options;
 
         const adminClient = await this.getKeycloakAdminClient(credentials);

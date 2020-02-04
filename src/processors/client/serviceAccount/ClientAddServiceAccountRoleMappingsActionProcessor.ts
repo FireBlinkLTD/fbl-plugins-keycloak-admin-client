@@ -34,7 +34,7 @@ export class ClientAddServiceAccountUserActionProcessor extends BaseServiceAccou
     /**
      * @inheritdoc
      */
-    async process(): Promise<void> {
+    async execute(): Promise<void> {
         const { credentials, realmName, clientId, roles } = this.options;
 
         const adminClient = await this.getKeycloakAdminClient(credentials);

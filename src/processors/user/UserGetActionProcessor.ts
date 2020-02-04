@@ -32,7 +32,7 @@ export class UserGetActionProcessor extends BaseUserActionProcessor {
     /**
      * @inheritdoc
      */
-    async process(): Promise<void> {
+    async execute(): Promise<void> {
         const { credentials, realmName, username, email, assignUserTo, pushUserTo } = this.options;
 
         const adminClient = await this.getKeycloakAdminClient(credentials);

@@ -39,7 +39,7 @@ export class RealmRoleCreateActionProcessor extends BaseRoleActionProcessor {
     /**
      * @inheritdoc
      */
-    async process(): Promise<void> {
+    async execute(): Promise<void> {
         const { credentials, role, realmName } = this.options;
 
         const adminClient = await this.getKeycloakAdminClient(credentials);

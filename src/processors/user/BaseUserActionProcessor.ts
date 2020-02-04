@@ -1,9 +1,9 @@
-import { ActionError } from 'fbl';
+import { ActionError, ActionProcessor } from 'fbl';
 import UserRepresentation from 'keycloak-admin/lib/defs/userRepresentation';
-import { BaseKeycloakAdminClientActionProcessor } from '../BaseKeycloakAdminClientActionProcessor';
 import { KeycloakClient } from '../../helpers/KeycloakClient';
+import { BaseActionProcessor } from '../base';
 
-export abstract class BaseUserActionProcessor extends BaseKeycloakAdminClientActionProcessor {
+export abstract class BaseUserActionProcessor extends BaseActionProcessor {
     /**
      * Find realm roles
      * @param adminClient
