@@ -42,7 +42,7 @@ export class BaseKeycloakAdminClientActionProcessorTestSuite {
         }
 
         assert(error);
-        assert.strictEqual(error.message, 'Request failed with status code 404: "Not Found"');
+        assert.strictEqual(error.message, 'Request failed with status code 404');
         assert.strictEqual(error.code, '404');
     }
 

@@ -44,7 +44,7 @@ After that you can use `yarn fbl <args>` to execute your flow or even register a
 
 ### Global installation
 
-`npm i -g @fbl-plguins/keycloak-admin-client`
+`npm i -g @fbl-plugins/keycloak-admin-client`
 
 ### Register plugin to be accessible by fbl
 

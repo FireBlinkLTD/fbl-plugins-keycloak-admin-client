@@ -1,4 +1,4 @@
-import { ActionProcessor } from 'fbl';
+import { ActionProcessor, ActionError } from 'fbl';
 import KeycloakAdminClient from 'keycloak-admin';
 import { ICredentials } from '../../interfaces';
 import * as request from 'request';
@@ -57,19 +57,13 @@ export abstract class BaseConnectionActionProcessor extends ActionProcessor {
                 }
 
                 /* istanbul ignore else */
-                if (!responseBody) {
-                    responseBody = {
-                        message: `Request failed with status code ${resp.statusCode}`,
-                        response: {
-                            status: resp.statusCode,
-                            data: {
-                                errorMessage: resp.statusMessage,
-                            },
-                        },
-                    };
+                if (responseBody) {
+                    this.snapshot.log(`Failed response body: ${JSON.stringify(responseBody, null, 2)}`, true, false);
                 }
 
-                return reject(responseBody);
+                return reject(
+                    new ActionError(`Request failed with status code ${resp.statusCode}`, resp.statusCode.toString()),
+                );
             });
         });
     }
