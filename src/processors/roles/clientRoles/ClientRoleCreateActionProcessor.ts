@@ -3,7 +3,6 @@ import * as Joi from 'joi';
 import { KEYCLOAK_CREDENTIALS_SCHEMA } from '../../../schemas';
 import { BaseRoleActionProcessor } from '../BaseRoleActionProcessor';
 import { ICompositeRoleMappingRepresentation } from '../../../interfaces';
-import RoleRepresentation from 'keycloak-admin/lib/defs/roleRepresentation';
 
 export class ClientRoleCreateActionProcessor extends BaseRoleActionProcessor {
     private static validationSchema = Joi.object({
@@ -64,7 +63,7 @@ export class ClientRoleCreateActionProcessor extends BaseRoleActionProcessor {
                 `[realm=${realmName}] [clientId=${client.clientId}] Role ${role.name} successfully loaded.`,
             );
 
-            const roles: RoleRepresentation[] = [...compositeRoles.realm];
+            const roles = [...compositeRoles.realm];
             for (const cid of Object.keys(compositeRoles.client)) {
                 roles.push(...compositeRoles.client[cid]);
             }

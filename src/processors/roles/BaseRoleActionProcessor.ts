@@ -1,4 +1,3 @@
-import RoleRepresentation from 'keycloak-admin/lib/defs/roleRepresentation';
 import { ICompositeRoleRepresentation, ICompositeRoleMappingRepresentation } from '../../interfaces';
 import { KeycloakClient } from '../../helpers/KeycloakClient';
 import { BaseActionProcessor } from '../base';
@@ -62,12 +61,10 @@ export abstract class BaseRoleActionProcessor extends BaseActionProcessor {
     async getCompositeRoles(
         adminClient: KeycloakClient,
         realm: string,
-        parentRole: RoleRepresentation,
+        parentRole: any,
     ): Promise<ICompositeRoleRepresentation> {
         this.snapshot.log(`[realm=${realm}] Loading role ${parentRole.name} composites.`);
-        const response: RoleRepresentation[] = await adminClient.get(
-            `/admin/realms/${realm}/roles-by-id/${parentRole.id}/composites`,
-        );
+        const response = await adminClient.get(`/admin/realms/${realm}/roles-by-id/${parentRole.id}/composites`);
         this.snapshot.log(`[realm=${realm}] Role ${parentRole.name} composites successfully loaded.`);
 
         const result: ICompositeRoleRepresentation = {
@@ -109,12 +106,7 @@ export abstract class BaseRoleActionProcessor extends BaseActionProcessor {
      * @param parentRole
      * @param childRole
      */
-    async addCompositeRoles(
-        adminClient: KeycloakClient,
-        realm: string,
-        parentRole: RoleRepresentation,
-        childRoles: RoleRepresentation[],
-    ) {
+    async addCompositeRoles(adminClient: KeycloakClient, realm: string, parentRole: any, childRoles: any[]) {
         if (childRoles.length) {
             this.snapshot.log(`[realm=${realm}] Adding composite roles.`);
             await adminClient.post(`/admin/realms/${realm}/roles-by-id/${parentRole.id}/composites`, childRoles);
@@ -129,12 +121,7 @@ export abstract class BaseRoleActionProcessor extends BaseActionProcessor {
      * @param parentRole
      * @param childRole
      */
-    async removeCompositeRoles(
-        adminClient: KeycloakClient,
-        realm: string,
-        parentRole: RoleRepresentation,
-        childRoles: RoleRepresentation[],
-    ) {
+    async removeCompositeRoles(adminClient: KeycloakClient, realm: string, parentRole: any, childRoles: any[]) {
         if (childRoles.length) {
             this.snapshot.log(`[realm=${realm}] Removing composite roles.`);
             await adminClient.delete(`/admin/realms/${realm}/roles-by-id/${parentRole.id}/composites`, {}, childRoles);
@@ -152,7 +139,7 @@ export abstract class BaseRoleActionProcessor extends BaseActionProcessor {
     async applyCompositeRoles(
         adminClient: KeycloakClient,
         realm: string,
-        parentRole: RoleRepresentation,
+        parentRole: any,
         composites?: ICompositeRoleRepresentation,
     ): Promise<void> {
         let compositeRolesToAdd: ICompositeRoleRepresentation = {

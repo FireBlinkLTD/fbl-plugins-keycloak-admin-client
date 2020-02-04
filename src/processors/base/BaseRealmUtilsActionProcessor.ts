@@ -1,9 +1,5 @@
 import { BaseConnectionActionProcessor } from './BaseConnectionActionProcessor';
-import RoleRepresentation, { RoleMappingPayload } from 'keycloak-admin/lib/defs/roleRepresentation';
 import { ICompositeRoleRepresentation } from '../../interfaces';
-import UserRepresentation from 'keycloak-admin/lib/defs/userRepresentation';
-import { ActionError } from 'fbl';
-import GroupRepresentation from 'keycloak-admin/lib/defs/groupRepresentation';
 import { KeycloakClient } from '../../helpers/KeycloakClient';
 
 export abstract class BaseRealmUtilsActionProcessor extends BaseConnectionActionProcessor {
@@ -14,13 +10,9 @@ export abstract class BaseRealmUtilsActionProcessor extends BaseConnectionAction
      * @param roles
      * @param realmName
      */
-    async getRealmRoles(
-        adminClient: KeycloakClient,
-        roles: string[],
-        realmName: string,
-    ): Promise<RoleRepresentation[]> {
+    async getRealmRoles(adminClient: KeycloakClient, roles: string[], realmName: string): Promise<any[]> {
         this.snapshot.log(`[realm=${realmName}] Loading realm roles: ${roles.join(',')}`);
-        const realmRoles: RoleRepresentation[] = [];
+        const realmRoles = [];
 
         // unfortunatelly .find method is broken in adminClient, need to get each role one by one
         for (const role of roles) {
@@ -44,7 +36,7 @@ export abstract class BaseRealmUtilsActionProcessor extends BaseConnectionAction
      */
     async addRealmRoleMappingsForUser(
         adminClient: KeycloakClient,
-        user: UserRepresentation,
+        user: any,
         realmName: string,
         rolesToAdd: string[],
         mappings: ICompositeRoleRepresentation,
@@ -53,7 +45,7 @@ export abstract class BaseRealmUtilsActionProcessor extends BaseConnectionAction
             return mappings.realm.indexOf(r) <= 0;
         });
 
-        const roleMappingsToAdd = <RoleMappingPayload[]>await this.getRealmRoles(adminClient, rolesToAdd, realmName);
+        const roleMappingsToAdd = await this.getRealmRoles(adminClient, rolesToAdd, realmName);
 
         /* istanbul ignore else */
         if (rolesToAdd.length) {
@@ -74,7 +66,7 @@ export abstract class BaseRealmUtilsActionProcessor extends BaseConnectionAction
      */
     async deleteRealmRoleMappingsForUser(
         adminClient: KeycloakClient,
-        user: UserRepresentation,
+        user: any,
         realmName: string,
         rolesToRemove: string[],
         mappings: ICompositeRoleRepresentation,
@@ -104,7 +96,7 @@ export abstract class BaseRealmUtilsActionProcessor extends BaseConnectionAction
      */
     async addRealmRoleMappingsForGroup(
         adminClient: KeycloakClient,
-        group: GroupRepresentation,
+        group: any,
         realmName: string,
         rolesToAdd: string[],
         mappings: ICompositeRoleRepresentation,
@@ -115,9 +107,7 @@ export abstract class BaseRealmUtilsActionProcessor extends BaseConnectionAction
 
         /* istanbul ignore else */
         if (rolesToAdd.length) {
-            const roleMappingsToAdd = <RoleMappingPayload[]>(
-                await this.getRealmRoles(adminClient, rolesToAdd, realmName)
-            );
+            const roleMappingsToAdd = await this.getRealmRoles(adminClient, rolesToAdd, realmName);
 
             this.snapshot.log(`[realm=${realmName}] Adding realm role mappings for: ` + rolesToAdd.join(', '));
             await adminClient.groups.addRealmRoleMappings(realmName, group.id, roleMappingsToAdd);
@@ -136,7 +126,7 @@ export abstract class BaseRealmUtilsActionProcessor extends BaseConnectionAction
      */
     async deleteRealmRoleMappingsForGroup(
         adminClient: KeycloakClient,
-        group: GroupRepresentation,
+        group: any,
         realmName: string,
         rolesToRemove: string[],
         mappings: ICompositeRoleRepresentation,

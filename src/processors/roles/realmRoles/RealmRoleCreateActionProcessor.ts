@@ -1,7 +1,6 @@
 import * as Joi from 'joi';
 
 import { KEYCLOAK_CREDENTIALS_SCHEMA } from '../../../schemas';
-import RoleRepresentation from 'keycloak-admin/lib/defs/roleRepresentation';
 import { ICompositeRoleMappingRepresentation } from '../../../interfaces';
 import { BaseRoleActionProcessor } from '../BaseRoleActionProcessor';
 
@@ -58,7 +57,7 @@ export class RealmRoleCreateActionProcessor extends BaseRoleActionProcessor {
             const parentRole = await adminClient.roles.findOne(realmName, role.name);
             this.snapshot.log(`[realm=${realmName}] Role ${role.name} successfully loaded.`);
 
-            const roles: RoleRepresentation[] = [...compositeRoles.realm];
+            const roles = [...compositeRoles.realm];
             for (const clientId of Object.keys(compositeRoles.client)) {
                 roles.push(...compositeRoles.client[clientId]);
             }

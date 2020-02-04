@@ -16,7 +16,6 @@
   "license": "MIT",
   "dependencies": {
     "joi": "14.3.1",
-    "keycloak-admin": "1.13.0",
     "request": "2.88.0",
     "typedi": "0.8.0"
   },

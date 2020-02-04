@@ -1,4 +1,3 @@
-import { ICredentials } from '../interfaces';
 import * as request from 'request';
 import { ActionError, ActionSnapshot } from 'fbl';
 import { KeycloakClientsResource } from './resources/KeycloakClientsResource';
@@ -11,12 +10,7 @@ export class KeycloakClient {
     static DEFAULT_TIMEOUT = 30 * 1000;
     public accessToken: string;
 
-    constructor(
-        private credentials: ICredentials,
-        private snapshot: ActionSnapshot,
-    ) {
-
-    }
+    constructor(private credentials: any, private snapshot: ActionSnapshot) {}
 
     public get clients(): KeycloakClientsResource {
         return new KeycloakClientsResource(this);
@@ -51,13 +45,17 @@ export class KeycloakClient {
             method: 'POST',
         };
 
-        const body = await this.makeRequest(`/realms/${this.credentials.realmName || 'master'}/protocol/openid-connect/token`, req);
+        const body = await this.makeRequest(
+            `/realms/${this.credentials.realmName || 'master'}/protocol/openid-connect/token`,
+            req,
+        );
         this.accessToken = body.access_token;
     }
 
     private get timeout(): number {
-        return (this.credentials.requestConfig && this.credentials.requestConfig.timeout)
-            || KeycloakClient.DEFAULT_TIMEOUT;
+        return (
+            (this.credentials.requestConfig && this.credentials.requestConfig.timeout) || KeycloakClient.DEFAULT_TIMEOUT
+        );
     }
 
     /**
@@ -164,10 +162,7 @@ export class KeycloakClient {
                     }
                 }
 
-
-                return reject(
-                    new ActionError(errorMessage, resp.statusCode.toString()),
-                );
+                return reject(new ActionError(errorMessage, resp.statusCode.toString()));
             });
         });
     }

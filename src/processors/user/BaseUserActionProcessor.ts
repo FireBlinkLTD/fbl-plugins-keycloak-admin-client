@@ -1,5 +1,4 @@
-import { ActionError, ActionProcessor } from 'fbl';
-import UserRepresentation from 'keycloak-admin/lib/defs/userRepresentation';
+import { ActionError } from 'fbl';
 import { KeycloakClient } from '../../helpers/KeycloakClient';
 import { BaseActionProcessor } from '../base';
 
@@ -10,12 +9,7 @@ export abstract class BaseUserActionProcessor extends BaseActionProcessor {
      * @param roles
      * @param realmName
      */
-    async findUser(
-        adminClient: KeycloakClient,
-        realmName: string,
-        username?: string,
-        email?: string,
-    ): Promise<UserRepresentation> {
+    async findUser(adminClient: KeycloakClient, realmName: string, username?: string, email?: string) {
         let logPreffix = `[realm=${realmName}] `;
 
         if (username) {

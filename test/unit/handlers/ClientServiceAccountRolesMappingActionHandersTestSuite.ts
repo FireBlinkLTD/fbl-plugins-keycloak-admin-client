@@ -16,7 +16,6 @@ import {
 } from '../../../src/handlers';
 
 import credentials from '../credentials';
-import ClientRepresentation from 'keycloak-admin/lib/defs/clientRepresentation';
 
 const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
@@ -87,7 +86,7 @@ class ClientServiceAccountRolesMappingsActionHandlersTestSuite {
                         'keycloak.client.create': {
                             credentials,
                             realmName,
-                            client: <ClientRepresentation>{
+                            client: {
                                 clientId,
                                 enabled: true,
                                 serviceAccountsEnabled: true,
@@ -271,7 +270,7 @@ class ClientServiceAccountRolesMappingsActionHandlersTestSuite {
                         'keycloak.client.create': {
                             credentials,
                             realmName,
-                            client: <ClientRepresentation>{
+                            client: {
                                 clientId,
                                 enabled: true,
                                 serviceAccountsEnabled: true,

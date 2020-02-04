@@ -1,8 +1,6 @@
-import RoleRepresentation from 'keycloak-admin/lib/defs/roleRepresentation';
-
 export interface ICompositeRoleMappingRepresentation {
-    realm: RoleRepresentation[];
+    realm: any[];
     client: {
-        [clientId: string]: RoleRepresentation[];
+        [clientId: string]: any[];
     };
 }

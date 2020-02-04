@@ -1,6 +1,4 @@
-import UserRepresentation from 'keycloak-admin/lib/defs/userRepresentation';
 import { ActionError } from 'fbl';
-import ClientRepresentation from 'keycloak-admin/lib/defs/clientRepresentation';
 import { KeycloakClient } from '../../../helpers/KeycloakClient';
 import { BaseActionProcessor } from '../../base';
 
@@ -11,11 +9,7 @@ export abstract class BaseServiceAccountActionProcessor extends BaseActionProces
      * @param realm
      * @param clientId
      */
-    async getServiceAccountUser(
-        adminClient: KeycloakClient,
-        realm: string,
-        client: ClientRepresentation,
-    ): Promise<UserRepresentation> {
+    async getServiceAccountUser(adminClient: KeycloakClient, realm: string, client: any) {
         if (!client.serviceAccountsEnabled) {
             throw new ActionError(
                 `ServiceAccount is not enabled for client with clientId "${client.clientId}" of realm "${realm}"`,
