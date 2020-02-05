@@ -44,6 +44,7 @@ class ConnectionTimeoutActionHandlersTestSuite {
             ...credentials,
             requestConfig: {
                 timeout: 1,
+                userAgent: 'curl/7.29.0',
             },
         };
         const snapshot = await flowService.executeAction(

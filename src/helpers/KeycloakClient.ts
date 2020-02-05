@@ -8,6 +8,8 @@ import { KeycloakRealmsResource } from './resources/KeycloakRealmsResource';
 
 export class KeycloakClient {
     static DEFAULT_TIMEOUT = 30 * 1000;
+    static DEFAULT_USER_AGENT = '@fbl-plugins/keycloak-admin-client';
+
     public accessToken: string;
 
     constructor(private credentials: any, private snapshot: ActionSnapshot) {}
@@ -55,6 +57,13 @@ export class KeycloakClient {
     private get timeout(): number {
         return (
             (this.credentials.requestConfig && this.credentials.requestConfig.timeout) || KeycloakClient.DEFAULT_TIMEOUT
+        );
+    }
+
+    private get userAgent(): string {
+        return (
+            (this.credentials.requestConfig && this.credentials.requestConfig.userAgent) ||
+            KeycloakClient.DEFAULT_USER_AGENT
         );
     }
 
@@ -140,17 +149,24 @@ export class KeycloakClient {
     }
 
     private makeRequest(uri: string, req: request.CoreOptions): Promise<any> {
+        req.headers = {
+            Accept: 'application/json',
+            'User-Agent': this.userAgent,
+        };
+
+        this.snapshot.log(`Making ${req.method} request to ${uri} qs: ${JSON.stringify(req.qs || {})}`);
         return new Promise((resolve, reject) => {
             request(`${this.credentials.baseUrl}${uri}`, req, (err, resp, responseBody) => {
                 /* istanbul ignore next */
                 if (err) {
+                    this.snapshot.log(`${req.method} request to ${uri} failed`);
                     return reject(err);
                 }
 
+                this.snapshot.log(`${req.method} request to ${uri} completed with status code: ${resp.statusCode}`);
                 if (resp.statusCode >= 200 && resp.statusCode < 300) {
                     return resolve(responseBody);
                 }
-
                 let errorMessage = `Request failed with status code ${resp.statusCode}`;
 
                 /* istanbul ignore else */

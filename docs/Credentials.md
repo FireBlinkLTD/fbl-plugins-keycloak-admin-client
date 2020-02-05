@@ -22,6 +22,10 @@ credentials:
     # [optional] request timeout in milliseconds
     # Default value: 30000 (30 seconds)
     timeout: 15000
+
+    # [optional] curl user-agent header to send with every request
+    # Default value: @fbl-plugins/keycloak-admin-client
+    userAgent: curl/7.29.0
 ```
 
 ## Service Account Example Configuration

@@ -15,7 +15,14 @@ const KEYCLOAK_CREDENTIALS_SCHEMA = Joi.object({
 
     requestConfig: Joi.object({
         timeout: Joi.number().min(1),
+        userAgent: Joi.string().min(1),
+    }).options({
+        abortEarly: true,
+        allowUnknown: false,
     }),
-}).options({ abortEarly: true });
+}).options({
+    abortEarly: true,
+    allowUnknown: false,
+});
 
 export { KEYCLOAK_CREDENTIALS_SCHEMA };
