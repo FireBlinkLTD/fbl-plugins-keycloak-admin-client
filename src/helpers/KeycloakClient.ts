@@ -154,12 +154,13 @@ export class KeycloakClient {
             'User-Agent': this.userAgent,
         };
 
-        this.snapshot.log(`Making ${req.method} request to ${uri} qs: ${JSON.stringify(req.qs || {})}`);
         return new Promise((resolve, reject) => {
+            this.snapshot.log(`Making ${req.method} request to ${uri} qs: ${JSON.stringify(req.qs || {})}`);
             request(`${this.credentials.baseUrl}${uri}`, req, (err, resp, responseBody) => {
                 /* istanbul ignore next */
                 if (err) {
                     this.snapshot.log(`${req.method} request to ${uri} failed`);
+
                     return reject(err);
                 }
 
