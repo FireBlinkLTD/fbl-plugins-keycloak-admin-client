@@ -16,7 +16,7 @@
   "license": "MIT",
   "dependencies": {
     "joi": "14.3.1",
-    "request": "2.88.0",
+    "request": "2.88.2",
     "typedi": "0.8.0"
   },
   "peerDependencies": {
