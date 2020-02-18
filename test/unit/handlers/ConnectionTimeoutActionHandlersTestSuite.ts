@@ -67,6 +67,6 @@ class ConnectionTimeoutActionHandlersTestSuite {
 
         console.log(JSON.stringify(snapshot, null, 4));
         assert(!snapshot.successful);
-        assert(snapshot.steps.find(s => s.type === 'failure').payload.message.indexOf('TIMEDOUT') >= 0);
+        assert.strictEqual(snapshot.steps.find(s => s.type === 'failure').payload.message, 'Timeout of 1ms exceeded');
     }
 }

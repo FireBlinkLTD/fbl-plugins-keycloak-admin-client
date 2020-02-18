@@ -1,10 +1,20 @@
-import * as request from 'request';
+import * as request from 'superagent';
 import { ActionError, ActionSnapshot } from 'fbl';
 import { KeycloakClientsResource } from './resources/KeycloakClientsResource';
 import { KeycloakUsersResource } from './resources/KeycloakUsersResource';
 import { KeycloakGroupsResource } from './resources/KeycloakGroupsResource';
 import { KeycloakRolesResource } from './resources/KeycloakRolesResource';
 import { KeycloakRealmsResource } from './resources/KeycloakRealmsResource';
+
+interface IRequestOptions {
+    method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+    qs?: Record<string, string>;
+    form?: boolean;
+    body?: any;
+    auth?: {
+        bearer: string
+    };
+}
 
 export class KeycloakClient {
     static DEFAULT_TIMEOUT = 30 * 1000;
@@ -35,15 +45,14 @@ export class KeycloakClient {
     }
 
     public async auth(): Promise<void> {
-        const req: request.CoreOptions = {
-            json: true,
-            form: {
+        const req: IRequestOptions = {
+            form: true,
+            body: {
                 username: this.credentials.username,
                 password: this.credentials.password,
                 grant_type: this.credentials.grantType,
                 client_id: this.credentials.clientId,
             },
-            timeout: this.timeout,
             method: 'POST',
         };
 
@@ -73,14 +82,12 @@ export class KeycloakClient {
      * @param body
      */
     async post(uri: string, body: any, qs: any = {}): Promise<any> {
-        const req: request.CoreOptions = {
+        const req: IRequestOptions = {
             auth: {
                 bearer: this.accessToken,
             },
-            json: true,
             body,
             qs,
-            timeout: this.timeout,
             method: 'POST',
         };
 
@@ -94,14 +101,12 @@ export class KeycloakClient {
      * @param body
      */
     async put(uri: string, body: any, qs: any = {}): Promise<any> {
-        const req: request.CoreOptions = {
+        const req: IRequestOptions = {
             auth: {
                 bearer: this.accessToken,
             },
-            json: true,
             body,
             qs,
-            timeout: this.timeout,
             method: 'PUT',
         };
 
@@ -114,13 +119,11 @@ export class KeycloakClient {
      * @param qs
      */
     async get(uri: string, qs: any = {}): Promise<any> {
-        const req: request.CoreOptions = {
+        const req: IRequestOptions = {
             auth: {
                 bearer: this.accessToken,
             },
             qs,
-            json: true,
-            timeout: this.timeout,
             method: 'GET',
         };
 
@@ -134,53 +137,62 @@ export class KeycloakClient {
      * @param body
      */
     async delete(uri: string, qs: any = {}, body?: any): Promise<any> {
-        const req: request.CoreOptions = {
+        const req: IRequestOptions = {
             auth: {
                 bearer: this.accessToken,
             },
             body,
             qs,
-            json: true,
-            timeout: this.timeout,
             method: 'DELETE',
         };
 
         return await this.makeRequest(uri, req);
     }
 
-    private makeRequest(uri: string, req: request.CoreOptions): Promise<any> {
-        req.headers = {
-            Accept: 'application/json',
-            'User-Agent': this.userAgent,
-        };
+    private async makeRequest(uri: string, options: IRequestOptions): Promise<any> {
+        this.snapshot.log(`Making ${options.method} request to ${uri} qs: ${JSON.stringify(options.qs || {})}`);
 
-        return new Promise((resolve, reject) => {
-            this.snapshot.log(`Making ${req.method} request to ${uri} qs: ${JSON.stringify(req.qs || {})}`);
-            request(`${this.credentials.baseUrl}${uri}`, req, (err, resp, responseBody) => {
-                /* istanbul ignore next */
-                if (err) {
-                    this.snapshot.log(`${req.method} request to ${uri} failed`);
+        let req = request(options.method, `${this.credentials.baseUrl}${uri}`)
+            .timeout(this.timeout)
+            .ok(() => true)
+            .set('Accept', 'application/json')
+            .set('User-Agent', this.userAgent);
 
-                    return reject(err);
+        if (options.auth) {
+            req = req.set('Authorization', `Bearer ${options.auth.bearer}`);
+        }
+
+        if (options.qs) {
+            req = req.query(options.qs);
+        }
+
+        if (options.form) {
+            req = req.type('form');
+        }
+
+        if (options.body) {
+            req = req.send(options.body);
+        }
+
+        const resp = await req;
+
+        if (!resp.ok) {
+            let errorMessage = `Request failed with status code ${resp.status}`;
+
+            /* istanbul ignore else */
+            if (resp.body) {
+                this.snapshot.log(`Failed response body: ${JSON.stringify(resp.body, null, 2)}`, true, false);
+
+                if (resp.body.errorMessage) {
+                    errorMessage += `: "${resp.body.errorMessage}"`;
                 }
+            }
 
-                this.snapshot.log(`${req.method} request to ${uri} completed with status code: ${resp.statusCode}`);
-                if (resp.statusCode >= 200 && resp.statusCode < 300) {
-                    return resolve(responseBody);
-                }
-                let errorMessage = `Request failed with status code ${resp.statusCode}`;
+            throw new ActionError(errorMessage, resp.status.toString());
+        }
 
-                /* istanbul ignore else */
-                if (responseBody) {
-                    this.snapshot.log(`Failed response body: ${JSON.stringify(responseBody, null, 2)}`, true, false);
+        this.snapshot.log(`${options.method} request to ${uri} completed with status code: ${resp.status}`);
 
-                    if (responseBody.errorMessage) {
-                        errorMessage += `: "${responseBody.errorMessage}"`;
-                    }
-                }
-
-                return reject(new ActionError(errorMessage, resp.statusCode.toString()));
-            });
-        });
+        return resp.body;
     }
 }
