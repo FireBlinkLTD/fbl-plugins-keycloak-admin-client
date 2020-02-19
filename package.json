@@ -28,7 +28,7 @@
     "@types/superagent": "4.1.7",
     "@types/chai": "4.2.9",
     "@types/joi": "14.3.4",
-    "@types/node": "13.7.2",
+    "@types/node": "13.7.3",
     "chai": "4.2.0",
     "chai-as-promised": "7.1.1",
     "commitizen": "4.0.3",
