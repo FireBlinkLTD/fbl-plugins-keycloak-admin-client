@@ -25,10 +25,10 @@
   "devDependencies": {
     "@commitlint/cli": "8.3.5",
     "@commitlint/config-conventional": "8.3.4",
-    "@types/superagent": "4.1.7",
     "@types/chai": "4.2.11",
     "@types/joi": "14.3.4",
     "@types/node": "13.11.0",
+    "@types/superagent": "4.1.7",
     "chai": "4.2.0",
     "chai-as-promised": "7.1.1",
     "commitizen": "4.0.3",
@@ -46,9 +46,9 @@
     "rimraf": "3.0.2",
     "source-map-support": "0.5.16",
     "ts-node": "8.8.1",
-    "tslint": "6.0.0",
+    "tslint": "6.1.1",
     "tslint-config-prettier": "1.18.0",
-    "typescript": "3.7.5",
+    "typescript": "3.8.3",
     "yaml-lint": "1.2.4"
   },
   "nyc": {
