@@ -3,7 +3,7 @@
 Manage Keycloak resources (realms, clients, roles, etc) inside your [FBL](https://fbl.fireblink.com) flows.
 
 [![CircleCI](https://circleci.com/gh/FireBlinkLTD/fbl-plugins-keycloak-admin-client.svg?style=svg)](https://circleci.com/gh/FireBlinkLTD/fbl-plugins-keycloak-admin-client)
-[![Greenkeeper badge](https://badges.greenkeeper.io/FireBlinkLTD/fbl-plugins-keycloak-admin-client.svg)](https://greenkeeper.io/)
+[![Known Vulnerabilities](https://snyk.io/test/github/FireBlinkLTD/fbl-plugins-keycloak-admin-client/badge.svg)](https://snyk.io/test/github/FireBlinkLTD/fbl-plugins-keycloak-admin-client)
 [![codecov](https://codecov.io/gh/FireBlinkLTD/fbl-plugins-keycloak-admin-client/branch/master/graph/badge.svg)](https://codecov.io/gh/FireBlinkLTD/fbl-plugins-keycloak-admin-client)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/FireBlinkLTD/fbl-plugins-keycloak-admin-client.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/FireBlinkLTD/fbl-plugins-keycloak-admin-client/alerts/)
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/FireBlinkLTD/fbl-plugins-keycloak-admin-client.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/FireBlinkLTD/fbl-plugins-keycloak-admin-client/context:javascript)
