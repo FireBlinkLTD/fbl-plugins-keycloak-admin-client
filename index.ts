@@ -35,6 +35,10 @@ module.exports = <IPlugin>{
         new handlers.ClientRoleGetActionHandler(),
         new handlers.ClientRoleUpdateActionHandler(),
 
+        // client secrets
+        new handlers.ClientSecretGetActionHandler(),
+        new handlers.ClientSecretGenerateActionHandler(),
+
         // client service account roles
         new handlers.ServiceAccountAddRoleMappingsActionHandler(),
         new handlers.ServiceAccountApplyRoleMappingsActionHandler(),

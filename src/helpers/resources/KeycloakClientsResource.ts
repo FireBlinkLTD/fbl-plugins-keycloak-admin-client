@@ -32,4 +32,12 @@ export class KeycloakClientsResource extends BaseResourceRepresentation {
     async getServiceAccountUser(realm: string, id: string) {
         return await this.keycloakClient.get(`/admin/realms/${realm}/clients/${id}/service-account-user`);
     }
+
+    async getSecret(realm: string, id: string) {
+        return await this.keycloakClient.get(`/admin/realms/${realm}/clients/${id}/client-secret`);
+    }
+
+    async generateNewSecret(realm: string, id: string) {
+        return await this.keycloakClient.post(`/admin/realms/${realm}/clients/${id}/client-secret`, {});
+    }
 }

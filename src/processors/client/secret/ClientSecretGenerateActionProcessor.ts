@@ -1,16 +1,13 @@
 import * as Joi from 'joi';
 
-import { KEYCLOAK_CREDENTIALS_SCHEMA } from '../../schemas';
-import { FBL_ASSIGN_TO_SCHEMA, FBL_PUSH_TO_SCHEMA, ContextUtil } from 'fbl';
-import { BaseActionProcessor } from '../base';
+import { KEYCLOAK_CREDENTIALS_SCHEMA } from '../../../schemas';
+import { BaseActionProcessor } from '../../base';
 
-export class ClientGetActionProcessor extends BaseActionProcessor {
+export class ClientSecretGenerateActionProcessor extends BaseActionProcessor {
     private static validationSchema = Joi.object({
         credentials: KEYCLOAK_CREDENTIALS_SCHEMA,
-        realmName: Joi.string().required().min(1),
+        realmName: Joi.string().min(1).required(),
         clientId: Joi.string().required().min(1),
-        assignClientTo: FBL_ASSIGN_TO_SCHEMA,
-        pushClientTo: FBL_PUSH_TO_SCHEMA,
     })
         .required()
         .options({
@@ -22,14 +19,14 @@ export class ClientGetActionProcessor extends BaseActionProcessor {
      * @inheritdoc
      */
     getValidationSchema(): Joi.SchemaLike | null {
-        return ClientGetActionProcessor.validationSchema;
+        return ClientSecretGenerateActionProcessor.validationSchema;
     }
 
     /**
      * @inheritdoc
      */
     async execute(): Promise<void> {
-        const { credentials, realmName, clientId, assignClientTo, pushClientTo } = this.options;
+        const { realmName, credentials, clientId } = this.options;
 
         const adminClient = await this.getKeycloakAdminClient(credentials);
 
@@ -37,7 +34,8 @@ export class ClientGetActionProcessor extends BaseActionProcessor {
         const client = await this.findClient(adminClient, realmName, clientId);
         this.snapshot.log(`[realm=${realmName}] [clientId=${clientId}] Client information successfully received.`);
 
-        ContextUtil.assignTo(this.context, this.parameters, this.snapshot, assignClientTo, client);
-        ContextUtil.pushTo(this.context, this.parameters, this.snapshot, pushClientTo, client);
+        this.snapshot.log(`[realm=${realmName}] [clientId=${client.clientId}] Generating new client secret.`);
+        await adminClient.clients.generateNewSecret(realmName, client.id);
+        this.snapshot.log(`[realm=${realmName}] [clientId=${client.clientId}] Client secret successfully generated.`);
     }
 }
