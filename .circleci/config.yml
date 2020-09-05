@@ -58,9 +58,9 @@ jobs:
               echo 'export NVM_DIR=/opt/circleci/.nvm' >> $BASH_ENV
               echo 'source $NVM_DIR/nvm.sh' >> $BASH_ENV
             fi
-      - run:  
+      - run:
           name: Install Node.js
-          command: |           
+          command: |
             nvm install --lts
             nvm alias default 'lts/*'
 
@@ -76,18 +76,18 @@ jobs:
 
       - checkout
 
-      - run: 
+      - run:
           name: yarn install
           command: |
-            yarn install               
+            yarn install
 
-      - run: 
+      - run:
           name: run tests and generate coverage report
           command: |
-            yarn docker:test                                  
-      
+            yarn docker:test
+
       # send test coverage
-      - run: bash <(curl -s https://codecov.io/bash) -f ./coverage/coverage.lcov      
+      - run: bash <(curl -s https://codecov.io/bash) -f ./coverage/coverage.lcov
 
       # store artifacts
       - store_artifacts:
@@ -116,17 +116,10 @@ workflows:
   version: 2
   build_and_deploy:
     jobs:
-      - build:
+      - build_only:
           filters:
             tags:
-              only: /^[0-9]+\.[0-9]+\.[0-9]+/         
-            branches:
-              only: /greenkeeper/.*/   
-
-      - build_only:           
-          filters:
-            tags:
-              only: /^[0-9]+\.[0-9]+\.[0-9]+/
+              only: /^[0-9]+\.[0-9]+\.[0-9](\-(beta|alpha)\.[0-9]+){0,1}/
             branches:
               ignore: /.*/
 
@@ -136,6 +129,6 @@ workflows:
             - build_only
           filters:
             tags:
-              only: /^[0-9]+\.[0-9]+\.[0-9]+/
+              only: /^[0-9]+\.[0-9]+\.[0-9](\-(beta|alpha)\.[0-9]+){0,1}/
             branches:
               ignore: /.*/

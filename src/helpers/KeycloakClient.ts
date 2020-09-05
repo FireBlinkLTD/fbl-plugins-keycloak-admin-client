@@ -45,14 +45,25 @@ export class KeycloakClient {
     }
 
     public async auth(): Promise<void> {
+        const requestBody: any = {
+            grant_type: this.credentials.grantType,
+            client_id: this.credentials.clientId,
+        };
+
+        /* istanbul ignore else */
+        if (this.credentials.username && this.credentials.password) {
+            requestBody.username = this.credentials.username;
+            requestBody.password = this.credentials.password;
+        }
+
+        /* istanbul ignore next */
+        if (this.credentials.clientSecret) {
+            requestBody.client_secret = this.credentials.clientSecret;
+        }
+
         const req: IRequestOptions = {
             form: true,
-            body: {
-                username: this.credentials.username,
-                password: this.credentials.password,
-                grant_type: this.credentials.grantType,
-                client_id: this.credentials.clientId,
-            },
+            body: requestBody,
             method: 'POST',
         };
 
