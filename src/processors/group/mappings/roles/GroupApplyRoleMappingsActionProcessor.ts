@@ -6,12 +6,8 @@ import { BaseActionProcessor } from '../../../base';
 export class GroupApplyRoleMappingsActionProcessor extends BaseActionProcessor {
     private static validationSchema = Joi.object({
         credentials: KEYCLOAK_CREDENTIALS_SCHEMA,
-        realmName: Joi.string()
-            .min(1)
-            .required(),
-        groupName: Joi.string()
-            .min(1)
-            .required(),
+        realmName: Joi.string().min(1).required(),
+        groupName: Joi.string().min(1).required(),
 
         roles: Joi.object({
             realm: Joi.array().items(Joi.string().min(1)),
@@ -27,7 +23,7 @@ export class GroupApplyRoleMappingsActionProcessor extends BaseActionProcessor {
     /**
      * @inheritdoc
      */
-    getValidationSchema(): Joi.SchemaLike | null {
+    getValidationSchema(): Joi.Schema | null {
         return GroupApplyRoleMappingsActionProcessor.validationSchema;
     }
 
@@ -44,7 +40,7 @@ export class GroupApplyRoleMappingsActionProcessor extends BaseActionProcessor {
         if (roles.realm) {
             await this.addRealmRoleMappingsForGroup(adminClient, group, realmName, roles.realm, mappings);
 
-            const realmRolesToRemove = mappings.realm.filter(r => roles.realm.indexOf(r) < 0);
+            const realmRolesToRemove = mappings.realm.filter((r) => roles.realm.indexOf(r) < 0);
             await this.deleteRealmRoleMappingsForGroup(adminClient, group, realmName, realmRolesToRemove, mappings);
         } else {
             /* istanbul ignore else */
@@ -75,7 +71,7 @@ export class GroupApplyRoleMappingsActionProcessor extends BaseActionProcessor {
             const mappingClient = await this.findClient(adminClient, realmName, clientId);
 
             if (roles.client && roles.client[clientId]) {
-                const clientRolesToRemove = clientRoles.filter(r => roles.client[clientId].indexOf(r) < 0);
+                const clientRolesToRemove = clientRoles.filter((r) => roles.client[clientId].indexOf(r) < 0);
                 await this.deleteClientRoleMappingsForGroup(
                     adminClient,
                     group,

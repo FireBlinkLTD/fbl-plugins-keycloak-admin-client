@@ -7,12 +7,8 @@ import { BaseServiceAccountActionProcessor } from './BaseServiceAccountActionPro
 export class ClientGetServiceAccountUserActionProcessor extends BaseServiceAccountActionProcessor {
     private static validationSchema = Joi.object({
         credentials: KEYCLOAK_CREDENTIALS_SCHEMA,
-        realmName: Joi.string()
-            .min(1)
-            .required(),
-        clientId: Joi.string()
-            .min(1)
-            .required(),
+        realmName: Joi.string().min(1).required(),
+        clientId: Joi.string().min(1).required(),
 
         assignRoleMappingsTo: FBL_ASSIGN_TO_SCHEMA,
         pushRoleMappingsTo: FBL_PUSH_TO_SCHEMA,
@@ -26,7 +22,7 @@ export class ClientGetServiceAccountUserActionProcessor extends BaseServiceAccou
     /**
      * @inheritdoc
      */
-    getValidationSchema(): Joi.SchemaLike | null {
+    getValidationSchema(): Joi.Schema | null {
         return ClientGetServiceAccountUserActionProcessor.validationSchema;
     }
 

@@ -7,9 +7,7 @@ import { BaseActionProcessor } from '../base';
 export class RealmGetActionProcessor extends BaseActionProcessor {
     private static validationSchema = Joi.object({
         credentials: KEYCLOAK_CREDENTIALS_SCHEMA,
-        realmName: Joi.string()
-            .required()
-            .min(1),
+        realmName: Joi.string().required().min(1),
         assignRealmTo: FBL_ASSIGN_TO_SCHEMA,
         pushRealmTo: FBL_PUSH_TO_SCHEMA,
     })
@@ -22,7 +20,7 @@ export class RealmGetActionProcessor extends BaseActionProcessor {
     /**
      * @inheritdoc
      */
-    getValidationSchema(): Joi.SchemaLike | null {
+    getValidationSchema(): Joi.Schema | null {
         return RealmGetActionProcessor.validationSchema;
     }
 

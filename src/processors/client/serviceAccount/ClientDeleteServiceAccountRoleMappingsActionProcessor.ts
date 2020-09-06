@@ -6,12 +6,8 @@ import { BaseServiceAccountActionProcessor } from './BaseServiceAccountActionPro
 export class ClientDeleteServiceAccountUserActionProcessor extends BaseServiceAccountActionProcessor {
     private static validationSchema = Joi.object({
         credentials: KEYCLOAK_CREDENTIALS_SCHEMA,
-        realmName: Joi.string()
-            .min(1)
-            .required(),
-        clientId: Joi.string()
-            .min(1)
-            .required(),
+        realmName: Joi.string().min(1).required(),
+        clientId: Joi.string().min(1).required(),
 
         roles: Joi.object({
             realm: Joi.array().items(Joi.string().min(1)),
@@ -27,7 +23,7 @@ export class ClientDeleteServiceAccountUserActionProcessor extends BaseServiceAc
     /**
      * @inheritdoc
      */
-    getValidationSchema(): Joi.SchemaLike | null {
+    getValidationSchema(): Joi.Schema | null {
         return ClientDeleteServiceAccountUserActionProcessor.validationSchema;
     }
 

@@ -6,14 +6,10 @@ import { BaseActionProcessor } from '../base';
 export class ClientCreateActionProcessor extends BaseActionProcessor {
     private static validationSchema = Joi.object({
         credentials: KEYCLOAK_CREDENTIALS_SCHEMA,
-        realmName: Joi.string()
-            .min(1)
-            .required(),
+        realmName: Joi.string().min(1).required(),
         client: Joi.object()
             .keys({
-                clientId: Joi.string()
-                    .required()
-                    .min(1),
+                clientId: Joi.string().required().min(1),
             })
             .required()
             .options({
@@ -30,7 +26,7 @@ export class ClientCreateActionProcessor extends BaseActionProcessor {
     /**
      * @inheritdoc
      */
-    getValidationSchema(): Joi.SchemaLike | null {
+    getValidationSchema(): Joi.Schema | null {
         return ClientCreateActionProcessor.validationSchema;
     }
 

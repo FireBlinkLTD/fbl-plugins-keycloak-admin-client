@@ -7,15 +7,9 @@ import { BaseRoleActionProcessor } from '../BaseRoleActionProcessor';
 export class ClientRoleGetActionProcessor extends BaseRoleActionProcessor {
     private static validationSchema = Joi.object({
         credentials: KEYCLOAK_CREDENTIALS_SCHEMA,
-        realmName: Joi.string()
-            .min(1)
-            .required(),
-        clientId: Joi.string()
-            .min(1)
-            .required(),
-        roleName: Joi.string()
-            .min(1)
-            .required(),
+        realmName: Joi.string().min(1).required(),
+        clientId: Joi.string().min(1).required(),
+        roleName: Joi.string().min(1).required(),
         assignRoleTo: FBL_ASSIGN_TO_SCHEMA,
         pushRoleTo: FBL_PUSH_TO_SCHEMA,
     })
@@ -28,7 +22,7 @@ export class ClientRoleGetActionProcessor extends BaseRoleActionProcessor {
     /**
      * @inheritdoc
      */
-    getValidationSchema(): Joi.SchemaLike | null {
+    getValidationSchema(): Joi.Schema | null {
         return ClientRoleGetActionProcessor.validationSchema;
     }
 

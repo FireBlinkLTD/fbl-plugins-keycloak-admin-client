@@ -7,9 +7,7 @@ import { FBL_ASSIGN_TO_SCHEMA, FBL_PUSH_TO_SCHEMA, ContextUtil } from 'fbl';
 export class UserGetGroupsActionProcessor extends BaseUserGroupActionProcessor {
     private static validationSchema = Joi.object({
         credentials: KEYCLOAK_CREDENTIALS_SCHEMA,
-        realmName: Joi.string()
-            .min(1)
-            .required(),
+        realmName: Joi.string().min(1).required(),
         username: Joi.string().min(1),
         email: Joi.string().min(1),
         assignGroupsTo: FBL_ASSIGN_TO_SCHEMA,
@@ -25,7 +23,7 @@ export class UserGetGroupsActionProcessor extends BaseUserGroupActionProcessor {
     /**
      * @inheritdoc
      */
-    getValidationSchema(): Joi.SchemaLike | null {
+    getValidationSchema(): Joi.Schema | null {
         return UserGetGroupsActionProcessor.validationSchema;
     }
 

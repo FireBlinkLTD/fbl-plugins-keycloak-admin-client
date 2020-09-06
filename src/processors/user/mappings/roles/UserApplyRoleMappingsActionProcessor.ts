@@ -6,9 +6,7 @@ import { BaseUserActionProcessor } from '../../BaseUserActionProcessor';
 export class UserApplyRoleMappingsActionProcessor extends BaseUserActionProcessor {
     private static validationSchema = Joi.object({
         credentials: KEYCLOAK_CREDENTIALS_SCHEMA,
-        realmName: Joi.string()
-            .min(1)
-            .required(),
+        realmName: Joi.string().min(1).required(),
         username: Joi.string().min(1),
         email: Joi.string().min(1),
 
@@ -27,7 +25,7 @@ export class UserApplyRoleMappingsActionProcessor extends BaseUserActionProcesso
     /**
      * @inheritdoc
      */
-    getValidationSchema(): Joi.SchemaLike | null {
+    getValidationSchema(): Joi.Schema | null {
         return UserApplyRoleMappingsActionProcessor.validationSchema;
     }
 
@@ -44,7 +42,7 @@ export class UserApplyRoleMappingsActionProcessor extends BaseUserActionProcesso
         if (roles.realm) {
             await this.addRealmRoleMappingsForUser(adminClient, user, realmName, roles.realm, roleMappings);
 
-            const realmRolesToRemove = roleMappings.realm.filter(r => roles.realm.indexOf(r) < 0);
+            const realmRolesToRemove = roleMappings.realm.filter((r) => roles.realm.indexOf(r) < 0);
             await this.deleteRealmRoleMappingsForUser(adminClient, user, realmName, realmRolesToRemove, roleMappings);
         } else {
             /* istanbul ignore else */
@@ -81,7 +79,7 @@ export class UserApplyRoleMappingsActionProcessor extends BaseUserActionProcesso
             const mappingClient = await this.findClient(adminClient, realmName, clientId);
 
             if (roles.client && roles.client[clientId]) {
-                const clientRolesToRemove = clientRoles.filter(r => roles.client[clientId].indexOf(r) < 0);
+                const clientRolesToRemove = clientRoles.filter((r) => roles.client[clientId].indexOf(r) < 0);
                 await this.deleteClientRoleMappingsForUser(
                     adminClient,
                     user,

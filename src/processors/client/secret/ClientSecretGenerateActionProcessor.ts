@@ -18,7 +18,7 @@ export class ClientSecretGenerateActionProcessor extends BaseActionProcessor {
     /**
      * @inheritdoc
      */
-    getValidationSchema(): Joi.SchemaLike | null {
+    getValidationSchema(): Joi.Schema | null {
         return ClientSecretGenerateActionProcessor.validationSchema;
     }
 

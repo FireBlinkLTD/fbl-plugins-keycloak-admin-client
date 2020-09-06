@@ -6,9 +6,7 @@ import { BaseUserActionProcessor } from './BaseUserActionProcessor';
 export class UserDeleteActionProcessor extends BaseUserActionProcessor {
     private static validationSchema = Joi.object({
         credentials: KEYCLOAK_CREDENTIALS_SCHEMA,
-        realmName: Joi.string()
-            .min(1)
-            .required(),
+        realmName: Joi.string().min(1).required(),
         username: Joi.string().min(1),
         email: Joi.string().min(1),
     })
@@ -22,7 +20,7 @@ export class UserDeleteActionProcessor extends BaseUserActionProcessor {
     /**
      * @inheritdoc
      */
-    getValidationSchema(): Joi.SchemaLike | null {
+    getValidationSchema(): Joi.Schema | null {
         return UserDeleteActionProcessor.validationSchema;
     }
 

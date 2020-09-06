@@ -6,12 +6,8 @@ import { BaseServiceAccountActionProcessor } from './BaseServiceAccountActionPro
 export class ClientApplyServiceAccountUserActionProcessor extends BaseServiceAccountActionProcessor {
     private static validationSchema = Joi.object({
         credentials: KEYCLOAK_CREDENTIALS_SCHEMA,
-        realmName: Joi.string()
-            .min(1)
-            .required(),
-        clientId: Joi.string()
-            .min(1)
-            .required(),
+        realmName: Joi.string().min(1).required(),
+        clientId: Joi.string().min(1).required(),
 
         roles: Joi.object({
             realm: Joi.array().items(Joi.string().min(1)),
@@ -27,7 +23,7 @@ export class ClientApplyServiceAccountUserActionProcessor extends BaseServiceAcc
     /**
      * @inheritdoc
      */
-    getValidationSchema(): Joi.SchemaLike | null {
+    getValidationSchema(): Joi.Schema | null {
         return ClientApplyServiceAccountUserActionProcessor.validationSchema;
     }
 
@@ -45,7 +41,7 @@ export class ClientApplyServiceAccountUserActionProcessor extends BaseServiceAcc
         if (roles.realm) {
             await this.addRealmRoleMappingsForUser(adminClient, serviceAccount, realmName, roles.realm, roleMappings);
 
-            const realmRolesToRemove = roleMappings.realm.filter(r => roles.realm.indexOf(r) < 0);
+            const realmRolesToRemove = roleMappings.realm.filter((r) => roles.realm.indexOf(r) < 0);
             await this.deleteRealmRoleMappingsForUser(
                 adminClient,
                 serviceAccount,
@@ -88,7 +84,7 @@ export class ClientApplyServiceAccountUserActionProcessor extends BaseServiceAcc
             const mappingClient = await this.findClient(adminClient, realmName, cid);
 
             if (roles.client && roles.client[cid]) {
-                const clientRolesToRemove = clientRoles.filter(r => roles.client[cid].indexOf(r) < 0);
+                const clientRolesToRemove = clientRoles.filter((r) => roles.client[cid].indexOf(r) < 0);
                 await this.deleteClientRoleMappingsForUser(
                     adminClient,
                     serviceAccount,

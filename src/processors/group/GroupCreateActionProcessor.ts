@@ -6,13 +6,9 @@ import { BaseActionProcessor } from '../base';
 export class GroupCreateActionProcessor extends BaseActionProcessor {
     private static validationSchema = Joi.object({
         credentials: KEYCLOAK_CREDENTIALS_SCHEMA,
-        realmName: Joi.string()
-            .min(1)
-            .required(),
+        realmName: Joi.string().min(1).required(),
         group: Joi.object({
-            name: Joi.string()
-                .min(1)
-                .required(),
+            name: Joi.string().min(1).required(),
         })
             .required()
             .options({
@@ -29,7 +25,7 @@ export class GroupCreateActionProcessor extends BaseActionProcessor {
     /**
      * @inheritdoc
      */
-    getValidationSchema(): Joi.SchemaLike | null {
+    getValidationSchema(): Joi.Schema | null {
         return GroupCreateActionProcessor.validationSchema;
     }
 

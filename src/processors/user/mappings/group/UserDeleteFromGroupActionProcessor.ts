@@ -6,14 +6,10 @@ import { BaseUserGroupActionProcessor } from './BaseUserGroupActionProcessor';
 export class UserDeleteFromGroupActionProcessor extends BaseUserGroupActionProcessor {
     private static validationSchema = Joi.object({
         credentials: KEYCLOAK_CREDENTIALS_SCHEMA,
-        realmName: Joi.string()
-            .min(1)
-            .required(),
+        realmName: Joi.string().min(1).required(),
         username: Joi.string().min(1),
         email: Joi.string().min(1),
-        groupName: Joi.string()
-            .min(1)
-            .required(),
+        groupName: Joi.string().min(1).required(),
     })
         .xor('username', 'email')
         .required()
@@ -25,7 +21,7 @@ export class UserDeleteFromGroupActionProcessor extends BaseUserGroupActionProce
     /**
      * @inheritdoc
      */
-    getValidationSchema(): Joi.SchemaLike | null {
+    getValidationSchema(): Joi.Schema | null {
         return UserDeleteFromGroupActionProcessor.validationSchema;
     }
 

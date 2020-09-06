@@ -6,18 +6,12 @@ import { BaseActionProcessor } from '../base';
 export class UserCreateActionProcessor extends BaseActionProcessor {
     private static validationSchema = Joi.object({
         credentials: KEYCLOAK_CREDENTIALS_SCHEMA,
-        realmName: Joi.string()
-            .min(1)
-            .required(),
+        realmName: Joi.string().min(1).required(),
         user: Joi.object()
             .keys({
-                email: Joi.string()
-                    .min(1)
-                    .required(),
+                email: Joi.string().min(1).required(),
 
-                username: Joi.string()
-                    .min(1)
-                    .required(),
+                username: Joi.string().min(1).required(),
 
                 enabled: Joi.boolean(),
             })
@@ -36,7 +30,7 @@ export class UserCreateActionProcessor extends BaseActionProcessor {
     /**
      * @inheritdoc
      */
-    getValidationSchema(): Joi.SchemaLike | null {
+    getValidationSchema(): Joi.Schema | null {
         return UserCreateActionProcessor.validationSchema;
     }
 

@@ -8,9 +8,7 @@ export class RealmCreateActionProcessor extends BaseActionProcessor {
         credentials: KEYCLOAK_CREDENTIALS_SCHEMA,
         realm: Joi.object()
             .keys({
-                realm: Joi.string()
-                    .required()
-                    .min(1),
+                realm: Joi.string().required().min(1),
             })
             .required()
             .options({
@@ -27,7 +25,7 @@ export class RealmCreateActionProcessor extends BaseActionProcessor {
     /**
      * @inheritdoc
      */
-    getValidationSchema(): Joi.SchemaLike | null {
+    getValidationSchema(): Joi.Schema | null {
         return RealmCreateActionProcessor.validationSchema;
     }
 

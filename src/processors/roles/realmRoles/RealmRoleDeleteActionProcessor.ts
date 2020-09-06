@@ -6,12 +6,8 @@ import { BaseActionProcessor } from '../../base';
 export class RealmRoleDeleteActionProcessor extends BaseActionProcessor {
     private static validationSchema = Joi.object({
         credentials: KEYCLOAK_CREDENTIALS_SCHEMA,
-        realmName: Joi.string()
-            .min(1)
-            .required(),
-        roleName: Joi.string()
-            .min(1)
-            .required(),
+        realmName: Joi.string().min(1).required(),
+        roleName: Joi.string().min(1).required(),
     })
         .required()
         .options({
@@ -22,7 +18,7 @@ export class RealmRoleDeleteActionProcessor extends BaseActionProcessor {
     /**
      * @inheritdoc
      */
-    getValidationSchema(): Joi.SchemaLike | null {
+    getValidationSchema(): Joi.Schema | null {
         return RealmRoleDeleteActionProcessor.validationSchema;
     }
 

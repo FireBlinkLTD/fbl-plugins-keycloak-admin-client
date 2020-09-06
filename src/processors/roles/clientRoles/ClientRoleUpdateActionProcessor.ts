@@ -6,20 +6,12 @@ import { BaseRoleActionProcessor } from '../BaseRoleActionProcessor';
 export class ClientRoleUpdateActionProcessor extends BaseRoleActionProcessor {
     private static validationSchema = Joi.object({
         credentials: KEYCLOAK_CREDENTIALS_SCHEMA,
-        realmName: Joi.string()
-            .min(1)
-            .required(),
-        clientId: Joi.string()
-            .min(1)
-            .required(),
-        roleName: Joi.string()
-            .min(1)
-            .required(),
+        realmName: Joi.string().min(1).required(),
+        clientId: Joi.string().min(1).required(),
+        roleName: Joi.string().min(1).required(),
         role: Joi.object()
             .keys({
-                name: Joi.string()
-                    .required()
-                    .min(1),
+                name: Joi.string().required().min(1),
             })
             .required()
             .options({
@@ -36,7 +28,7 @@ export class ClientRoleUpdateActionProcessor extends BaseRoleActionProcessor {
     /**
      * @inheritdoc
      */
-    getValidationSchema(): Joi.SchemaLike | null {
+    getValidationSchema(): Joi.Schema | null {
         return ClientRoleUpdateActionProcessor.validationSchema;
     }
 
