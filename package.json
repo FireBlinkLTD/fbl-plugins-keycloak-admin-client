@@ -1,6 +1,6 @@
 {
   "name": "@fbl-plugins/keycloak-admin-client",
-  "version": "1.7.0-beta.0",
+  "version": "1.7.0",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -20,7 +20,7 @@
     "typedi": "0.8.0"
   },
   "peerDependencies": {
-    "fbl": ">=1.10.0 <2.0.0"
+    "fbl": ">=1.14.0 <2.0.0"
   },
   "devDependencies": {
     "@commitlint/cli": "9.1.2",
@@ -34,7 +34,7 @@
     "commitizen": "4.2.1",
     "conventional-changelog-cli": "2.1.0",
     "cz-conventional-changelog": "3.3.0",
-    "fbl": "1.14.0-beta.3",
+    "fbl": "1.14.0",
     "husky": "4.2.5",
     "jsonlint": "1.6.3",
     "lint-staged": "10.3.0",
