@@ -16,10 +16,8 @@ jobs:
       - run: yarn install
       - run: yarn docker:test
 
-      # generate coverage report
-      - run: ./node_modules/.bin/nyc report --reporter=text-lcov > ./coverage.lcov
       # send test coverage
-      - run: bash <(curl -s https://codecov.io/bash) -f ./coverage.lcov
+      - run: bash <(curl -s https://codecov.io/bash) -f ./coverage/coverage.lcov
 
       - uses: actions/upload-artifact@v2
         with:

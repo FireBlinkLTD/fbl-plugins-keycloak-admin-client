@@ -20,10 +20,8 @@ jobs:
       # run snyk protect test
       - run: yarn snyk-protect
 
-      # generate coverage report
-      - run: ./node_modules/.bin/nyc report --reporter=text-lcov > ./coverage.lcov
       # send test coverage
-      - run: bash <(curl -s https://codecov.io/bash) -f ./coverage.lcov
+      - run: bash <(curl -s https://codecov.io/bash) -f ./coverage/coverage.lcov
 
       - uses: actions/upload-artifact@v2
         with:
