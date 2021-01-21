@@ -18,4 +18,12 @@ export class KeycloakRealmsResource {
     async update(realm: string, resourceRepresentation: any) {
         return await this.keycloakClient.put(`/admin/realms/${realm}`, resourceRepresentation);
     }
+
+    async getEventsConfig(realm: string) {
+        return await this.keycloakClient.get(`/admin/realms/${realm}/events/config`);
+    }
+
+    async updateEventsConfig(realm: string, resourceRepresentation: any) {
+        return await this.keycloakClient.put(`/admin/realms/${realm}/events/config`, resourceRepresentation);
+    }
 }

@@ -1,3 +1,4 @@
+export * from './events';
 export * from './RealmCreateActionHandler';
 export * from './RealmDeleteActionHandler';
 export * from './RealmGetActionHandler';

@@ -1,4 +1,4 @@
-# Client Role Management
+# Realm Role Management
 
 CRUD operations over `Realm roles`.
 
@@ -52,7 +52,7 @@ keycloak.realm.role.create:
   # [required] Realm name
   realmName: master
 
-  # [required] Client representation
+  # [required] Role representation
   role:
     # [required] Role name
     name: role-name
@@ -94,7 +94,7 @@ keycloak.realm.role.update:
   # [required] Client role name
   roleName: role
 
-  # [required] Client representation
+  # [required] Role representation
   role:
     # [required] Role name
     name: role-name

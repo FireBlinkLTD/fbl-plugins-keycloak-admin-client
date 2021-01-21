@@ -63,6 +63,10 @@ module.exports = <IPlugin>{
         new handlers.RealmGetActionHandler(),
         new handlers.RealmUpdateActionHandler(),
 
+        // realm events config
+        new handlers.RealmGetEventsConfigActionHandler(),
+        new handlers.RealmUpdateEventsConfigActionHandler(),
+
         // realm roles
         new handlers.RealmRoleCreateActionHandler(),
         new handlers.RealmRoleDeleteActionHandler(),

@@ -67,6 +67,7 @@ pipeline:
 
 - [Realm Management](docs/Realm.md)
 - [Realm Role Management](docs/RealmRole.md)
+- [Realm Events Config](docs/RealmEventsConfig.md)
 
 ### Client
 

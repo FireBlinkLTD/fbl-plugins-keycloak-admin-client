@@ -33,7 +33,7 @@ export class RealmGetActionProcessor extends BaseActionProcessor {
         const adminClient = await this.getKeycloakAdminClient(credentials);
         this.snapshot.log(`[realm=${realmName}] Looking for realm.`);
         const realm = await adminClient.realms.findOne(realmName);
-        this.snapshot.log(`[realm=${realmName}] Realm successully loaded.`);
+        this.snapshot.log(`[realm=${realmName}] Realm successfully loaded.`);
 
         ContextUtil.assignTo(this.context, this.parameters, this.snapshot, assignRealmTo, realm);
         ContextUtil.pushTo(this.context, this.parameters, this.snapshot, pushRealmTo, realm);

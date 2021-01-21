@@ -16,7 +16,6 @@ class DummyProcessor extends BaseActionProcessor {
         await this.fn();
     }
 }
-
 @suite()
 export class BaseKeycloakAdminClientActionProcessorTestSuite {
     @test()
