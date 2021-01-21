@@ -3,7 +3,6 @@ import { SequenceFlowActionHandler } from 'fbl/dist/src/plugins/flow/SequenceFlo
 
 import { suite, test } from 'mocha-typescript';
 import * as assert from 'assert';
-import { Container } from 'typedi';
 
 import {
     ClientCreateActionHandler,
@@ -26,8 +25,7 @@ const plugin = require('../../../');
 @suite()
 class ClientServiceAccountRolesMappingsActionHandlersTestSuite {
     after() {
-        Container.get(ActionHandlersRegistry).cleanup();
-        Container.reset();
+        ActionHandlersRegistry.instance.cleanup();
     }
 
     @test()
@@ -38,8 +36,8 @@ class ClientServiceAccountRolesMappingsActionHandlersTestSuite {
         const clientRole1 = `cr1-${Date.now()}`;
         const clientRole2 = `cr2-${Date.now()}`;
 
-        const actionHandlerRegistry = Container.get(ActionHandlersRegistry);
-        const flowService = Container.get(FlowService);
+        const actionHandlerRegistry = ActionHandlersRegistry.instance;
+        const flowService = FlowService.instance;
         flowService.debug = true;
 
         actionHandlerRegistry.register(new SequenceFlowActionHandler(), plugin);
@@ -223,8 +221,8 @@ class ClientServiceAccountRolesMappingsActionHandlersTestSuite {
         const clientRole1 = `cr1-${Date.now()}`;
         const clientRole2 = `cr2-${Date.now()}`;
 
-        const actionHandlerRegistry = Container.get(ActionHandlersRegistry);
-        const flowService = Container.get(FlowService);
+        const actionHandlerRegistry = ActionHandlersRegistry.instance;
+        const flowService = FlowService.instance;
         flowService.debug = true;
 
         actionHandlerRegistry.register(new SequenceFlowActionHandler(), plugin);
@@ -368,8 +366,8 @@ class ClientServiceAccountRolesMappingsActionHandlersTestSuite {
         const clientId = `c-${Date.now()}`;
         const realmRole1 = `rr1-${Date.now()}`;
 
-        const actionHandlerRegistry = Container.get(ActionHandlersRegistry);
-        const flowService = Container.get(FlowService);
+        const actionHandlerRegistry = ActionHandlersRegistry.instance;
+        const flowService = FlowService.instance;
         flowService.debug = true;
 
         actionHandlerRegistry.register(new SequenceFlowActionHandler(), plugin);
@@ -432,7 +430,7 @@ class ClientServiceAccountRolesMappingsActionHandlersTestSuite {
         );
 
         assert(!snapshot.successful);
-        const failedStep = snapshot.getSteps().find(s => s.type === 'failure');
+        const failedStep = snapshot.getSteps().find((s) => s.type === 'failure');
         assert.deepStrictEqual(failedStep.payload, {
             code: '500',
             message: `ServiceAccount is not enabled for client with clientId "${clientId}" of realm "${realmName}"`,

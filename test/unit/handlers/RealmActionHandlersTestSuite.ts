@@ -3,7 +3,6 @@ import { SequenceFlowActionHandler } from 'fbl/dist/src/plugins/flow/SequenceFlo
 
 import { suite, test } from 'mocha-typescript';
 import * as assert from 'assert';
-import { Container } from 'typedi';
 
 import {
     RealmCreateActionHandler,
@@ -23,14 +22,13 @@ const plugin = require('../../../');
 @suite()
 class RealmActionHandlersTestSuite {
     after() {
-        Container.get(ActionHandlersRegistry).cleanup();
-        Container.reset();
+        ActionHandlersRegistry.instance.cleanup();
     }
 
     @test()
     async crudOperations(): Promise<void> {
-        const actionHandlerRegistry = Container.get(ActionHandlersRegistry);
-        const flowService = Container.get(FlowService);
+        const actionHandlerRegistry = ActionHandlersRegistry.instance;
+        const flowService = FlowService.instance;
         flowService.debug = true;
 
         actionHandlerRegistry.register(new SequenceFlowActionHandler(), plugin);
@@ -114,7 +112,7 @@ class RealmActionHandlersTestSuite {
         );
 
         assert(!snapshot.successful);
-        const failedStep = snapshot.getSteps().find(s => s.type === 'failure');
+        const failedStep = snapshot.getSteps().find((s) => s.type === 'failure');
         assert.deepStrictEqual(failedStep.payload, {
             code: '404',
             message: `Request failed with status code 404`,

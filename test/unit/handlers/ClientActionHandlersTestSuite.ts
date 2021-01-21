@@ -3,7 +3,6 @@ import { SequenceFlowActionHandler } from 'fbl/dist/src/plugins/flow/SequenceFlo
 
 import { suite, test } from 'mocha-typescript';
 import * as assert from 'assert';
-import { Container } from 'typedi';
 
 import {
     ClientCreateActionHandler,
@@ -23,15 +22,14 @@ const plugin = require('../../../');
 @suite()
 class ClientActionHandlersTestSuite {
     after() {
-        Container.get(ActionHandlersRegistry).cleanup();
-        Container.reset();
+        ActionHandlersRegistry.instance.cleanup();
     }
 
     @test()
     async crudOperations(): Promise<void> {
         const clientId = `t-${Date.now()}`;
-        const actionHandlerRegistry = Container.get(ActionHandlersRegistry);
-        const flowService = Container.get(FlowService);
+        const actionHandlerRegistry = ActionHandlersRegistry.instance;
+        const flowService = FlowService.instance;
         flowService.debug = true;
 
         actionHandlerRegistry.register(new SequenceFlowActionHandler(), plugin);
@@ -121,7 +119,7 @@ class ClientActionHandlersTestSuite {
         );
 
         assert(!snapshot.successful);
-        const failedStep = snapshot.getSteps().find(s => s.type === 'failure');
+        const failedStep = snapshot.getSteps().find((s) => s.type === 'failure');
         assert.deepStrictEqual(failedStep.payload, {
             code: '404',
             message: `Client with clientId "${clientId}" of realm "master" not found`,
@@ -131,8 +129,8 @@ class ClientActionHandlersTestSuite {
     @test()
     async failToCreateSameClientTwice(): Promise<void> {
         const clientId = `t-${Date.now()}`;
-        const actionHandlerRegistry = Container.get(ActionHandlersRegistry);
-        const flowService = Container.get(FlowService);
+        const actionHandlerRegistry = ActionHandlersRegistry.instance;
+        const flowService = FlowService.instance;
         flowService.debug = true;
 
         actionHandlerRegistry.register(new SequenceFlowActionHandler(), plugin);
@@ -189,8 +187,8 @@ class ClientActionHandlersTestSuite {
         assert(context.ctx.afterCreate);
         const failedChildSnapshot: ActionSnapshot = snapshot
             .getSteps()
-            .find(s => s.type === 'child' && !s.payload.successful).payload;
-        const failedStep = failedChildSnapshot.getSteps().find(s => s.type === 'failure');
+            .find((s) => s.type === 'child' && !s.payload.successful).payload;
+        const failedStep = failedChildSnapshot.getSteps().find((s) => s.type === 'failure');
 
         assert.deepStrictEqual(failedStep.payload, {
             code: '409',
@@ -201,8 +199,8 @@ class ClientActionHandlersTestSuite {
     @test()
     async failToUpdateMissingClient(): Promise<void> {
         const clientId = `t-${Date.now()}`;
-        const actionHandlerRegistry = Container.get(ActionHandlersRegistry);
-        const flowService = Container.get(FlowService);
+        const actionHandlerRegistry = ActionHandlersRegistry.instance;
+        const flowService = FlowService.instance;
         flowService.debug = true;
 
         actionHandlerRegistry.register(new ClientUpdateActionHandler(), plugin);
@@ -229,7 +227,7 @@ class ClientActionHandlersTestSuite {
         );
 
         assert(!snapshot.successful);
-        const failedStep = snapshot.getSteps().find(s => s.type === 'failure');
+        const failedStep = snapshot.getSteps().find((s) => s.type === 'failure');
         assert.deepStrictEqual(failedStep.payload, {
             code: '404',
             message: `Client with clientId "${clientId}" of realm "master" not found`,
@@ -239,8 +237,8 @@ class ClientActionHandlersTestSuite {
     @test()
     async failToDeleteMissingClient(): Promise<void> {
         const clientId = `t-${Date.now()}`;
-        const actionHandlerRegistry = Container.get(ActionHandlersRegistry);
-        const flowService = Container.get(FlowService);
+        const actionHandlerRegistry = ActionHandlersRegistry.instance;
+        const flowService = FlowService.instance;
         flowService.debug = true;
 
         actionHandlerRegistry.register(new ClientDeleteActionHandler(), plugin);
@@ -265,7 +263,7 @@ class ClientActionHandlersTestSuite {
         );
 
         assert(!snapshot.successful);
-        const failedStep = snapshot.getSteps().find(s => s.type === 'failure');
+        const failedStep = snapshot.getSteps().find((s) => s.type === 'failure');
         assert.deepStrictEqual(failedStep.payload, {
             code: '404',
             message: `Client with clientId "${clientId}" of realm "master" not found`,

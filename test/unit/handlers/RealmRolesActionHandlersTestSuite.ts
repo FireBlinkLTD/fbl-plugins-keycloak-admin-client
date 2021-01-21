@@ -3,7 +3,6 @@ import { SequenceFlowActionHandler } from 'fbl/dist/src/plugins/flow/SequenceFlo
 
 import { suite, test } from 'mocha-typescript';
 import * as assert from 'assert';
-import { Container } from 'typedi';
 
 import {
     RealmRoleCreateActionHandler,
@@ -25,15 +24,14 @@ const plugin = require('../../../');
 @suite()
 class RealmRolesActionHandlersTestSuite {
     after() {
-        Container.get(ActionHandlersRegistry).cleanup();
-        Container.reset();
+        ActionHandlersRegistry.instance.cleanup();
     }
 
     @test()
     async crudOperations(): Promise<void> {
         const roleName = `r-${Date.now()}`;
-        const actionHandlerRegistry = Container.get(ActionHandlersRegistry);
-        const flowService = Container.get(FlowService);
+        const actionHandlerRegistry = ActionHandlersRegistry.instance;
+        const flowService = FlowService.instance;
         flowService.debug = true;
 
         actionHandlerRegistry.register(new SequenceFlowActionHandler(), plugin);
@@ -123,7 +121,7 @@ class RealmRolesActionHandlersTestSuite {
         );
 
         assert(!snapshot.successful);
-        const failedStep = snapshot.getSteps().find(s => s.type === 'failure');
+        const failedStep = snapshot.getSteps().find((s) => s.type === 'failure');
         assert.deepStrictEqual(failedStep.payload, {
             code: '404',
             message: `Request failed with status code 404`,
@@ -138,8 +136,8 @@ class RealmRolesActionHandlersTestSuite {
         const cr1Name = `cr1-${Date.now()}`;
         const cr2Name = `cr2-${Date.now()}`;
         const compositeRoleName = `rc-${Date.now()}`;
-        const actionHandlerRegistry = Container.get(ActionHandlersRegistry);
-        const flowService = Container.get(FlowService);
+        const actionHandlerRegistry = ActionHandlersRegistry.instance;
+        const flowService = FlowService.instance;
         flowService.debug = true;
 
         actionHandlerRegistry.register(new ClientCreateActionHandler(), plugin);

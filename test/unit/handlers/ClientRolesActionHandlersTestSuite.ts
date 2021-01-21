@@ -3,7 +3,6 @@ import { SequenceFlowActionHandler } from 'fbl/dist/src/plugins/flow/SequenceFlo
 
 import { suite, test } from 'mocha-typescript';
 import * as assert from 'assert';
-import { Container } from 'typedi';
 
 import {
     ClientCreateActionHandler,
@@ -12,7 +11,6 @@ import {
     ClientRoleGetActionHandler,
     ClientRoleUpdateActionHandler,
     RealmRoleCreateActionHandler,
-    RealmRoleDeleteActionHandler,
 } from '../../../src/handlers';
 
 import credentials from '../credentials';
@@ -26,15 +24,14 @@ const plugin = require('../../../');
 @suite()
 class ClientRolesActionHandlersTestSuite {
     after() {
-        Container.get(ActionHandlersRegistry).cleanup();
-        Container.reset();
+        ActionHandlersRegistry.instance.cleanup();
     }
 
     @test()
     async crudOperations(): Promise<void> {
         const clientId = `t-${Date.now()}`;
-        const actionHandlerRegistry = Container.get(ActionHandlersRegistry);
-        const flowService = Container.get(FlowService);
+        const actionHandlerRegistry = ActionHandlersRegistry.instance;
+        const flowService = FlowService.instance;
         flowService.debug = true;
 
         actionHandlerRegistry.register(new SequenceFlowActionHandler(), plugin);
@@ -141,7 +138,7 @@ class ClientRolesActionHandlersTestSuite {
         );
 
         assert(!snapshot.successful);
-        const failedStep = snapshot.getSteps().find(s => s.type === 'failure');
+        const failedStep = snapshot.getSteps().find((s) => s.type === 'failure');
         assert.deepStrictEqual(failedStep.payload, {
             code: '404',
             message: 'Request failed with status code 404',
@@ -151,8 +148,8 @@ class ClientRolesActionHandlersTestSuite {
     @test()
     async failForMissingClient(): Promise<void> {
         const clientId = `t-${Date.now()}`;
-        const actionHandlerRegistry = Container.get(ActionHandlersRegistry);
-        const flowService = Container.get(FlowService);
+        const actionHandlerRegistry = ActionHandlersRegistry.instance;
+        const flowService = FlowService.instance;
         flowService.debug = true;
 
         actionHandlerRegistry.register(new ClientRoleCreateActionHandler(), plugin);
@@ -183,7 +180,7 @@ class ClientRolesActionHandlersTestSuite {
         );
 
         assert(!snapshot.successful);
-        let failedStep = snapshot.getSteps().find(s => s.type === 'failure');
+        let failedStep = snapshot.getSteps().find((s) => s.type === 'failure');
         assert.deepStrictEqual(failedStep.payload, {
             code: '404',
             message: `Client with clientId "${clientId}" of realm "master" not found`,
@@ -208,7 +205,7 @@ class ClientRolesActionHandlersTestSuite {
         );
 
         assert(!snapshot.successful);
-        failedStep = snapshot.getSteps().find(s => s.type === 'failure');
+        failedStep = snapshot.getSteps().find((s) => s.type === 'failure');
         assert.deepStrictEqual(failedStep.payload, {
             code: '404',
             message: `Client with clientId "${clientId}" of realm "master" not found`,
@@ -233,7 +230,7 @@ class ClientRolesActionHandlersTestSuite {
         );
 
         assert(!snapshot.successful);
-        failedStep = snapshot.getSteps().find(s => s.type === 'failure');
+        failedStep = snapshot.getSteps().find((s) => s.type === 'failure');
         assert.deepStrictEqual(failedStep.payload, {
             code: '404',
             message: `Client with clientId "${clientId}" of realm "master" not found`,
@@ -261,7 +258,7 @@ class ClientRolesActionHandlersTestSuite {
         );
 
         assert(!snapshot.successful);
-        failedStep = snapshot.getSteps().find(s => s.type === 'failure');
+        failedStep = snapshot.getSteps().find((s) => s.type === 'failure');
         assert.deepStrictEqual(failedStep.payload, {
             code: '404',
             message: `Client with clientId "${clientId}" of realm "master" not found`,
@@ -276,8 +273,8 @@ class ClientRolesActionHandlersTestSuite {
         const cr1Name = `cr1-${Date.now()}`;
         const cr2Name = `cr2-${Date.now()}`;
         const compositeRoleName = `rc-${Date.now()}`;
-        const actionHandlerRegistry = Container.get(ActionHandlersRegistry);
-        const flowService = Container.get(FlowService);
+        const actionHandlerRegistry = ActionHandlersRegistry.instance;
+        const flowService = FlowService.instance;
         flowService.debug = true;
 
         actionHandlerRegistry.register(new ClientCreateActionHandler(), plugin);
@@ -469,8 +466,8 @@ class ClientRolesActionHandlersTestSuite {
         const cr1Name = `cr1-${Date.now()}`;
         const cr2Name = `cr2-${Date.now()}`;
         const compositeRoleName = `rc-${Date.now()}`;
-        const actionHandlerRegistry = Container.get(ActionHandlersRegistry);
-        const flowService = Container.get(FlowService);
+        const actionHandlerRegistry = ActionHandlersRegistry.instance;
+        const flowService = FlowService.instance;
         flowService.debug = true;
 
         actionHandlerRegistry.register(new ClientCreateActionHandler(), plugin);
@@ -660,8 +657,8 @@ class ClientRolesActionHandlersTestSuite {
         const cr1Name = `cr1-${Date.now()}`;
         const cr2Name = `cr2-${Date.now()}`;
         const compositeRoleName = `rc-${Date.now()}`;
-        const actionHandlerRegistry = Container.get(ActionHandlersRegistry);
-        const flowService = Container.get(FlowService);
+        const actionHandlerRegistry = ActionHandlersRegistry.instance;
+        const flowService = FlowService.instance;
         flowService.debug = true;
 
         actionHandlerRegistry.register(new ClientCreateActionHandler(), plugin);

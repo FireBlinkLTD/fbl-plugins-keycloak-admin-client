@@ -3,7 +3,6 @@ import { SequenceFlowActionHandler } from 'fbl/dist/src/plugins/flow/SequenceFlo
 
 import { suite, test } from 'mocha-typescript';
 import * as assert from 'assert';
-import { Container } from 'typedi';
 
 import {
     GroupCreateActionHandler,
@@ -23,15 +22,14 @@ const plugin = require('../../../');
 @suite()
 class GroupActionHandlersTestSuite {
     after() {
-        Container.get(ActionHandlersRegistry).cleanup();
-        Container.reset();
+        ActionHandlersRegistry.instance.cleanup();
     }
 
     @test()
     async crudOperations(): Promise<void> {
         const groupName = `g-${Date.now()}`;
-        const actionHandlerRegistry = Container.get(ActionHandlersRegistry);
-        const flowService = Container.get(FlowService);
+        const actionHandlerRegistry = ActionHandlersRegistry.instance;
+        const flowService = FlowService.instance;
         flowService.debug = true;
 
         actionHandlerRegistry.register(new SequenceFlowActionHandler(), plugin);
@@ -121,7 +119,7 @@ class GroupActionHandlersTestSuite {
         );
 
         assert(!snapshot.successful);
-        const failedStep = snapshot.getSteps().find(s => s.type === 'failure');
+        const failedStep = snapshot.getSteps().find((s) => s.type === 'failure');
         assert.deepStrictEqual(failedStep.payload, {
             code: '404',
             message: `Unable to find group "${groupName}_new" in realm "master".`,
@@ -131,8 +129,8 @@ class GroupActionHandlersTestSuite {
     @test()
     async failToCreateSameGroupTwice(): Promise<void> {
         const groupName = `g-${Date.now()}`;
-        const actionHandlerRegistry = Container.get(ActionHandlersRegistry);
-        const flowService = Container.get(FlowService);
+        const actionHandlerRegistry = ActionHandlersRegistry.instance;
+        const flowService = FlowService.instance;
         flowService.debug = true;
 
         actionHandlerRegistry.register(new SequenceFlowActionHandler(), plugin);
@@ -187,8 +185,8 @@ class GroupActionHandlersTestSuite {
         assert(context.ctx.afterCreate);
         const failedChildSnapshot: ActionSnapshot = snapshot
             .getSteps()
-            .find(s => s.type === 'child' && !s.payload.successful).payload;
-        const failedStep = failedChildSnapshot.getSteps().find(s => s.type === 'failure');
+            .find((s) => s.type === 'child' && !s.payload.successful).payload;
+        const failedStep = failedChildSnapshot.getSteps().find((s) => s.type === 'failure');
 
         assert.deepStrictEqual(failedStep.payload, {
             code: '409',
@@ -199,8 +197,8 @@ class GroupActionHandlersTestSuite {
     @test()
     async failToUpdateMissingGroup(): Promise<void> {
         const groupName = `g-${Date.now()}`;
-        const actionHandlerRegistry = Container.get(ActionHandlersRegistry);
-        const flowService = Container.get(FlowService);
+        const actionHandlerRegistry = ActionHandlersRegistry.instance;
+        const flowService = FlowService.instance;
         flowService.debug = true;
 
         actionHandlerRegistry.register(new GroupUpdateActionHandler(), plugin);
@@ -228,7 +226,7 @@ class GroupActionHandlersTestSuite {
         );
 
         assert(!snapshot.successful);
-        const failedStep = snapshot.getSteps().find(s => s.type === 'failure');
+        const failedStep = snapshot.getSteps().find((s) => s.type === 'failure');
         assert.deepStrictEqual(failedStep.payload, {
             code: '404',
             message: `Unable to find group "${groupName}" in realm "master".`,
@@ -238,8 +236,8 @@ class GroupActionHandlersTestSuite {
     @test()
     async failToDeleteMissingGroup(): Promise<void> {
         const groupName = `g-${Date.now()}`;
-        const actionHandlerRegistry = Container.get(ActionHandlersRegistry);
-        const flowService = Container.get(FlowService);
+        const actionHandlerRegistry = ActionHandlersRegistry.instance;
+        const flowService = FlowService.instance;
         flowService.debug = true;
 
         actionHandlerRegistry.register(new GroupDeleteActionHandler(), plugin);
@@ -264,7 +262,7 @@ class GroupActionHandlersTestSuite {
         );
 
         assert(!snapshot.successful);
-        const failedStep = snapshot.getSteps().find(s => s.type === 'failure');
+        const failedStep = snapshot.getSteps().find((s) => s.type === 'failure');
         assert.deepStrictEqual(failedStep.payload, {
             code: '404',
             message: `Unable to find group "${groupName}" in realm "master".`,

@@ -3,7 +3,6 @@ import { SequenceFlowActionHandler } from 'fbl/dist/src/plugins/flow/SequenceFlo
 
 import { suite, test } from 'mocha-typescript';
 import * as assert from 'assert';
-import { Container } from 'typedi';
 
 import {
     UserCreateActionHandler,
@@ -23,8 +22,7 @@ const plugin = require('../../../');
 @suite()
 class UserActionHandlersTestSuite {
     after() {
-        Container.get(ActionHandlersRegistry).cleanup();
-        Container.reset();
+        ActionHandlersRegistry.instance.cleanup();
     }
 
     @test()
@@ -32,8 +30,8 @@ class UserActionHandlersTestSuite {
         const username = `u${Date.now()}`;
         const email = `${username}@fireblink.com`;
 
-        const actionHandlerRegistry = Container.get(ActionHandlersRegistry);
-        const flowService = Container.get(FlowService);
+        const actionHandlerRegistry = ActionHandlersRegistry.instance;
+        const flowService = FlowService.instance;
         flowService.debug = true;
 
         actionHandlerRegistry.register(new SequenceFlowActionHandler(), plugin);
@@ -136,7 +134,7 @@ class UserActionHandlersTestSuite {
         );
 
         assert(!snapshot.successful);
-        const failedStep = snapshot.getSteps().find(s => s.type === 'failure');
+        const failedStep = snapshot.getSteps().find((s) => s.type === 'failure');
         assert.deepStrictEqual(failedStep.payload, {
             code: '404',
             message: `Unable to find user "${username}" in realm "master"`,
@@ -148,8 +146,8 @@ class UserActionHandlersTestSuite {
         const username = `u${Date.now()}`;
         const email = `${username}@fireblink.com`;
 
-        const actionHandlerRegistry = Container.get(ActionHandlersRegistry);
-        const flowService = Container.get(FlowService);
+        const actionHandlerRegistry = ActionHandlersRegistry.instance;
+        const flowService = FlowService.instance;
         flowService.debug = true;
 
         actionHandlerRegistry.register(new SequenceFlowActionHandler(), plugin);
@@ -208,8 +206,8 @@ class UserActionHandlersTestSuite {
         assert(context.ctx.afterCreate);
         const failedChildSnapshot: ActionSnapshot = snapshot
             .getSteps()
-            .find(s => s.type === 'child' && !s.payload.successful).payload;
-        const failedStep = failedChildSnapshot.getSteps().find(s => s.type === 'failure');
+            .find((s) => s.type === 'child' && !s.payload.successful).payload;
+        const failedStep = failedChildSnapshot.getSteps().find((s) => s.type === 'failure');
 
         assert.deepStrictEqual(failedStep.payload, {
             code: '409',
@@ -222,8 +220,8 @@ class UserActionHandlersTestSuite {
         const username = `u${Date.now()}`;
         const email = `${username}@fireblink.com`;
 
-        const actionHandlerRegistry = Container.get(ActionHandlersRegistry);
-        const flowService = Container.get(FlowService);
+        const actionHandlerRegistry = ActionHandlersRegistry.instance;
+        const flowService = FlowService.instance;
         flowService.debug = true;
 
         actionHandlerRegistry.register(new UserUpdateActionHandler(), plugin);
@@ -252,7 +250,7 @@ class UserActionHandlersTestSuite {
         );
 
         assert(!snapshot.successful);
-        let failedStep = snapshot.getSteps().find(s => s.type === 'failure');
+        let failedStep = snapshot.getSteps().find((s) => s.type === 'failure');
         assert.deepStrictEqual(failedStep.payload, {
             code: '404',
             message: `Unable to find user "${username}" in realm "master"`,
@@ -280,7 +278,7 @@ class UserActionHandlersTestSuite {
         );
 
         assert(!snapshot.successful);
-        failedStep = snapshot.getSteps().find(s => s.type === 'failure');
+        failedStep = snapshot.getSteps().find((s) => s.type === 'failure');
         assert.deepStrictEqual(failedStep.payload, {
             code: '404',
             message: `Unable to find user "${email}" in realm "master"`,
@@ -292,8 +290,8 @@ class UserActionHandlersTestSuite {
         const username = `u${Date.now()}`;
         const email = `${username}@fireblink.com`;
 
-        const actionHandlerRegistry = Container.get(ActionHandlersRegistry);
-        const flowService = Container.get(FlowService);
+        const actionHandlerRegistry = ActionHandlersRegistry.instance;
+        const flowService = FlowService.instance;
         flowService.debug = true;
 
         actionHandlerRegistry.register(new UserGetActionHandler(), plugin);
@@ -319,7 +317,7 @@ class UserActionHandlersTestSuite {
         );
 
         assert(!snapshot.successful);
-        let failedStep = snapshot.getSteps().find(s => s.type === 'failure');
+        let failedStep = snapshot.getSteps().find((s) => s.type === 'failure');
         assert.deepStrictEqual(failedStep.payload, {
             code: '404',
             message: `Unable to find user "${username}" in realm "master"`,
@@ -344,7 +342,7 @@ class UserActionHandlersTestSuite {
         );
 
         assert(!snapshot.successful);
-        failedStep = snapshot.getSteps().find(s => s.type === 'failure');
+        failedStep = snapshot.getSteps().find((s) => s.type === 'failure');
         assert.deepStrictEqual(failedStep.payload, {
             code: '404',
             message: `Unable to find user "${email}" in realm "master"`,
@@ -356,8 +354,8 @@ class UserActionHandlersTestSuite {
         const username = `u${Date.now()}`;
         const email = `${username}@fireblink.com`;
 
-        const actionHandlerRegistry = Container.get(ActionHandlersRegistry);
-        const flowService = Container.get(FlowService);
+        const actionHandlerRegistry = ActionHandlersRegistry.instance;
+        const flowService = FlowService.instance;
         flowService.debug = true;
 
         actionHandlerRegistry.register(new UserDeleteActionHandler(), plugin);
@@ -383,7 +381,7 @@ class UserActionHandlersTestSuite {
         );
 
         assert(!snapshot.successful);
-        let failedStep = snapshot.getSteps().find(s => s.type === 'failure');
+        let failedStep = snapshot.getSteps().find((s) => s.type === 'failure');
         assert.deepStrictEqual(failedStep.payload, {
             code: '404',
             message: `Unable to find user "${username}" in realm "master"`,
@@ -408,7 +406,7 @@ class UserActionHandlersTestSuite {
         );
 
         assert(!snapshot.successful);
-        failedStep = snapshot.getSteps().find(s => s.type === 'failure');
+        failedStep = snapshot.getSteps().find((s) => s.type === 'failure');
         assert.deepStrictEqual(failedStep.payload, {
             code: '404',
             message: `Unable to find user "${email}" in realm "master"`,

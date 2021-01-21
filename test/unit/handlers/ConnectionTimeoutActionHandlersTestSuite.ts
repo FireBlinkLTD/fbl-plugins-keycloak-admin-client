@@ -3,7 +3,6 @@ import { SequenceFlowActionHandler } from 'fbl/dist/src/plugins/flow/SequenceFlo
 
 import { suite, test } from 'mocha-typescript';
 import * as assert from 'assert';
-import { Container } from 'typedi';
 
 import {
     RealmCreateActionHandler,
@@ -23,14 +22,13 @@ const plugin = require('../../../');
 @suite()
 class ConnectionTimeoutActionHandlersTestSuite {
     after() {
-        Container.get(ActionHandlersRegistry).cleanup();
-        Container.reset();
+        ActionHandlersRegistry.instance.cleanup();
     }
 
     @test()
     async crudOperations(): Promise<void> {
-        const actionHandlerRegistry = Container.get(ActionHandlersRegistry);
-        const flowService = Container.get(FlowService);
+        const actionHandlerRegistry = ActionHandlersRegistry.instance;
+        const flowService = FlowService.instance;
         flowService.debug = true;
 
         actionHandlerRegistry.register(new SequenceFlowActionHandler(), plugin);
@@ -67,6 +65,6 @@ class ConnectionTimeoutActionHandlersTestSuite {
 
         console.log(JSON.stringify(snapshot, null, 4));
         assert(!snapshot.successful);
-        assert.strictEqual(snapshot.steps.find(s => s.type === 'failure').payload.message, 'Timeout of 1ms exceeded');
+        assert.strictEqual(snapshot.steps.find((s) => s.type === 'failure').payload.message, 'Timeout of 1ms exceeded');
     }
 }

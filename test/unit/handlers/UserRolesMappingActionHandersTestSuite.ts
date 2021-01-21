@@ -3,7 +3,6 @@ import { SequenceFlowActionHandler } from 'fbl/dist/src/plugins/flow/SequenceFlo
 
 import { suite, test } from 'mocha-typescript';
 import * as assert from 'assert';
-import { Container } from 'typedi';
 
 import {
     UserCreateActionHandler,
@@ -28,8 +27,7 @@ const plugin = require('../../../');
 @suite()
 class UserRolesMappingsActionHandlersTestSuite {
     after() {
-        Container.get(ActionHandlersRegistry).cleanup();
-        Container.reset();
+        ActionHandlersRegistry.instance.cleanup();
     }
 
     @test()
@@ -43,8 +41,8 @@ class UserRolesMappingsActionHandlersTestSuite {
         const clientRole1 = `cr1-${Date.now()}`;
         const clientRole2 = `cr2-${Date.now()}`;
 
-        const actionHandlerRegistry = Container.get(ActionHandlersRegistry);
-        const flowService = Container.get(FlowService);
+        const actionHandlerRegistry = ActionHandlersRegistry.instance;
+        const flowService = FlowService.instance;
         flowService.debug = true;
 
         actionHandlerRegistry.register(new SequenceFlowActionHandler(), plugin);
@@ -251,8 +249,8 @@ class UserRolesMappingsActionHandlersTestSuite {
         const clientRole1 = `cr1-${Date.now()}`;
         const clientRole2 = `cr2-${Date.now()}`;
 
-        const actionHandlerRegistry = Container.get(ActionHandlersRegistry);
-        const flowService = Container.get(FlowService);
+        const actionHandlerRegistry = ActionHandlersRegistry.instance;
+        const flowService = FlowService.instance;
         flowService.debug = true;
 
         actionHandlerRegistry.register(new SequenceFlowActionHandler(), plugin);

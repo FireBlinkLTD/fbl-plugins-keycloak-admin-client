@@ -3,7 +3,6 @@ import * as assert from 'assert';
 
 import credentials from './credentials';
 import { ContextUtil, ActionHandlersRegistry, FlowService } from 'fbl';
-import Container from 'typedi';
 import { SequenceFlowActionHandler } from 'fbl/dist/src/plugins/flow/SequenceFlowActionHandler';
 import {
     RealmCreateActionHandler,
@@ -21,14 +20,13 @@ const plugin = require('../../');
 @suite()
 export class StressTestTestSuite {
     after() {
-        Container.get(ActionHandlersRegistry).cleanup();
-        Container.reset();
+        ActionHandlersRegistry.instance.cleanup();
     }
 
     @test()
     async stressTest(): Promise<void> {
-        const actionHandlerRegistry = Container.get(ActionHandlersRegistry);
-        const flowService = Container.get(FlowService);
+        const actionHandlerRegistry = ActionHandlersRegistry.instance;
+        const flowService = FlowService.instance;
 
         actionHandlerRegistry.register(new SequenceFlowActionHandler(), plugin);
         actionHandlerRegistry.register(new RealmCreateActionHandler(), plugin);
