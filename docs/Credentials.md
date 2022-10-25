@@ -8,7 +8,7 @@ Based on your preference / security requirements you may want to use either user
 credentials:
   # [optional] realmName to authenticate on
   realmName: master
-  baseUrl: https://keycloak.host/auth
+  baseUrl: https://keycloak.host
   grantType: password
   clientId: admin-cli
   username: admin
@@ -34,7 +34,7 @@ credentials:
 credentials:
   # [optional] realmName to authenticate on
   realmName: master
-  baseUrl: https://keycloak.host/auth
+  baseUrl: https://keycloak.host
   grantType: client_credentials
   clientId: admin-cli
   clientSecret: f8b4288a-1e0f-4ba0-ad43-c3b123054b3f

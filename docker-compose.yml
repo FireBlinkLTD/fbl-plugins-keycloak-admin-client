@@ -1,10 +1,12 @@
 version: '3'
 services:
   keycloak:
-    image: jboss/keycloak:8.0.1
+    image: quay.io/keycloak/keycloak:19.0.3
     environment:
-      KEYCLOAK_USER: admin
-      KEYCLOAK_PASSWORD: admin
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      DB_VENDOR: h2
+    command: start-dev
 
   plugin:
     build: .

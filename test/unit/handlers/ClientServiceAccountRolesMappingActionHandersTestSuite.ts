@@ -191,11 +191,9 @@ class ClientServiceAccountRolesMappingsActionHandlersTestSuite {
         assert(snapshot.successful);
 
         context.ctx.afterAdd.realm.sort();
-        context.ctx.afterAdd.client.account.sort();
         assert.deepStrictEqual(context.ctx.afterAdd, {
-            realm: ['offline_access', realmRole1, 'uma_authorization'],
+            realm: ['default-roles-master', realmRole1],
             client: {
-                account: ['manage-account', 'view-profile'],
                 [clientId]: [clientRole1],
             },
         });
@@ -346,11 +344,9 @@ class ClientServiceAccountRolesMappingsActionHandlersTestSuite {
         assert(snapshot.successful);
 
         context.ctx.afterAdd.realm.sort();
-        context.ctx.afterAdd.client.account.sort();
         assert.deepStrictEqual(context.ctx.afterAdd, {
-            realm: ['offline_access', realmRole1, 'uma_authorization'],
+            realm: ['default-roles-master', realmRole1],
             client: {
-                account: ['manage-account', 'view-profile'],
                 [clientId]: [clientRole1],
             },
         });
