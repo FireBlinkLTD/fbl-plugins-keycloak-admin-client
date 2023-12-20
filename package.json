@@ -16,7 +16,7 @@
   "license": "MIT",
   "dependencies": {
     "joi": "17.4.0",
-    "superagent": "6.1.0"
+    "superagent": "7.0.2"
   },
   "peerDependencies": {
     "fbl": ">=1.15.1 <2.0.0"
